@@ -1,0 +1,30 @@
+Arrow functions
+- context binding
+- optional parentheses 
+- implicit returns
+
+Arrow functions bind context(this) to the context in whihc the function was defined
+arrow function context binding will override .bind on the function
+
+Implicit returns
+- work by omitting curly braces
+- if returning an object you can wrap it in parengheses to leverage implicit returns
+- only works for performing one action or diect chain of actions
+
+async always comes after synchronous code
+await wil
+
+Promises
+async and fetch return Promises
+promises will always guarantee return fro something (ok, not ok)
+promises give us .then
+somePromise.then(...) returns another Promise
+.catch or econd argument to .then will allow us to handle failures
+
+Async function ()
+whole function will happen asynchronously
+
+fetch returns a promise
+http request returns a string, need to invoke json method to turn something into a JS object
+
+
