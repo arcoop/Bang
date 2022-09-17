@@ -53,23 +53,42 @@ class Game {
         hand.unshift(this.deck.deckArray.shift())
     }
 
+
     dealCards() {
+        
         for (let i = 0; i < this.players.length; i++) {
             let player = this.players[i]
             while (player.hand.length < 5) {
+
                 this.addCard(player.hand)
             }
         }
     }
 
     drawObjects(gameCtx, playerCtx) {
-        let xPos = 10
-        let yPos = 170
+        const currentPlayerPositions = {
+            0: [10, 170],
+            1: [170, 170],
+            2: [330, 170],
+            3: [500, 170],
+            4: [670, 170],
+        }
+
+        const otherPlayerPositions = {
+            0: [10, 500],
+            1: [170, 500],
+            2: [330, 500],
+            3: [500, 500],
+            4: [670, 500],
+        }
+
+        // let xPos = 10
+        // let yPos = 170
         for (let i = 0; i < this.currentPlayer.hand.length; i++) {
             let card = this.currentPlayer.hand[i]
             // console.log(card)
-            card.draw(playerCtx, xPos, yPos, "gray")
-            xPos += 160
+            card.draw(playerCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], "gray")
+            // xPos += 160
         }
 
         xPos = 10
@@ -132,7 +151,7 @@ class Game {
         //num_fuses -= 1
     }
 
-    clue() {
+    clue(info) {
         // choose either "number" or "color"
         //game will select all the other cards that that also applies to
         //select "give clue"
@@ -162,6 +181,15 @@ class Game {
 
     over() {
         return this.numTurns === 0 || this.numFuses === 0
+    }
+
+    play() {
+        //get move
+        // make move
+            //clear rect
+            //redraw (drag?)
+        //update score
+        //switch turns
     }
 
 }

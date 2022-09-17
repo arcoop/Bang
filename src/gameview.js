@@ -48,17 +48,16 @@ class GameView {
 
     }
 
-    handleClick(e) {
-        this.ele.addEventListener("click")
-        if (e.target.nodeName === "LI") {
-            let pos = e.target.id
-            //card = selected
-            this.carryOutMove(pos)
-        }
-    }
+    // handleClick(e) {
+    //     this.ele.addEventListener("click")
+    //     if (e.target.nodeName === "LI") {
+    //         let pos = e.target.id
+    //         //card = selected
+    //         this.carryOutMove(pos)
+    //     }
+    // }
 
     carryOutMove(pos) {
-        // let ele = document.getElementById(pos)
 
     }
     
