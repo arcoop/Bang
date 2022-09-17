@@ -1,47 +1,52 @@
 const Game = require('./game.js')
+const Card = require('./card.js')
 
 class GameView {
-    constructor(ctx, ele){
+    constructor(ele, ctx){
         this.ele = ele
         this.ctx = ctx
         this.game = new Game(["player1", "player2"])
         this.setupBoard()
     }
 
-    setupBoard() {
-        //use ul and li elements to create a board for the other player and current player
-        let currentPlayerHand = document.createElement("ul")
-        currentPlayerHand.setAttribute("class", "current-player-hand")
-        currentPlayerHand.innerText = "My Hand"
-        for (let i = 0; i < 5; i++) {
-            let cardLocation = document.createElement("li")
-            cardLocation.id = `current-player-${i}`
-            currentPlayerHand.append(cardLocation)
-        }
-
-        this.ele.append(currentPlayerHand)
-
-        let otherPlayerHand = document.createElement("ul")
-        otherPlayerHand.setAttribute("class", "other-player-hand")
-        otherPlayerHand.innerText = `${this.game.player2.name}'s Hand`
-        for (let i = 0; i < 5; i ++) {
-            let cardLocation = document.createElement("li")
-            cardLocation.id = `other-player-${i}`
-            otherPlayerHand.append(cardLocation)
-        }
-        this.ele.append(otherPlayerHand)
-
-
-            //inner text will either be "my hand" or "player 2's hand"
-            // set data attributes
-            //each card in the hand will go inside each li
-        //call render on each hand at the end of this method
-
-    }
-
     start () {
-        // this.game.draw(this.ctx)
+        this.game.draw(this.ctx)
     }
+
+    
+    setupBoard() {
+
+        // let currentPlayerHand = document.createElement("ul")
+        // let heading1 = document.createElement("h2")
+        // let heading1Text = document.createTextNode("My Hand")
+        // heading1.append(heading1Text)
+        // this.ele.append(heading1)
+        // currentPlayerHand.setAttribute("class", "current-player-hand")
+        // for (let i = 0; i < 5; i++) {
+        //     let cardLocation = document.createElement("li")
+        //     cardLocation.id = `current-player-${i}`
+        //     currentPlayerHand.append(cardLocation)
+        // }
+
+        // this.ele.append(currentPlayerHand)
+
+        // let otherPlayerHand = document.createElement("ul")
+        // let heading2 = document.createElement('h2')
+        // let heading2Text = document.createTextNode(`Player 2's Hand`)
+        // heading2.append(heading2Text)
+        // this.ele.append(heading2)
+        // otherPlayerHand.setAttribute("class", "other-player-hand")
+        // for (let i = 0; i < 5; i ++) {
+        //     let cardLocation = document.createElement("li")
+        //     cardLocation.id = `other-player-${i}`
+
+        //     otherPlayerHand.append(cardLocation)
+        // }
+        // this.ele.append(otherPlayerHand)
+
+    }
+
+    s
 
 
     handleClick(e) {

@@ -1,24 +1,33 @@
-class Card {
-    constructor(color, num) {
-        this.color = color;
-        this.num = num;
+const GameObject = require('./game_object.js')
+
+class Card extends GameObject {
+    constructor(game, color, pos, num) {
+        super(game, color, pos);
+        this.num = num
         this.revealedNum = false;
         this.revealedColor = false;
         this.discarded = false;
         this.revealed = this.revealedNum && this.revealedColor;
     }
 
-    //add event handler for cards?
+    // handleCardClicks(e) {
+    //     addEventListener("click") {
 
-    draw(ctx) {
+    //     }
+    // }
+
+    draw(ctx, xPos, yPos, color, number) {
         ctx.beginPath();
-        ctx.beginPath();
-        ctx.rect(20, 20, 100, 200);
+        // ctx.beginPath();
+        ctx.roundRect(xPos, yPos, 50, 200, 15);
         ctx.stroke();
+        ctx.fillStyle = color
     }
+
+    
 }
 
-module.exports = Card
+module.exports = Card;
 
 
 
