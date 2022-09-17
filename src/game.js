@@ -7,47 +7,50 @@ const Clue = require('./clue.js')
 
 class Game {
     constructor(name1, name2) {
+        this.score = 0;
         this.deck = new Deck
         this.player1 = new Player(name1);
         this.player2 = new Player(name2);
         this.players = [this.player1, this.player2]
-        this.currentPlayer = this.player1
+        this.currentPlayer = this.players[0]
         this.playPiles = []
         this.discardPiles = []
         this.fuses = []
         this.clues = []
-        this.numClues = this.clues.length
+        this.numClues = this.clues.length;
         this.numFuses = this.fuses.length;
-        this.dealCards();
         this.numTurns = 2
+        this.createFuses();
+        this.createClues();
+        this.dealCards();
     }
 
     createFuses() {
-        let x = 300
-        let y = 70
+        let x = 110
+        let y = 100
         while (this.fuses.length < 3) {
             this.fuses.push(new Fuse(this, "orange", [x, y]))
-            x += 70
+            x += 90
         }
     }
 
     createClues() {
-        let x = 200
-        let y = 70
+        let x = 100
+        let y = 200
         while (this.clues.length < 4) {
             this.clues.push(new Clue(this, "yellow", [x, y]))
-            x += 70
+            x += 65
         }
         y += 70
+        x = 100
         while (this.clues.length >= 4 && this.clues.length < 8) {
             this.clues.push(new Clue(this, "yellow", [x, y]))
-            y += 70
+            x += 65
         }
     }
 
-
     addCard(hand) {
-        hand.unshift(this.deckArray.shift())
+        hand.unshift(this.deck.deckArray.shift())
     }
 
     dealCards() {
@@ -59,19 +62,40 @@ class Game {
         }
     }
 
-    drawObjects(ctx) {
-        // let xPos = 600
-        // let yPos = 40
+    drawObjects(gameCtx, playerCtx) {
+        let xPos = 10
+        let yPos = 170
         for (let i = 0; i < this.currentPlayer.hand.length; i++) {
-            let card = this.player1.hand[i]
-            console.log(card)
-            card.draw(ctx, xPos, yPos, card.color, card.num)
-            // xPos += 70
+            let card = this.currentPlayer.hand[i]
+            // console.log(card)
+            card.draw(playerCtx, xPos, yPos, "gray")
+            xPos += 160
+        }
+
+        xPos = 10
+        yPos = 500
+        for (let i = 0; i < this.players[1].hand.length; i++) {
+            let card = this.players[1].hand[i]
+            // console.log(card)
+            card.draw(playerCtx, xPos, yPos, card.color)
+            card.drawCardNum(playerCtx, xPos, yPos, card.num)
+            xPos += 160
+        }
+
+        for (const fuse of this.fuses) {
+            fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
+        }
+
+        for (const clue of this.clues) {
+            clue.draw(gameCtx, clue.pos[0], clue.pos[1])
         }
     }
 
     switchTurns() {
-        this.currentPlayer === this.player1 ? this.currentPlayer = this.player2 : this.currentPlayer = this.player1
+        let temp = this.players[0]
+        this.players[0] = this.players[1]
+        this.players[1] = temp
+        this.currentPlayer = this.players[0]
     }
 
     makeMove() {
@@ -82,7 +106,6 @@ class Game {
             //make move
             this.numTurns -= 1
         }
-      
     }
     
     playOrDiscard(moveType) {
@@ -104,6 +127,7 @@ class Game {
     }
 
     misplay() {
+        
         // this.playPiles.each 
         //num_fuses -= 1
     }
@@ -113,6 +137,13 @@ class Game {
         //game will select all the other cards that that also applies to
         //select "give clue"
         //num_clues -=1
+    }
+
+    updateScore() {
+        this.playPiles.forEach(pile => {
+            this.score += pile[pile.length - 1]
+        })
+        return this.score
     }
 
     won() {
@@ -132,9 +163,6 @@ class Game {
     over() {
         return this.numTurns === 0 || this.numFuses === 0
     }
-
-    
-
 
 }
 

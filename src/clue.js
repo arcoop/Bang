@@ -3,14 +3,14 @@ const GameObject = require('./game_object')
 class Clue extends GameObject {
     constructor(game, color, pos) {
         super(game, color, pos)
+        this.radius = 20;
     }
 
-    draw(ctx, xPos, yPos, color, number) {
+    draw(ctx, xPos, yPos) {
         ctx.beginPath();
-        // ctx.beginPath();
-        ctx.roundRect(xPos, yPos, 50, 200, 15);
-        ctx.stroke();
-        ctx.fillStyle = color
+        ctx.arc(xPos, yPos, this.radius, 0, 2*Math.PI, true);
+        ctx.fillStyle = this.color;
+        ctx.fill();
     }
 
 }

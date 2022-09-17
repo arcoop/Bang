@@ -10,18 +10,17 @@ class Deck {
 
     createDeck() {
         const CARDNUMS = [1,1,1,2,2,3,3,4,4,5]
-        const CARDCOLORS = ["white", "red", "green", "blue", "yellow"]
-        let x = 600
-        const YPOS = 40
+        const CARDCOLORS = ['white', 'red', 'green', 'blue', 'yellow']
+        // let x = 600
+        // const YPOS = 40
         
         for (let i = 0; i < CARDCOLORS.length; i++) {
             for (let j = 0; j < CARDNUMS.length; j++) {
                 
                 let color = CARDCOLORS[i];
                 let num = CARDNUMS[j]
-                let pos = [x, YPOS]
-                this.deckArray.push(new Card(this.game, color, pos, num))
-                x += 70
+                this.deckArray.push(new Card(this.game, color, [], num))
+                // x += 70
             }
         }
         //this.deckArray

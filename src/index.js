@@ -7,12 +7,15 @@ const Player = require('./player.js')
 
 document.addEventListener("DOMContentLoaded", () => {
     const ele = document.querySelector('.game-board')
-    // const canvasEl = document.getElementById('game-canvas');
-    // canvasEl.width = window.innerWidth
-    // canvasEl.height = window.innerHeight
-    // const ctx = canvasEl.getContext('2d');
-    const gameView = new GameView(ele);
+    const gameCanvasEl = document.getElementById('game-canvas');
+    const gameCtx = gameCanvasEl.getContext('2d');
+    const playerCanvasEl = document.getElementById('players-canvas');
+    const playerCtx = playerCanvasEl.getContext('2d')
+    const gameView = new GameView(ele, gameCtx, playerCtx);
     gameView.start();
-
+    
   })
-
+  
+  
+  // canvasEl.width = window.innerWidth
+  // canvasEl.height = window.innerHeight

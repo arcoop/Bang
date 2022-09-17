@@ -2,18 +2,30 @@ html, body {
     width: 100%;
     height: 100%;
     margin: 0;
+    // display: flex;
 }
 
-// canvas {
-//     width: 100%;
-//     height: 100%;
-// }
+
+#game-canvas {
+    // width: 100%;
+    // height: 100%;
+    // display: flex;
+    background-color: white;
+    // justify-content: left;
+}
+
+#players-canvas {
+    // display: flex;
+    // background-color: black;
+    // justify-content: right;
+}
 
 .game-board {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: space-between;
+    // flex-direction: column;
+    // justify-content: flex-end;
+    // align-items: flex-end;
 }
 
 .current-player-hand {

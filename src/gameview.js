@@ -2,19 +2,67 @@ const Game = require('./game.js')
 const Card = require('./card.js')
 
 class GameView {
-    constructor(ele, ctx){
+    constructor(ele, gameCtx, playerCtx){
         this.ele = ele
-        this.ctx = ctx
+        this.gameCtx = gameCtx
+        this.playerCtx = playerCtx
         this.game = new Game(["player1", "player2"])
-        this.setupBoard()
     }
 
-    start () {
-        this.game.draw(this.ctx)
+    start() {
+        this.setupBackground(this.playerCtx)
+        this.addText(this.playerCtx)
+        this.game.drawObjects(this.gameCtx, this.playerCtx)
     }
-
     
-    setupBoard() {
+    setupBackground(playerCtx) {
+        playerCtx.beginPath();
+        playerCtx.roundRect(0,0,800,1000, 30);
+        playerCtx.fillStyle = "#8CF1DB";
+        playerCtx.fill();
+
+    }
+
+    addText(playerCtx) {
+        playerCtx.font = "50px Helvetica"
+        playerCtx.fillStyle = "black"
+        playerCtx.strokeText("My Hand", 280, 120);
+        // playerCtx.textAlign = "center";
+
+        playerCtx.font = "50px Helvetica"
+        playerCtx.fillStyle = "black"
+        playerCtx.strokeText("Player 2's Hand", 220, 480);
+
+    }
+
+    handleClick(e) {
+        this.ele.addEventListener("click")
+        if (e.target.nodeName === "LI") {
+            let pos = e.target.id
+            //card = selected
+            this.carryOutMove(pos)
+        }
+    }
+
+    carryOutMove(pos) {
+        // let ele = document.getElementById(pos)
+
+    }
+    
+
+    // renderCurrentPlayerHand() {
+    //    // iterate through players hand
+    //    // if the card is revealed, set that li ele to revealed
+    //    // else, set it to not revealed
+    // }
+
+    // renderOtherPlayerHand() {
+    //     //iterate through hand, show full hand 
+    // }
+
+
+
+
 
         // let currentPlayerHand = document.createElement("ul")
         // let heading1 = document.createElement("h2")
@@ -43,37 +91,6 @@ class GameView {
         //     otherPlayerHand.append(cardLocation)
         // }
         // this.ele.append(otherPlayerHand)
-
-    }
-
-    s
-
-
-    handleClick(e) {
-        this.ele.addEventListener("click")
-        if (e.target.nodeName === "LI") {
-            let pos = e.target.id
-            //card = selected
-            this.carryOutMove(pos)
-        }
-    }
-
-    carryOutMove(pos) {
-        let ele = document.getElementById(pos)
-
-
-    }
-    
-
-    renderCurrentPlayerHand() {
-       // iterate through players hand
-       // if the card is revealed, set that li ele to revealed
-       // else, set it to not revealed
-    }
-
-    renderOtherPlayerHand() {
-        //iterate through hand, show full hand 
-    }
 }
 
 module.exports = GameView;
