@@ -86,19 +86,21 @@ class Game {
         // let yPos = 170
         for (let i = 0; i < this.currentPlayer.hand.length; i++) {
             let card = this.currentPlayer.hand[i]
+            card.pos = currentPlayerPositions[i]
             // console.log(card)
             card.draw(playerCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], "gray")
             // xPos += 160
         }
 
-        xPos = 10
-        yPos = 500
+        // xPos = 10
+        // yPos = 500
         for (let i = 0; i < this.players[1].hand.length; i++) {
             let card = this.players[1].hand[i]
+            card.pos = otherPlayerPositions[i]
             // console.log(card)
-            card.draw(playerCtx, xPos, yPos, card.color)
-            card.drawCardNum(playerCtx, xPos, yPos, card.num)
-            xPos += 160
+            card.draw(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color)
+            card.drawCardNum(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num)
+            // xPos += 160
         }
 
         for (const fuse of this.fuses) {
