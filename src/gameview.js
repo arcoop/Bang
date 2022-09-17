@@ -13,6 +13,7 @@ class GameView {
         this.setupBackground(this.playerCtx)
         this.addText(this.playerCtx)
         this.game.drawObjects(this.gameCtx, this.playerCtx)
+        this.addScoreBox(this.gameCtx);
     }
     
     setupBackground(playerCtx) {
@@ -20,7 +21,19 @@ class GameView {
         playerCtx.roundRect(0,0,800,1000, 30);
         playerCtx.fillStyle = "#8CF1DB";
         playerCtx.fill();
+    }
 
+    addScoreBox(gameCtx) {
+        gameCtx.beginPath();
+        gameCtx.roundRect(10, 70, 230, 90, 35);
+        gameCtx.strokeStyle = "black"
+        gameCtx.stroke();
+        gameCtx.font = "20px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.fillText("Score:", 85, 100)
+        gameCtx.font = "40px Helvetica"
+        gameCtx.strokeStyle = "green"
+        gameCtx.strokeText(`${this.game.score}`, 105, 145)
     }
 
     addText(playerCtx) {

@@ -26,7 +26,7 @@ class Game {
     }
 
     createFuses() {
-        let x = 110
+        let x = 348
         let y = 100
         while (this.fuses.length < 3) {
             this.fuses.push(new Fuse(this, "orange", [x, y]))
@@ -35,14 +35,14 @@ class Game {
     }
 
     createClues() {
-        let x = 100
+        let x = 340
         let y = 200
         while (this.clues.length < 4) {
             this.clues.push(new Clue(this, "yellow", [x, y]))
             x += 65
         }
         y += 70
-        x = 100
+        x = 340
         while (this.clues.length >= 4 && this.clues.length < 8) {
             this.clues.push(new Clue(this, "yellow", [x, y]))
             x += 65
