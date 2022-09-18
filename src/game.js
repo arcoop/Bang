@@ -55,21 +55,16 @@ class Game {
 
 
     dealCards() {
-        
         for (let i = 0; i < this.players.length; i++) {
             let player = this.players[i]
             while (player.hand.length < 5) {
-
                 this.addCard(player.hand)
             }
         }
     }
 
-    setPlayerPos() {
-        
-    }
-
     drawObjects(gameCtx, playerCtx) {
+        
         const currentPlayerPositions = {
             0: [10, 170],
             1: [170, 170],
@@ -86,25 +81,17 @@ class Game {
             4: [670, 500],
         }
 
-        // let xPos = 10
-        // let yPos = 170
         for (let i = 0; i < this.currentPlayer.hand.length; i++) {
             let card = this.currentPlayer.hand[i]
             card.pos = currentPlayerPositions[i]
-            // console.log(card)
             card.draw(playerCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], "gray")
-            // xPos += 160
         }
 
-        // xPos = 10
-        // yPos = 500
         for (let i = 0; i < this.players[1].hand.length; i++) {
             let card = this.players[1].hand[i]
             card.pos = otherPlayerPositions[i]
-            // console.log(card)
-            card.draw(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color)
-            card.drawCardNum(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num)
-            // xPos += 160
+            card.draw(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color, card.selected)
+            card.drawCardNum(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num, card.selected)
         }
 
         for (const fuse of this.fuses) {
@@ -114,6 +101,10 @@ class Game {
         for (const clue of this.clues) {
             clue.draw(gameCtx, clue.pos[0], clue.pos[1])
         }
+
+        this.play(gameCtx)
+
+        // console.log("hello")
     }
 
     switchTurns() {
@@ -123,8 +114,14 @@ class Game {
         this.currentPlayer = this.players[0]
     }
 
+    addTurns(gameCtx) {
+        
+    }
+    
+    
     makeMove() {
         if (this.numTurns >= 2) {
+            
               //user selects a card from the other player's hand
             //they can either select a pile from the play area or a pile from the discard area or clue
         } else {
@@ -132,6 +129,14 @@ class Game {
             this.numTurns -= 1
         }
     }
+
+    play() {
+        // debugger
+        console.log("inside play function")
+        
+        
+    }
+
     
     playOrDiscard(moveType) {
         let pile;
@@ -189,14 +194,14 @@ class Game {
         return this.numTurns === 0 || this.numFuses === 0
     }
 
-    play() {
-        //get move
-        // make move
-            //clear rect
-            //redraw (drag?)
-        //update score
-        //switch turns
-    }
+    // play() {
+    //     //get move
+    //     // make move
+    //         //clear rect
+    //         //redraw (drag?)
+    //     //update score
+    //     //switch turns
+    // }
 
 }
 

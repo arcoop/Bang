@@ -1,20 +1,26 @@
 const Game = require('./game.js')
 const Card = require('./card.js')
+const Player = require('./player.js')
 
 class GameView {
     constructor(ele, gameCtx, playerCtx){
         this.ele = ele
         this.gameCtx = gameCtx
         this.playerCtx = playerCtx
-        this.game = new Game(["player1", "player2"])
+        this.game = new Game("player1", "player2")
     }
 
     start() {
         this.setupBackground(this.playerCtx)
         this.addText(this.playerCtx)
-        this.game.drawObjects(this.gameCtx, this.playerCtx)
         this.addScoreBox(this.gameCtx);
+        this.renderTurnText(this.playerCtx);
+        this.game.drawObjects(this.gameCtx, this.playerCtx)
+        
+        // console.log(`${this.game.currentPlayer.name}'s turn`)
+        // setInterval(this.game.drawObjects.bind(this), 10)
     }
+
     
     setupBackground(playerCtx) {
         playerCtx.beginPath();
@@ -48,6 +54,17 @@ class GameView {
 
     }
 
+    renderTurnText(playerCtx) {
+        // gameCtx.font = "20px Helvetica"
+        // gameCtx.fillStyle = "black"
+        // gameCtx.fillText("Score:", 85, 100)
+        playerCtx.font = "20px Helvetica"
+        playerCtx.fillStyle = "black"
+        console.log(`${this.game.currentPlayer.name}'s turn`)
+        playerCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 40, 50)
+        // gameCtx.fill();
+    }
+
     handleEvents() {
         window.addEventListener("click", (e) => {
             let clickX = e.pageX;
@@ -66,7 +83,7 @@ class GameView {
                     console.log("card y end" + yEnd)
                     console.log((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd))
                     if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                        return card.handleCardClick(e)
+                        card.handleCardClick(e)
                     }
                 })
             })
@@ -96,18 +113,15 @@ class GameView {
     }
     
 
-    // renderCurrentPlayerHand() {
-    //    // iterate through players hand
-    //    // if the card is revealed, set that li ele to revealed
-    //    // else, set it to not revealed
-    // }
+        // renderCurrentPlayerHand() {
+        //    // iterate through players hand
+        //    // if the card is revealed, set that li ele to revealed
+        //    // else, set it to not revealed
+        // }
 
-    // renderOtherPlayerHand() {
-    //     //iterate through hand, show full hand 
-    // }
-
-
-
+        // renderOtherPlayerHand() {
+        //     //iterate through hand, show full hand 
+        // }
 
 
         // let currentPlayerHand = document.createElement("ul")

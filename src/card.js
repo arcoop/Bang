@@ -12,13 +12,6 @@ class Card extends GameObject {
         this.revealed = this.revealedNum && this.revealedColor;
     }
     
-    // handleEvents(){
-    //     window.addEventListener("click", (e) => {
-    //         if ((e.pageX >= this.pos[0] && e.pageX <= this.pos[0] + 140) && e.pageY >= this.pos[1] && e.pageY <= this.pos[1] + 220) {
-    //             this.handleCardClick(e)
-    //         }
-    //     })
-    // }
 
     handleCardClick(event) {
         console.log("inside card handle click")
@@ -27,12 +20,19 @@ class Card extends GameObject {
         console.log(this + this.selected) 
     }
 
-    draw(ctx, xPos, yPos, color) {
+    draw(ctx, xPos, yPos, color, selected) {
         ctx.beginPath();
         // ctx.beginPath();
-        ctx.roundRect(xPos, yPos, 140, 220, 15);
-        ctx.strokeStyle = "gray"
-        ctx.stroke();
+        if (selected) {
+            ctx.roundRect(xPos, yPos, 144, 220, 15);
+            ctx.lineWidth = 15;
+            ctx.strokeStyle = "pink";
+            ctx.stroke();
+        } else {
+            ctx.roundRect(xPos, yPos, 140, 220, 15);
+            ctx.strokeStyle = "gray"
+            ctx.stroke();
+        }
         ctx.fillStyle = color
         ctx.fill();
     }
