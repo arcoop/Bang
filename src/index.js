@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const playerCtx = playerCanvasEl.getContext('2d')
     const gameView = new GameView(ele, gameCtx, playerCtx);
     gameView.start();
+    gameView.handleEvents();
     
   })
   

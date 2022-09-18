@@ -1,3 +1,4 @@
+// const { EPSILON } = require('core-js/core/number');
 const GameObject = require('./game_object.js')
 
 class Card extends GameObject {
@@ -10,11 +11,18 @@ class Card extends GameObject {
         this.discarded = false;
         this.revealed = this.revealedNum && this.revealedColor;
     }
+    
+    // handleEvents(){
+    //     window.addEventListener("click", (e) => {
+    //         if ((e.pageX >= this.pos[0] && e.pageX <= this.pos[0] + 140) && e.pageY >= this.pos[1] && e.pageY <= this.pos[1] + 220) {
+    //             this.handleCardClick(e)
+    //         }
+    //     })
+    // }
 
     handleCardClick(event) {
         event.preventDefault();
         if (!this.selected) this.selected = true
-       
     }
 
     draw(ctx, xPos, yPos, color) {

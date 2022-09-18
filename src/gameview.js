@@ -48,6 +48,35 @@ class GameView {
 
     }
 
+    handleEvents() {
+        window.addEventListener("click", (e) => {
+            let clickX = e.pageX;
+            let clickY = e.pageY;
+            // console.log("click x: " + clickX);
+            // console.log("click y: " + clickY)
+            this.currentHands().forEach(hand => {
+                hand.forEach(card => {
+                    let xStart = card.pos[0];
+                    let yStart = card.pos[1];
+                    let xEnd = xStart + 140;
+                    let yEnd = yStart + 220;
+                    if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
+                        return card.handleCardClick(e)
+                    }
+                })
+            })
+            
+        })
+    }
+
+    currentHands() {
+        const hands = [];
+        this.game.players.forEach(player => {
+            hands.push(player.hand)
+        })
+        return hands;
+    }
+
     // handleClick(e) {
     //     this.ele.addEventListener("click")
     //     if (e.target.nodeName === "LI") {

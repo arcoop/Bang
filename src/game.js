@@ -65,6 +65,10 @@ class Game {
         }
     }
 
+    setPlayerPos() {
+        
+    }
+
     drawObjects(gameCtx, playerCtx) {
         const currentPlayerPositions = {
             0: [10, 170],
