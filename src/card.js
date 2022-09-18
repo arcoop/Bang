@@ -21,8 +21,10 @@ class Card extends GameObject {
     // }
 
     handleCardClick(event) {
+        console.log("inside card handle click")
         event.preventDefault();
         if (!this.selected) this.selected = true
+        console.log(this + this.selected) 
     }
 
     draw(ctx, xPos, yPos, color) {

@@ -52,14 +52,19 @@ class GameView {
         window.addEventListener("click", (e) => {
             let clickX = e.pageX;
             let clickY = e.pageY;
-            // console.log("click x: " + clickX);
-            // console.log("click y: " + clickY)
+            console.log("click x: " + clickX);
+            console.log("click y: " + clickY) 
             this.currentHands().forEach(hand => {
                 hand.forEach(card => {
                     let xStart = card.pos[0];
+                    console.log("card x start" + xStart)
                     let yStart = card.pos[1];
+                    console.log("card y start" + yStart)
                     let xEnd = xStart + 140;
+                    console.log("card y end" + xEnd)
                     let yEnd = yStart + 220;
+                    console.log("card y end" + yEnd)
+                    console.log((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd))
                     if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
                         return card.handleCardClick(e)
                     }
