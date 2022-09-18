@@ -6,27 +6,48 @@ class GameView {
     constructor(ele, gameCtx, playerCtx){
         this.ele = ele
         this.gameCtx = gameCtx
-        this.playerCtx = playerCtx
+        // this.playerCtx = playerCtx
         this.game = new Game("player1", "player2")
     }
 
     start() {
-        this.setupBackground(this.playerCtx)
-        this.addText(this.playerCtx)
+        // this.setupBackground(this.playerCtx)
+        this.setupBackground(this.gameCtx)
+        // this.addText(this.playerCtx)
+        this.addText(this.gameCtx)
         this.addScoreBox(this.gameCtx);
-        this.renderTurnText(this.playerCtx);
-        this.game.drawObjects(this.gameCtx, this.playerCtx)
+        // this.renderTurnText(this.playerCtx);
+        this.renderTurnText(this.gameCtx);
+        // this.game.drawObjects(this.gameCtx, this.playerCtx)
+        this.game.drawObjects(this.gameCtx)
+        this.play();
         
         // console.log(`${this.game.currentPlayer.name}'s turn`)
         // setInterval(this.game.drawObjects.bind(this), 10)
     }
 
     
-    setupBackground(playerCtx) {
-        playerCtx.beginPath();
-        playerCtx.roundRect(0,0,800,1000, 30);
-        playerCtx.fillStyle = "#8CF1DB";
-        playerCtx.fill();
+    // setupBackground(playerCtx) {
+    //     playerCtx.beginPath();
+    //     playerCtx.roundRect(0,0,800,1000, 30);
+    //     playerCtx.fillStyle = "#8CF1DB";
+    //     playerCtx.fill();
+    // }
+    setupBackground(gameCtx) {
+        gameCtx.beginPath();
+        gameCtx.roundRect(900,0,800,1000, 30);
+        gameCtx.fillStyle = "#8CF1DB";
+        gameCtx.fill();
+    }
+
+    renderDiscardPiles(gameCtx) {
+        
+
+
+    }
+
+    renderPlayPiles(gameCtx) {
+
     }
 
     addScoreBox(gameCtx) {
@@ -42,53 +63,86 @@ class GameView {
         gameCtx.strokeText(`${this.game.score}`, 105, 145)
     }
 
-    addText(playerCtx) {
-        playerCtx.font = "50px Helvetica"
-        playerCtx.fillStyle = "black"
-        playerCtx.strokeText("My Hand", 280, 120);
-        // playerCtx.textAlign = "center";
+    // addText(playerCtx) {
+    //     playerCtx.font = "50px Helvetica"
+    //     playerCtx.fillStyle = "black"
+    //     playerCtx.strokeText("My Hand", 280, 120);
+    //     // playerCtx.textAlign = "center";
 
-        playerCtx.font = "50px Helvetica"
-        playerCtx.fillStyle = "black"
-        playerCtx.strokeText("Player 2's Hand", 220, 480);
+    //     playerCtx.font = "50px Helvetica"
+    //     playerCtx.fillStyle = "black"
+    //     playerCtx.strokeText("Player 2's Hand", 220, 480);
+
+    // }
+    addText(gameCtx) {
+        gameCtx.font = "50px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.strokeText("My Hand", 1200, 120);
+        // gameCtx.textAlign = "center";
+
+        gameCtx.font = "50px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.strokeText("Player 2's Hand", 1100, 480);
 
     }
 
-    renderTurnText(playerCtx) {
+    // renderTurnText(playerCtx) {
+    //     // gameCtx.font = "20px Helvetica"
+    //     // gameCtx.fillStyle = "black"
+    //     // gameCtx.fillText("Score:", 85, 100)
+    //     playerCtx.font = "20px Helvetica"
+    //     playerCtx.fillStyle = "black"
+    //     console.log(`${this.game.currentPlayer.name}'s turn`)
+    //     playerCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 40, 50)
+    //     // gameCtx.fill();
+    // }
+    renderTurnText(gameCtx) {
         // gameCtx.font = "20px Helvetica"
         // gameCtx.fillStyle = "black"
         // gameCtx.fillText("Score:", 85, 100)
-        playerCtx.font = "20px Helvetica"
-        playerCtx.fillStyle = "black"
+        gameCtx.font = "20px Helvetica"
+        gameCtx.fillStyle = "black"
         console.log(`${this.game.currentPlayer.name}'s turn`)
-        playerCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 40, 50)
+        gameCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 920, 50)
         // gameCtx.fill();
     }
 
     handleEvents() {
         window.addEventListener("click", (e) => {
-            let clickX = e.pageX;
-            let clickY = e.pageY;
+            // console.log("handle click")
+            let clickX = e.clientX;
+            let clickY = e.clientY;
             console.log("click x: " + clickX);
             console.log("click y: " + clickY) 
             this.currentHands().forEach(hand => {
+                console.log("hand:" + hand)
                 hand.forEach(card => {
                     let xStart = card.pos[0];
-                    console.log("card x start" + xStart)
                     let yStart = card.pos[1];
-                    console.log("card y start" + yStart)
+                    // console.log("card y start" + yStart)
                     let xEnd = xStart + 140;
-                    console.log("card y end" + xEnd)
+                    // console.log("card x end" + xEnd)
                     let yEnd = yStart + 220;
-                    console.log("card y end" + yEnd)
-                    console.log((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd))
+                    // console.log("card y end" + yEnd)
+                    console.log("card?: " + ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)))
+                    console.log("clickX: " + clickX)
+                    console.log("clickY: " + clickY)
+                    console.log("xStart: " + xStart)
+                    console.log("yStart: " + yStart)
                     if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                        card.handleCardClick(e)
+                        console.log("card position" + card.pos)
+                        // card.handleCardClick(e, this.playerCtx)
+                        card.handleCardClick(e, this.gameCtx)
+                        console.log("calling game.draw objects:")
+                        // this.game.drawObjects(this.gameCtx, this.playerCtx)
+                        this.game.drawObjects(this.gameCtx, this.playerCtx)
+                        
                     }
                 })
             })
             
         })
+        
     }
 
     currentHands() {
@@ -99,17 +153,9 @@ class GameView {
         return hands;
     }
 
-    // handleClick(e) {
-    //     this.ele.addEventListener("click")
-    //     if (e.target.nodeName === "LI") {
-    //         let pos = e.target.id
-    //         //card = selected
-    //         this.carryOutMove(pos)
-    //     }
-    // }
-
-    carryOutMove(pos) {
-
+    play() {
+        this.game.drawObjects(this.gameCtx, this.playerCtx)
+        this.game.switchTurns();
     }
     
 

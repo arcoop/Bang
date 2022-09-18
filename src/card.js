@@ -13,33 +13,43 @@ class Card extends GameObject {
     }
     
 
-    handleCardClick(event) {
-        console.log("inside card handle click")
+    handleCardClick(event, ctx) {
+        console.log("inside card handle click")  
         event.preventDefault();
-        if (!this.selected) this.selected = true
-        console.log(this + this.selected) 
+        // console.log("selected status:" + this.selected)
+        if (!this.selected) {
+            this.selected = true
+        } else this.selected = false;
+        // console.log("selected status:" + this.selected)
+        this.draw(ctx, this.pos[0], this.pos[1], this.color, this.selected)
+        // } else this.selected = false
+        // console.log(this + this.selected) 
     }
 
     draw(ctx, xPos, yPos, color, selected) {
         ctx.beginPath();
         // ctx.beginPath();
         if (selected) {
-            ctx.roundRect(xPos, yPos, 144, 220, 15);
+            console.log("selected?:" + selected)
+            ctx.roundRect(xPos, yPos, 148, 225, 15);
             ctx.lineWidth = 15;
             ctx.strokeStyle = "pink";
             ctx.stroke();
         } else {
             ctx.roundRect(xPos, yPos, 140, 220, 15);
+            ctx.lineWidth = 1;
             ctx.strokeStyle = "gray"
             ctx.stroke();
         }
         ctx.fillStyle = color
         ctx.fill();
     }
-
+    
     drawCardNum(ctx, xPos, yPos, number) {
         ctx.font = "30px Helvetica"
         ctx.fillStyle="black"
+        
+        ctx.fillText(`${this.pos}`, xPos, yPos+90)
         ctx.fillText(`${number}`, xPos+60, yPos+115)
     }
 

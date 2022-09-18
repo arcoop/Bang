@@ -9,9 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const ele = document.querySelector('.game-board')
     const gameCanvasEl = document.getElementById('game-canvas');
     const gameCtx = gameCanvasEl.getContext('2d');
-    const playerCanvasEl = document.getElementById('players-canvas');
-    const playerCtx = playerCanvasEl.getContext('2d')
-    const gameView = new GameView(ele, gameCtx, playerCtx);
+    // const playerCanvasEl = document.getElementById('players-canvas');
+    // const playerCtx = playerCanvasEl.getContext('2d')
+    // const gameView = new GameView(ele, gameCtx, playerCtx);
+    const gameView = new GameView(ele, gameCtx);
     gameView.start();
     gameView.handleEvents();
     

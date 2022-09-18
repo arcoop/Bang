@@ -13,7 +13,6 @@ html, body {
 
 .game-board {
   display: flex;
-  justify-content: space-between;
 }
 
 .current-player-hand {

@@ -25,9 +25,17 @@ class Game {
         this.dealCards();
     }
 
+    // createFuses() {
+    //     let x = 348
+    //     let y = 100
+    //     while (this.fuses.length < 3) {
+    //         this.fuses.push(new Fuse(this, "orange", [x, y]))
+    //         x += 90
+    //     }
+    // }
     createFuses() {
-        let x = 348
-        let y = 100
+        let x = 650
+        let y = 70
         while (this.fuses.length < 3) {
             this.fuses.push(new Fuse(this, "orange", [x, y]))
             x += 90
@@ -35,14 +43,14 @@ class Game {
     }
 
     createClues() {
-        let x = 340
-        let y = 200
+        let x = 640
+        let y = 148
         while (this.clues.length < 4) {
             this.clues.push(new Clue(this, "yellow", [x, y]))
             x += 65
         }
         y += 70
-        x = 340
+        x = 640
         while (this.clues.length >= 4 && this.clues.length < 8) {
             this.clues.push(new Clue(this, "yellow", [x, y]))
             x += 65
@@ -62,36 +70,51 @@ class Game {
             }
         }
     }
+    // drawObjects(gameCtx, playerCtx) {
+    drawObjects(gameCtx) {
+        // console.log("inside game.drawobjects")
 
-    drawObjects(gameCtx, playerCtx) {
         
         const currentPlayerPositions = {
-            0: [10, 170],
-            1: [170, 170],
-            2: [330, 170],
-            3: [500, 170],
-            4: [670, 170],
+            0: [910, 170],
+            1: [1070, 170],
+            2: [1230, 170],
+            3: [1390, 170],
+            4: [1550, 170],
         }
 
         const otherPlayerPositions = {
-            0: [10, 500],
-            1: [170, 500],
-            2: [330, 500],
-            3: [500, 500],
-            4: [670, 500],
+            0: [910, 500],
+            1: [1070, 500],
+            2: [1230, 500],
+            3: [1390, 500],
+            4: [1550, 500],
         }
 
         for (let i = 0; i < this.currentPlayer.hand.length; i++) {
             let card = this.currentPlayer.hand[i]
             card.pos = currentPlayerPositions[i]
-            card.draw(playerCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], "gray")
+            // console.log(card.selected)
+            let color;
+            // card.draw(playerCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], "gray", card.selected)
+            if (card.revealed || card.revealedColor) {
+                color = card.color
+            } else color = "gray"
+
+            card.draw(gameCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], color, card.selected)
+            if (card.revealed || card.revealedNum) {
+                card.drawCardNum(gameCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][i], card.num)
+            }
         }
 
         for (let i = 0; i < this.players[1].hand.length; i++) {
             let card = this.players[1].hand[i]
             card.pos = otherPlayerPositions[i]
-            card.draw(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color, card.selected)
-            card.drawCardNum(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num, card.selected)
+            // console.log(card.selected)
+            // card.draw(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color, card.selected)
+            // card.drawCardNum(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num)
+            card.draw(gameCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color, card.selected)
+            card.drawCardNum(gameCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num)
         }
 
         for (const fuse of this.fuses) {
@@ -102,9 +125,6 @@ class Game {
             clue.draw(gameCtx, clue.pos[0], clue.pos[1])
         }
 
-        this.play(gameCtx)
-
-        // console.log("hello")
     }
 
     switchTurns() {
@@ -113,12 +133,8 @@ class Game {
         this.players[1] = temp
         this.currentPlayer = this.players[0]
     }
+    
 
-    addTurns(gameCtx) {
-        
-    }
-    
-    
     makeMove() {
         if (this.numTurns >= 2) {
             
@@ -130,12 +146,12 @@ class Game {
         }
     }
 
-    play() {
-        // debugger
-        console.log("inside play function")
+    // play() {
+    //     this.drawObjects(this.gameCtx, this.playerCtx)
+    //     console.log("inside play function")
+
         
-        
-    }
+    // }
 
     
     playOrDiscard(moveType) {
