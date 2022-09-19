@@ -23,6 +23,26 @@ class Game {
         this.createFuses();
         this.createClues();
         this.dealCards();
+        this.playSelected = false;
+        this.discardSelected = false;
+
+        this.playPositions = {
+            0: [320, 500],
+            1: [480, 500],
+            2: [640, 500],
+            3: [800, 500],
+            4: [960, 500],
+        }
+
+        this.discardPositions = {
+            0: [15, 320],
+            1: [15, 480],
+            2: [15, 640],
+            3: [15, 800],
+            4: [15, 960],
+        }
+
+        this.allColors = ["blue", "white", "red", "yellow", "green"]
     }
 
     // createFuses() {
@@ -80,7 +100,6 @@ class Game {
         this.addText(gameCtx)
         this.renderDiscardPiles(gameCtx)
         this.renderPlayPiles(gameCtx)
-
 
         // console.log("cleared")
         const currentPlayerPositions = {
@@ -178,21 +197,44 @@ class Game {
         // gameCtx.fill();
     }
 
+    handleMoveClick(event, ctx, x, y) {
+        const cards = this.player1.hand.concat(this.player2.hand)
+        cards.forEach(card => {
+            if (card.selected) {
+                let cardColorIdx = this.allColors.indexOf(card.color)
+                // console.log(cardColorIdx);
+                card.pos = this.discardPositions[cardColorIdx]
+                // console.log(this.discardPositions[cardColorIdx])
+                this.playOrDiscard("discard")
+                // console.log("card pos: " + card.pos)
+            }
+        })
+        // cards.forEach(card => {
+        //     if (card.selected)
+        // })
+
+    }
+
     renderDiscardPiles(gameCtx) {
-        const discardPositions = {
-            0: [15, 320],
-            1: [15, 480],
-            2: [15, 640],
-            3: [15, 800],
-            4: [15, 960],
+        const cards = this.currentPlayer.hand
+        // console.log(cards)
+        // gameCtx.strokeStyle = "black"
+        if (cards.some(card => card.selected)) {
+            gameCtx.font = "45px Helvetica"
+            console.log("card is selected")
+            gameCtx.strokeStyle = "red"
+            gameCtx.strokeText("Discard", 50, 300)
+            // gameCtx.strokeText("Discard", 50, 300)
+            // console.log("discard pile selected card?" + card.selected)
+        } else {
+            gameCtx.font = "35px Helvetica"
+            gameCtx.strokeStyle = "black"
+            gameCtx.strokeText("Discard", 50, 300) 
         }
-        gameCtx.font = "35px Helvetica"
-        gameCtx.strokeStyle = "black"
-        gameCtx.strokeText("Discard", 50, 300)
         if (this.discardPiles.length === 0) {
             for (let i = 0; i < 5; i ++) {
-                let x = discardPositions[i][0]
-                let y = discardPositions[i][1]
+                let x = this.discardPositions[i][0]
+                let y = this.discardPositions[i][1]
                 gameCtx.roundRect(x, y, 220, 140, 15);
                 gameCtx.lineWidth = 1;
                 gameCtx.strokeStyle = "gray"
@@ -203,27 +245,46 @@ class Game {
     }
 
     renderPlayPiles(gameCtx) {
-        const playPositions = {
-            0: [320, 500],
-            1: [480, 500],
-            2: [640, 500],
-            3: [800, 500],
-            4: [960, 500],
+        const cards = this.currentPlayer.hand
+        // console.log(cards)
+        // gameCtx.strokeStyle = "black"
+        if (cards.some(card => card.selected)) {
+            gameCtx.font = "45px Helvetica"
+            console.log("card is selected")
+            gameCtx.strokeStyle = "red"
+            gameCtx.strokeText("Play", 650, 400)
+            // gameCtx.strokeText("Discard", 50, 300)
+            // console.log("discard pile selected card?" + card.selected)
+        } else {
+            gameCtx.font = "35px Helvetica"
+            gameCtx.strokeStyle = "black"
+            gameCtx.strokeText("Play", 650, 400) 
         }
-        gameCtx.font = "35px Helvetica"
-        gameCtx.strokeStyle = "black"
-        gameCtx.strokeText("Play", 650, 400)
+
+        // gameCtx.font = "35px Helvetica"
+        // gameCtx.strokeStyle = "black"
+        // gameCtx.strokeText("Play", 650, 400)
+        // let totalPiles = 5;
+        // let max = totalPiles - this.playPiles.length;
         if (this.playPiles.length === 0) {
             for (let i = 0; i < 5; i ++) {
-                let x = playPositions[i][0]
-                let y = playPositions[i][1]
+                let x = this.playPositions[i][0]
+                let y = this.playPositions[i][1]
                 gameCtx.roundRect(x, y, 140, 200, 15);
                 gameCtx.lineWidth = 1;
                 gameCtx.strokeStyle = "gray"
                 gameCtx.stroke();
 
             }
+        } else {
+            this.playPiles.forEach(pile => {
+                let x = this.playPositions[i][0]
+                let y = this.playPositions[i][1]
+                let card = pile[pile.length-1]
+                card.draw(gameCtx, card.pos[0], card.pos[y], 140, 220, 15)
+            })
         }
+            
     }
 
     switchTurns() {

@@ -142,10 +142,51 @@ class GameView {
                         this.game.drawObjects(this.gameCtx, this.playerCtx)
                         // this.game.drawObjects(this.gameCtx, this.playerCtx)
                         
-                    }
+                    } //else if its in the discard pile make that selected and add this to the discard
+                    // else if its in the play pile make that selected, check for validity, and move card to the play pile
                 })
             })
+            let xStart = 50;
+            let yStart = 300;
+            let xEnd = 200;
+            let yEnd= 340;
+            if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
+                console.log("discard selected")
+                this.game.handleMoveClick(e, this.gameCtx, clickX, clickY)
+                this.game.drawObjects(this.gameCtx, this.playerCtx)
+            }
             
+
+            
+        })
+
+        window.addEventListener("click", (e) => {
+            // let clickX = e.pageX;
+            // let clickY = e.pageY;
+            // let xStart = 50;
+            // let yStart = 300;
+            // let xEnd = 150;
+            // let yEnd= 340;
+            // if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
+            //     this.game.handleMoveClick(e, this.gameCtx)
+            //     this.game.drawObjects(this.gameCtx, this.playerCtx)
+            // }
+            // const piles = this.game.playPositions.concat(this.game.discardPositions)
+            // const piles = this.game.playPiles.concat(this.game.discardPiles)
+            // const pilePositions = this.game
+            // this.game.playPiles.forEach(pile => {
+            //     for (let i = 0; i < piles.length; i++) {
+            //         let xStart = piles[i][0];
+            //         let yStart = piles[i][1];
+            //         // console.log("card y start" + yStart)
+            //         let xEnd = xStart + 140;
+            //         // console.log("card x end" + xEnd)
+            //         let yEnd = yStart + 200;
+            //         handleCardClick(e);
+            //         this.game.drawObjects(this.gameCtx, this.canvas)
+            //     }
+                
+            // })
         })
         
         this.game.drawObjects(this.gameCtx, this.canvas)

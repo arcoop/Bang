@@ -32,8 +32,8 @@ class Card extends GameObject {
         ctx.beginPath();
         // ctx.beginPath();
         if (selected) {
-            console.log("selected?:" + selected)
-            ctx.roundRect(xPos, yPos, 148, 225, 15);
+            // console.log("selected?:" + selected)
+            ctx.roundRect(xPos-1, yPos-1, 148, 225, 15);
             ctx.lineWidth = 15;
             ctx.strokeStyle = "pink";
             ctx.stroke();
