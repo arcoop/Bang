@@ -3,7 +3,9 @@ const Card = require('./card.js')
 const Player = require('./player.js')
 
 class GameView {
-    constructor(ele, gameCtx, playerCtx){
+    // constructor(ele, gameCtx, playerCtx){
+    constructor(ele, gameCtx, canvas){
+        this.canvas = canvas
         this.ele = ele
         this.gameCtx = gameCtx
         // this.playerCtx = playerCtx
@@ -12,15 +14,16 @@ class GameView {
 
     start() {
         // this.setupBackground(this.playerCtx)
-        this.setupBackground(this.gameCtx)
+        // this.setupBackground(this.gameCtx)
         // this.addText(this.playerCtx)
-        this.addText(this.gameCtx)
-        this.addScoreBox(this.gameCtx);
+        // this.addText(this.gameCtx)
+        // this.addScoreBox(this.gameCtx);
         // this.renderTurnText(this.playerCtx);
-        this.renderTurnText(this.gameCtx);
+        // this.renderTurnText(this.gameCtx);
         // this.game.drawObjects(this.gameCtx, this.playerCtx)
-        this.game.drawObjects(this.gameCtx)
+        this.game.drawObjects(this.gameCtx, this.canvas)
         this.play();
+        // setInterval(this.game.drawObjects(this.gameCtx), 5)
         
         // console.log(`${this.game.currentPlayer.name}'s turn`)
         // setInterval(this.game.drawObjects.bind(this), 10)
@@ -33,15 +36,16 @@ class GameView {
     //     playerCtx.fillStyle = "#8CF1DB";
     //     playerCtx.fill();
     // }
-    setupBackground(gameCtx) {
-        gameCtx.beginPath();
-        gameCtx.roundRect(900,0,800,1000, 30);
-        gameCtx.fillStyle = "#8CF1DB";
-        gameCtx.fill();
-    }
+
+    // setupBackground(gameCtx) {
+    //     gameCtx.beginPath();
+    //     gameCtx.roundRect(900,0,800,1000, 30);
+    //     gameCtx.fillStyle = "#8CF1DB";
+    //     gameCtx.fill();
+    // }
 
     renderDiscardPiles(gameCtx) {
-        
+
 
 
     }
@@ -50,18 +54,18 @@ class GameView {
 
     }
 
-    addScoreBox(gameCtx) {
-        gameCtx.beginPath();
-        gameCtx.roundRect(10, 70, 230, 90, 35);
-        gameCtx.strokeStyle = "black"
-        gameCtx.stroke();
-        gameCtx.font = "20px Helvetica"
-        gameCtx.fillStyle = "black"
-        gameCtx.fillText("Score:", 85, 100)
-        gameCtx.font = "40px Helvetica"
-        gameCtx.strokeStyle = "green"
-        gameCtx.strokeText(`${this.game.score}`, 105, 145)
-    }
+    // addScoreBox(gameCtx) {
+    //     gameCtx.beginPath();
+    //     gameCtx.roundRect(10, 70, 230, 90, 35);
+    //     gameCtx.strokeStyle = "black"
+    //     gameCtx.stroke();
+    //     gameCtx.font = "20px Helvetica"
+    //     gameCtx.fillStyle = "black"
+    //     gameCtx.fillText("Score:", 85, 100)
+    //     gameCtx.font = "40px Helvetica"
+    //     gameCtx.strokeStyle = "green"
+    //     gameCtx.strokeText(`${this.game.score}`, 105, 145)
+    // }
 
     // addText(playerCtx) {
     //     playerCtx.font = "50px Helvetica"
@@ -74,17 +78,17 @@ class GameView {
     //     playerCtx.strokeText("Player 2's Hand", 220, 480);
 
     // }
-    addText(gameCtx) {
-        gameCtx.font = "50px Helvetica"
-        gameCtx.fillStyle = "black"
-        gameCtx.strokeText("My Hand", 1200, 120);
-        // gameCtx.textAlign = "center";
+    // addText(gameCtx) {
+    //     gameCtx.font = "50px Helvetica"
+    //     gameCtx.fillStyle = "black"
+    //     gameCtx.strokeText("My Hand", 1200, 120);
+    //     // gameCtx.textAlign = "center";
 
-        gameCtx.font = "50px Helvetica"
-        gameCtx.fillStyle = "black"
-        gameCtx.strokeText("Player 2's Hand", 1100, 480);
+    //     gameCtx.font = "50px Helvetica"
+    //     gameCtx.fillStyle = "black"
+    //     gameCtx.strokeText("Player 2's Hand", 1100, 480);
 
-    }
+    // }
 
     // renderTurnText(playerCtx) {
     //     // gameCtx.font = "20px Helvetica"
@@ -96,22 +100,22 @@ class GameView {
     //     playerCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 40, 50)
     //     // gameCtx.fill();
     // }
-    renderTurnText(gameCtx) {
-        // gameCtx.font = "20px Helvetica"
-        // gameCtx.fillStyle = "black"
-        // gameCtx.fillText("Score:", 85, 100)
-        gameCtx.font = "20px Helvetica"
-        gameCtx.fillStyle = "black"
-        console.log(`${this.game.currentPlayer.name}'s turn`)
-        gameCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 920, 50)
-        // gameCtx.fill();
-    }
+    // renderTurnText(gameCtx) {
+    //     // gameCtx.font = "20px Helvetica"
+    //     // gameCtx.fillStyle = "black"
+    //     // gameCtx.fillText("Score:", 85, 100)
+    //     gameCtx.font = "20px Helvetica"
+    //     gameCtx.fillStyle = "black"
+    //     console.log(`${this.game.currentPlayer.name}'s turn`)
+    //     gameCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 920, 50)
+    //     // gameCtx.fill();
+    // }
 
     handleEvents() {
         window.addEventListener("click", (e) => {
             // console.log("handle click")
-            let clickX = e.clientX;
-            let clickY = e.clientY;
+            let clickX = e.pageX;
+            let clickY = e.pageY;
             console.log("click x: " + clickX);
             console.log("click y: " + clickY) 
             this.currentHands().forEach(hand => {
@@ -132,16 +136,19 @@ class GameView {
                     if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
                         console.log("card position" + card.pos)
                         // card.handleCardClick(e, this.playerCtx)
+                        console.log("calling handle click")
                         card.handleCardClick(e, this.gameCtx)
                         console.log("calling game.draw objects:")
-                        // this.game.drawObjects(this.gameCtx, this.playerCtx)
                         this.game.drawObjects(this.gameCtx, this.playerCtx)
+                        // this.game.drawObjects(this.gameCtx, this.playerCtx)
                         
                     }
                 })
             })
             
         })
+        
+        this.game.drawObjects(this.gameCtx, this.canvas)
         
     }
 

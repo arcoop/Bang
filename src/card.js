@@ -3,6 +3,7 @@ const GameObject = require('./game_object.js')
 
 class Card extends GameObject {
     constructor(game, color, pos, num) {
+        // this.game = game;
         super(game, color, pos);
         this.num = num
         this.selected = false;
@@ -21,7 +22,8 @@ class Card extends GameObject {
             this.selected = true
         } else this.selected = false;
         // console.log("selected status:" + this.selected)
-        this.draw(ctx, this.pos[0], this.pos[1], this.color, this.selected)
+        // this.game.draw(ctx, this.pos[0], this.pos[1], this.color, this.selected)
+        // this.game.drawObjects(ctx)
         // } else this.selected = false
         // console.log(this + this.selected) 
     }

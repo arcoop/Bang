@@ -72,23 +72,31 @@ class Game {
     }
     // drawObjects(gameCtx, playerCtx) {
     drawObjects(gameCtx) {
-        // console.log("inside game.drawobjects")
 
-        
+        gameCtx.clearRect(0, 0, 1800, 1800)
+
+        this.setupBackground(gameCtx);
+        this.addScoreBox(gameCtx);
+        this.addText(gameCtx)
+        this.renderDiscardPiles(gameCtx)
+        this.renderPlayPiles(gameCtx)
+
+
+        // console.log("cleared")
         const currentPlayerPositions = {
-            0: [910, 170],
-            1: [1070, 170],
-            2: [1230, 170],
-            3: [1390, 170],
-            4: [1550, 170],
+            0: [1210, 170],
+            1: [1370, 170],
+            2: [1530, 170],
+            3: [1690, 170],
+            4: [1850, 170],
         }
 
         const otherPlayerPositions = {
-            0: [910, 500],
-            1: [1070, 500],
-            2: [1230, 500],
-            3: [1390, 500],
-            4: [1550, 500],
+            0: [1210, 500],
+            1: [1370, 500],
+            2: [1530, 500],
+            3: [1690, 500],
+            4: [1850, 500],
         }
 
         for (let i = 0; i < this.currentPlayer.hand.length; i++) {
@@ -125,6 +133,97 @@ class Game {
             clue.draw(gameCtx, clue.pos[0], clue.pos[1])
         }
 
+    }
+
+    setupBackground(gameCtx) {
+        gameCtx.beginPath();
+        gameCtx.roundRect(1200,0,800,1000, 30);
+        gameCtx.fillStyle = "#8CF1DB";
+        gameCtx.fill();
+    }
+
+    addScoreBox(gameCtx) {
+        gameCtx.beginPath();
+        gameCtx.roundRect(10, 70, 230, 90, 35);
+        gameCtx.strokeStyle = "black"
+        gameCtx.stroke();
+        gameCtx.font = "20px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.fillText("Score:", 85, 100)
+        gameCtx.font = "40px Helvetica"
+        gameCtx.strokeStyle = "green"
+        gameCtx.strokeText(`${this.score}`, 105, 145)
+    }
+
+    addText(gameCtx) {
+        gameCtx.font = "50px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.strokeText("My Hand", 1500, 120);
+        // gameCtx.textAlign = "center";
+
+        gameCtx.font = "50px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.strokeText("Player 2's Hand", 1400, 480);
+
+    }
+
+    renderTurnText(gameCtx) {
+        // gameCtx.font = "20px Helvetica"
+        // gameCtx.fillStyle = "black"
+        // gameCtx.fillText("Score:", 85, 100)
+        gameCtx.font = "20px Helvetica"
+        gameCtx.fillStyle = "black"
+        console.log(`${this.currentPlayer.name}'s turn`)
+        gameCtx.fillText(`${this.currentPlayer.name}'s turn`, 920, 50)
+        // gameCtx.fill();
+    }
+
+    renderDiscardPiles(gameCtx) {
+        const discardPositions = {
+            0: [15, 320],
+            1: [15, 480],
+            2: [15, 640],
+            3: [15, 800],
+            4: [15, 960],
+        }
+        gameCtx.font = "35px Helvetica"
+        gameCtx.strokeStyle = "black"
+        gameCtx.strokeText("Discard", 50, 300)
+        if (this.discardPiles.length === 0) {
+            for (let i = 0; i < 5; i ++) {
+                let x = discardPositions[i][0]
+                let y = discardPositions[i][1]
+                gameCtx.roundRect(x, y, 220, 140, 15);
+                gameCtx.lineWidth = 1;
+                gameCtx.strokeStyle = "gray"
+                gameCtx.stroke();
+
+            }
+        }
+    }
+
+    renderPlayPiles(gameCtx) {
+        const playPositions = {
+            0: [320, 500],
+            1: [480, 500],
+            2: [640, 500],
+            3: [800, 500],
+            4: [960, 500],
+        }
+        gameCtx.font = "35px Helvetica"
+        gameCtx.strokeStyle = "black"
+        gameCtx.strokeText("Play", 650, 400)
+        if (this.playPiles.length === 0) {
+            for (let i = 0; i < 5; i ++) {
+                let x = playPositions[i][0]
+                let y = playPositions[i][1]
+                gameCtx.roundRect(x, y, 140, 200, 15);
+                gameCtx.lineWidth = 1;
+                gameCtx.strokeStyle = "gray"
+                gameCtx.stroke();
+
+            }
+        }
     }
 
     switchTurns() {
