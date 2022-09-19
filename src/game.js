@@ -2,19 +2,20 @@ const Deck = require('./deck.js')
 const Player = require('./player.js')
 // const GameObject = require('./game_object.js')
 const Fuse = require('./fuse.js')
-const Clue = require('./clue.js')
+const Clue = require('./clue.js');
+const { _ } = require('core-js');
 
 
 class Game {
     constructor(name1, name2) {
         this.score = 0;
-        this.deck = new Deck
+        this.deck = new Deck(this)
         this.player1 = new Player(name1);
         this.player2 = new Player(name2);
         this.players = [this.player1, this.player2]
         this.currentPlayer = this.players[0]
-        this.playPiles = []
-        this.discardPiles = []
+        this.playPiles = [[],[],[],[],[]]
+        this.discardPiles = [[],[],[],[],[]]
         this.fuses = []
         this.clues = []
         this.numClues = this.clues.length;
@@ -45,14 +46,6 @@ class Game {
         this.allColors = ["blue", "white", "red", "yellow", "green"]
     }
 
-    // createFuses() {
-    //     let x = 348
-    //     let y = 100
-    //     while (this.fuses.length < 3) {
-    //         this.fuses.push(new Fuse(this, "orange", [x, y]))
-    //         x += 90
-    //     }
-    // }
     createFuses() {
         let x = 650
         let y = 70
@@ -90,16 +83,18 @@ class Game {
             }
         }
     }
-    // drawObjects(gameCtx, playerCtx) {
+
     drawObjects(gameCtx) {
 
         gameCtx.clearRect(0, 0, 1800, 1800)
 
         this.setupBackground(gameCtx);
+        this.renderTurnText(gameCtx);
         this.addScoreBox(gameCtx);
         this.addText(gameCtx)
         this.renderDiscardPiles(gameCtx)
         this.renderPlayPiles(gameCtx)
+        this.renderClueText(gameCtx)
 
         // console.log("cleared")
         const currentPlayerPositions = {
@@ -121,12 +116,10 @@ class Game {
         for (let i = 0; i < this.currentPlayer.hand.length; i++) {
             let card = this.currentPlayer.hand[i]
             card.pos = currentPlayerPositions[i]
-            // console.log(card.selected)
             let color;
-            // card.draw(playerCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], "gray", card.selected)
             if (card.revealed || card.revealedColor) {
                 color = card.color
-            } else color = "gray"
+            } else color = card.color//"gray"
 
             card.draw(gameCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], color, card.selected)
             if (card.revealed || card.revealedNum) {
@@ -137,9 +130,6 @@ class Game {
         for (let i = 0; i < this.players[1].hand.length; i++) {
             let card = this.players[1].hand[i]
             card.pos = otherPlayerPositions[i]
-            // console.log(card.selected)
-            // card.draw(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color, card.selected)
-            // card.drawCardNum(playerCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num)
             card.draw(gameCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color, card.selected)
             card.drawCardNum(gameCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num)
         }
@@ -151,6 +141,7 @@ class Game {
         for (const clue of this.clues) {
             clue.draw(gameCtx, clue.pos[0], clue.pos[1])
         }
+
 
     }
 
@@ -178,7 +169,6 @@ class Game {
         gameCtx.font = "50px Helvetica"
         gameCtx.fillStyle = "black"
         gameCtx.strokeText("My Hand", 1500, 120);
-        // gameCtx.textAlign = "center";
 
         gameCtx.font = "50px Helvetica"
         gameCtx.fillStyle = "black"
@@ -187,103 +177,119 @@ class Game {
     }
 
     renderTurnText(gameCtx) {
-        // gameCtx.font = "20px Helvetica"
-        // gameCtx.fillStyle = "black"
-        // gameCtx.fillText("Score:", 85, 100)
         gameCtx.font = "20px Helvetica"
         gameCtx.fillStyle = "black"
-        console.log(`${this.currentPlayer.name}'s turn`)
-        gameCtx.fillText(`${this.currentPlayer.name}'s turn`, 920, 50)
-        // gameCtx.fill();
+        gameCtx.fillText(`${this.currentPlayer.name}'s turn`, 1240, 50)
     }
 
-    handleMoveClick(event, ctx, x, y) {
-        const cards = this.player1.hand.concat(this.player2.hand)
+    handleDiscardClick() {
+        const cards = this.players[0].hand
         cards.forEach(card => {
             if (card.selected) {
                 let cardColorIdx = this.allColors.indexOf(card.color)
-                // console.log(cardColorIdx);
+                console.log(cardColorIdx)
                 card.pos = this.discardPositions[cardColorIdx]
-                // console.log(this.discardPositions[cardColorIdx])
                 this.playOrDiscard("discard")
-                // console.log("card pos: " + card.pos)
+            }
+        })    
+
+    }
+    handlePlayClick(ctx) {
+        const cards = this.players[0].hand
+        cards.forEach(card => {
+            if (card.selected) {
+                console.log("old card pos " + card.pos)
+                let cardColorIdx = this.allColors.indexOf(card.color)
+                console.log(cardColorIdx)
+                card.pos = this.playPositions[cardColorIdx]
+                console.log("new card pos " + card.pos)
+                this.playOrDiscard("play", ctx)
+            }
+        })    
+
+    }
+
+    renderClueText(gameCtx) {
+        const cards = this.players[1].hand
+
+        cards.forEach(card => {
+            if (card.selected) {
+                gameCtx.beginPath();
+                gameCtx.roundRect(card.pos[0], card.pos[1] + 240, 60, 60, 3);
+                gameCtx.fillStyle = card.color;
+                gameCtx.fill();
+                gameCtx.font = "30px Helvetica"
+                gameCtx.fillStyle = "black"
+                gameCtx.fillText(card.num, card.pos[0] + 75, card.pos[1] + 280)
+
             }
         })
-        // cards.forEach(card => {
-        //     if (card.selected)
-        // })
 
     }
 
     renderDiscardPiles(gameCtx) {
         const cards = this.currentPlayer.hand
-        // console.log(cards)
-        // gameCtx.strokeStyle = "black"
+ 
         if (cards.some(card => card.selected)) {
             gameCtx.font = "45px Helvetica"
-            console.log("card is selected")
             gameCtx.strokeStyle = "red"
             gameCtx.strokeText("Discard", 50, 300)
-            // gameCtx.strokeText("Discard", 50, 300)
-            // console.log("discard pile selected card?" + card.selected)
+          
         } else {
             gameCtx.font = "35px Helvetica"
             gameCtx.strokeStyle = "black"
             gameCtx.strokeText("Discard", 50, 300) 
         }
-        if (this.discardPiles.length === 0) {
-            for (let i = 0; i < 5; i ++) {
-                let x = this.discardPositions[i][0]
-                let y = this.discardPositions[i][1]
-                gameCtx.roundRect(x, y, 220, 140, 15);
-                gameCtx.lineWidth = 1;
-                gameCtx.strokeStyle = "gray"
-                gameCtx.stroke();
+        this.discardPiles.forEach(pile => {
 
+            if (pile.length > 0) {
+                pile.forEach(card => {
+                    card.draw(gameCtx, card.pos[0], card.pos[1], card.color, card.selected)
+                })
+            } else {
+                for (let i = 0; i < 5; i ++) {
+                    let x = this.discardPositions[i][0]
+                    let y = this.discardPositions[i][1]
+                    gameCtx.roundRect(x, y, 140, 200, 15);
+                    gameCtx.lineWidth = 1;
+                    gameCtx.strokeStyle = "gray"
+                    gameCtx.stroke();
+                }
             }
-        }
+        })
     }
 
     renderPlayPiles(gameCtx) {
         const cards = this.currentPlayer.hand
-        // console.log(cards)
-        // gameCtx.strokeStyle = "black"
         if (cards.some(card => card.selected)) {
-            gameCtx.font = "45px Helvetica"
-            console.log("card is selected")
-            gameCtx.strokeStyle = "red"
-            gameCtx.strokeText("Play", 650, 400)
-            // gameCtx.strokeText("Discard", 50, 300)
-            // console.log("discard pile selected card?" + card.selected)
-        } else {
-            gameCtx.font = "35px Helvetica"
-            gameCtx.strokeStyle = "black"
-            gameCtx.strokeText("Play", 650, 400) 
-        }
-
-        // gameCtx.font = "35px Helvetica"
-        // gameCtx.strokeStyle = "black"
-        // gameCtx.strokeText("Play", 650, 400)
-        // let totalPiles = 5;
-        // let max = totalPiles - this.playPiles.length;
-        if (this.playPiles.length === 0) {
-            for (let i = 0; i < 5; i ++) {
-                let x = this.playPositions[i][0]
-                let y = this.playPositions[i][1]
-                gameCtx.roundRect(x, y, 140, 200, 15);
-                gameCtx.lineWidth = 1;
-                gameCtx.strokeStyle = "gray"
-                gameCtx.stroke();
-
+                // selectedCard = card;
+                gameCtx.font = "45px Helvetica"
+                gameCtx.strokeStyle = "red"
+                gameCtx.strokeText("Play", 650, 400)
+            } else {
+                gameCtx.font = "35px Helvetica"
+                gameCtx.strokeStyle = "black"
+                gameCtx.strokeText("Play", 650, 400) 
             }
-        } else {
-            this.playPiles.forEach(pile => {
-                let x = this.playPositions[i][0]
-                let y = this.playPositions[i][1]
-                let card = pile[pile.length-1]
-                card.draw(gameCtx, card.pos[0], card.pos[y], 140, 220, 15)
-            })
-        }
+
+        this.playPiles.forEach(pile => {
+            if (pile.length > 0) {
+                pile.forEach(card => {
+                    card.draw(gameCtx, card.pos[0], card.pos[1], card.color, card.selected)
+                })
+            } else {
+                for (let i = 0; i < 5; i ++) {
+                    let x = this.playPositions[i][0]
+                    let y = this.playPositions[i][1]
+                    gameCtx.roundRect(x, y, 140, 200, 15);
+                    gameCtx.lineWidth = 1;
+                    gameCtx.strokeStyle = "gray"
+                    gameCtx.stroke();
+                }
+            }
+        })
+
+        
             
     }
 
@@ -297,6 +303,7 @@ class Game {
 
     makeMove() {
         if (this.numTurns >= 2) {
+
             
               //user selects a card from the other player's hand
             //they can either select a pile from the play area or a pile from the discard area or clue
@@ -314,35 +321,46 @@ class Game {
     // }
 
     
-    playOrDiscard(moveType) {
-        let pile;
+    playOrDiscard(moveType, ctx) {
         let pivotCard;
-        let hand = this.currentPlayer.hand
+        let pivotIdx;
+        
+        const cards = this.currentPlayer.hand
+
+        cards.forEach(card => {
+            if (card.selected) {
+                pivotCard = card;
+                pivotIdx = cards.indexOf(pivotCard);
+            }
+        })
+
+        let pile;
+        let positions;
+        
         if (moveType === "discard") {
             pile = this.discardPiles
-            pivotCard = hand[hand.length-1]
-            hand = hand.slice(0, length - 1)
+            positions = this.discardPositions;
         } else {
             pile = this.playPiles;
-            //need to change this to be based on where the user chooses to click 
-            cardIdx = hand[0]
-            hand = hand.slice(0, cardIdx).concat(hand.slice(cardIdx + 1))
+            positions = this.playPositions;
         }
-        pile.push(pivotCard)
-        this.addCard()
+        
+        this.currentPlayer.hand = this.currentPlayer.hand.slice(0, pivotIdx).concat(this.currentPlayer.hand.slice(pivotIdx + 1))
+
+        let colorIdx = this.allColors.indexOf(pivotCard.color)       
+        pile[colorIdx].push(pivotCard)
+        pivotCard.revealedColor == true;
+        pivotCard.revealedNum == true;
+        this.addCard(this.currentPlayer.hand)
+        // this.drawObjects(ctx)
     }
 
     misplay() {
         
-        // this.playPiles.each 
-        //num_fuses -= 1
     }
 
     clue(info) {
-        // choose either "number" or "color"
-        //game will select all the other cards that that also applies to
-        //select "give clue"
-        //num_clues -=1
+      
     }
 
     updateScore() {
@@ -370,14 +388,6 @@ class Game {
         return this.numTurns === 0 || this.numFuses === 0
     }
 
-    // play() {
-    //     //get move
-    //     // make move
-    //         //clear rect
-    //         //redraw (drag?)
-    //     //update score
-    //     //switch turns
-    // }
 
 }
 

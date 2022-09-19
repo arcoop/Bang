@@ -5,6 +5,7 @@ class Card extends GameObject {
     constructor(game, color, pos, num) {
         // this.game = game;
         super(game, color, pos);
+
         this.num = num
         this.selected = false;
         this.revealedNum = false;
@@ -13,26 +14,18 @@ class Card extends GameObject {
         this.revealed = this.revealedNum && this.revealedColor;
     }
     
-
-    handleCardClick(event, ctx) {
-        console.log("inside card handle click")  
+    handleCardClick(event) {
         event.preventDefault();
-        // console.log("selected status:" + this.selected)
+        console.log(this)
         if (!this.selected) {
             this.selected = true
         } else this.selected = false;
-        // console.log("selected status:" + this.selected)
-        // this.game.draw(ctx, this.pos[0], this.pos[1], this.color, this.selected)
-        // this.game.drawObjects(ctx)
-        // } else this.selected = false
-        // console.log(this + this.selected) 
+
     }
 
     draw(ctx, xPos, yPos, color, selected) {
         ctx.beginPath();
-        // ctx.beginPath();
         if (selected) {
-            // console.log("selected?:" + selected)
             ctx.roundRect(xPos-1, yPos-1, 148, 225, 15);
             ctx.lineWidth = 15;
             ctx.strokeStyle = "pink";

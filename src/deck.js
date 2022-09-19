@@ -25,6 +25,7 @@ class Deck {
         }
         //this.deckArray
         this.shuffleDeck()
+        
     }
 
     shuffleDeck() {
