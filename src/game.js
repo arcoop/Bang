@@ -84,67 +84,6 @@ class Game {
         }
     }
 
-    drawObjects(gameCtx) {
-
-        gameCtx.clearRect(0, 0, 1800, 1800)
-
-        this.setupBackground(gameCtx);
-        this.renderTurnText(gameCtx);
-        this.addScoreBox(gameCtx);
-        this.addText(gameCtx)
-        this.renderDiscardPiles(gameCtx)
-        this.renderPlayPiles(gameCtx)
-        this.renderClueText(gameCtx)
-
-        // console.log("cleared")
-        const currentPlayerPositions = {
-            0: [1210, 170],
-            1: [1370, 170],
-            2: [1530, 170],
-            3: [1690, 170],
-            4: [1850, 170],
-        }
-
-        const otherPlayerPositions = {
-            0: [1210, 500],
-            1: [1370, 500],
-            2: [1530, 500],
-            3: [1690, 500],
-            4: [1850, 500],
-        }
-
-        for (let i = 0; i < this.currentPlayer.hand.length; i++) {
-            let card = this.currentPlayer.hand[i]
-            card.pos = currentPlayerPositions[i]
-            let color;
-            if (card.revealed || card.revealedColor) {
-                color = card.color
-            } else color = card.color//"gray"
-
-            card.draw(gameCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][1], color, card.selected)
-            if (card.revealed || card.revealedNum) {
-                card.drawCardNum(gameCtx, currentPlayerPositions[i][0], currentPlayerPositions[i][i], card.num)
-            }
-        }
-
-        for (let i = 0; i < this.players[1].hand.length; i++) {
-            let card = this.players[1].hand[i]
-            card.pos = otherPlayerPositions[i]
-            card.draw(gameCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.color, card.selected)
-            card.drawCardNum(gameCtx, otherPlayerPositions[i][0], otherPlayerPositions[i][1], card.num)
-        }
-
-        for (const fuse of this.fuses) {
-            fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
-        }
-
-        for (const clue of this.clues) {
-            clue.draw(gameCtx, clue.pos[0], clue.pos[1])
-        }
-
-
-    }
-
     setupBackground(gameCtx) {
         gameCtx.beginPath();
         gameCtx.roundRect(1200,0,800,1000, 30);
@@ -227,7 +166,7 @@ class Game {
 
     }
 
-    renderDiscardPiles(gameCtx) {
+    renderDiscardText(gameCtx) {
         const cards = this.currentPlayer.hand
  
         if (cards.some(card => card.selected)) {
@@ -240,23 +179,7 @@ class Game {
             gameCtx.strokeStyle = "black"
             gameCtx.strokeText("Discard", 50, 300) 
         }
-        this.discardPiles.forEach(pile => {
-
-            if (pile.length > 0) {
-                pile.forEach(card => {
-                    card.draw(gameCtx, card.pos[0], card.pos[1], card.color, card.selected)
-                })
-            } else {
-                for (let i = 0; i < 5; i ++) {
-                    let x = this.discardPositions[i][0]
-                    let y = this.discardPositions[i][1]
-                    gameCtx.roundRect(x, y, 140, 200, 15);
-                    gameCtx.lineWidth = 1;
-                    gameCtx.strokeStyle = "gray"
-                    gameCtx.stroke();
-                }
-            }
-        })
+        
     }
 
     renderPlayPiles(gameCtx) {
@@ -348,9 +271,9 @@ class Game {
         this.currentPlayer.hand = this.currentPlayer.hand.slice(0, pivotIdx).concat(this.currentPlayer.hand.slice(pivotIdx + 1))
 
         let colorIdx = this.allColors.indexOf(pivotCard.color)       
-        pile[colorIdx].push(pivotCard)
         pivotCard.revealedColor == true;
         pivotCard.revealedNum == true;
+        pile[colorIdx].push(pivotCard)
         this.addCard(this.currentPlayer.hand)
         // this.drawObjects(ctx)
     }

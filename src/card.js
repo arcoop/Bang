@@ -23,7 +23,7 @@ class Card extends GameObject {
 
     }
 
-    draw(ctx, xPos, yPos, color, selected) {
+    draw(ctx, xPos, yPos, selected, revealedColor, revealedNumber) {
         ctx.beginPath();
         if (selected) {
             ctx.roundRect(xPos-1, yPos-1, 148, 225, 15);
@@ -36,16 +36,19 @@ class Card extends GameObject {
             ctx.strokeStyle = "gray"
             ctx.stroke();
         }
-        ctx.fillStyle = color
-        ctx.fill();
-    }
-    
-    drawCardNum(ctx, xPos, yPos, number) {
-        ctx.font = "30px Helvetica"
-        ctx.fillStyle="black"
-        
-        ctx.fillText(`${this.pos}`, xPos, yPos+90)
-        ctx.fillText(`${number}`, xPos+60, yPos+115)
+        if (revealedColor) {
+            ctx.fillStyle = color
+            ctx.fill();
+        } else {
+            ctx.fillStyle = "gray"
+            ctx.fill();
+        }
+        if (revealedNumber) {
+            ctx.font = "30px Helvetica"
+            ctx.fillStyle="black"
+            ctx.fillText(`${this.pos}`, xPos, yPos+90)
+            ctx.fillText(`${number}`, xPos+60, yPos+115)
+        }
     }
 
 }
