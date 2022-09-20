@@ -9,6 +9,7 @@ class Card extends GameObject {
         // this.played = false;
         this.num = num
         this.selected = false;
+        this.secondarySelected = false;
         this.revealedNum = false;
         this.revealedColor = false;
         // this.discarded = false;
@@ -25,7 +26,7 @@ class Card extends GameObject {
 
     draw(ctx, revealedColor, revealedNum) {
         ctx.beginPath();
-        if (this.selected) {
+        if (this.selected || this.secondarySelected) {
             ctx.roundRect(this.pos[0]-1, this.pos[1]-1, 148, 225, 15);
             ctx.lineWidth = 15;
             ctx.strokeStyle = "pink";
