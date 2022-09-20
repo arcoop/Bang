@@ -42,8 +42,6 @@ class Card extends GameObject {
             ctx.stroke();
         }
         if (revealedColor) {
-             console.log(revealedColor)
-            console.log("revealed color is true")
             ctx.fillStyle = this.color
             ctx.fill();
         } else {

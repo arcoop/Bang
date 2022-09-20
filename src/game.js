@@ -85,24 +85,53 @@ class Game {
         const cards = this.players[0].hand
         cards.forEach(card => {
             if (card.selected) {
-                let cardColorIdx = allColors.indexOf(card.color)
-                card.pos = playPositions[cardColorIdx]
-                card.selected = false;
+                // let cardColorIdx = allColors.indexOf(card.color)
+                // card.pos = playPositions[cardColorIdx]
+                // card.selected = false;
                 this.playOrDiscard(card, "play", playPositions, allColors)
             }
         })    
     }
 
-    handleClueClick(type, attribute) {
-        if (this.numClues >= 0) {
+    handleClueHover(type, attribute) {
+        console.log("type: " + type)
             const cards = this.players[1].hand
-            cards.forEach(card => {
-                if (card.type === attribute) {
-                    card.selected = true;
-                }
+            if (type === "color") {
+                cards.forEach(card => {
+                    if (card.color === attribute) {
+                        card.selected = true
+                    }
+                })
+            } else {
+                cards.forEach(card => {
+                    if(card.num === attribute) {
+                        card.selected = true
+                    }
+                })
+            }
+            window.addEventListener("click", (e) => {
+                let clickY = e.clientY - e.target.getBoundingClientRect().top;
+                let clickX = e.clientX - e.target.getBoundingClientRect().left;
+                console.log(clickX)
+                console.log(clickY)
+                cards.forEach(card => {
+                    let innerXStart = card.pos[0]
+                    let innerYStart = card.pos[1] + 240
+                    let innerXEnd = innerXStart + 60
+                    let innerYEnd = innerXStart + 60
+                    if ((clickX >= innerXStart && clickX <= innerXEnd) && (clickY >= innerYStart && clickY <= innerYEnd)) {
+                        this.giveClue(card, "color")
+                    } else {
+                        innerXStart = card.pos[0] + 80
+                        innerYStart = card.pos[1] + 240
+                        innerXEnd = innerXStart + 60
+                        innerYEnd = innerXStart + 60
+                        if ((clickX >= innerXStart && clickX <= innerXEnd) && (clickY >= innerYStart && clickY <= innerYEnd)) {
+                            this.giveClue(card, "number")
+                        }
+                    }
+                })
             })
-            this.numClues -= 1
-        } else {error(1)}
     } 
 
     error(num) {
@@ -110,7 +139,7 @@ class Game {
             case 1:
                 return "not enough clues, must discard or play"
                 break;
-            case 2:
+            case "misplay":
                 return "misplay!"
                 break;
         }
@@ -143,37 +172,69 @@ class Game {
             if (this.numClues < 8) this.numClues += 1
             pile = this.discardPiles
         } else {
-            pile = this.playPiles;
-            // if (this.misplay(pivotCard)) {
-            //     pile = this.discardPiles;
-            //     this.numFuses -=1
-            //     this.error(2)
-            // } else pile = this.playPiles;
+            if (this.validMove(pivotCard, allColors)) {
+                pile = this.playPiles;
+                // console.log("valid move")
+            } else {
+                pile = this.discardPiles;
+                // console.log(this.discardPiles)
+                console.log("misplay")
+                this.numFuses -= 1;
+                console.log(this.numFuses)
+            }
         }
         
         this.currentPlayer.hand = this.currentPlayer.hand.slice(0, pivotIdx).concat(this.currentPlayer.hand.slice(pivotIdx + 1))
-
+        
+    
         let colorIdx = allColors.indexOf(pivotCard.color)       
         pile[colorIdx].push(pivotCard)
         pivotCard.revealedColor = true;
         pivotCard.revealedNum = true;
-        console.log(pivotCard.num)
+        pivotCard.selected = false;
+        pivotCard.pos = positions[colorIdx]
         this.addCard(this.currentPlayer.hand)
         this.switchTurns();
     }
 
-    misplay(currentCard) {
-        const playNums = this.playPiles.map(card => card.num)
-        playNums.forEach(num => {
-            if (num + 1 === currentCard.num) {
-                return false;
+    validMove(currentCard, allColors) {
+        // console.log("all colors" + allColors)
+        let colorIdx = allColors.indexOf(currentCard.color)
+
+        let pile = this.playPiles[colorIdx]
+
+        if (pile.length > 0) {
+            if (pile[pile.length - 1].num + 1 === currentCard.num) {
+                return true
             }
-        })
-        return true;
+        } else if (pile.length === 0) {
+            if (currentCard.num === 1) return true
+        }
+        return false;
+        
+        // this.playPiles.forEach(pile) {
+        //     if (pile.length )
+        // }
+
+
+        // const playNums = this.playPiles.map(card => card.num)
+        
     }
 
-    clue(info) {
-      
+    giveClue(card, info) {
+        if (this.num >= 0) {
+            if (info === "color") {
+                card.revealedColor = true;
+                console.log(card.revealedColor)
+            } else if (info === "number") {
+                card.revealedNum = true;
+                console.log(card.revealedNum)
+            }
+            this.numClues -= 1
+        } else {
+            this.error(1)
+        }
+        
     }
 
     updateScore() {
