@@ -16,17 +16,15 @@ class Game {
         this.currentPlayer = this.players[0]
         this.playPiles = [[],[],[],[],[]]
         this.discardPiles = [[],[],[],[],[]]
-        this.fuses = []
-        this.clues = []
-        this.numClues = this.clues.length;
-        this.numFuses = this.fuses.length;
+        // this.fuses = []
+        // this.clues = []
+        this.numClues = 8;
+        this.numFuses = 3;
         this.numTurns = 2
-        this.dealCards();
         this.playSelected = false;
         this.discardSelected = false;
 
     }
-
 
     addCard(hand) {
         hand.unshift(this.deck.deckArray.shift())
@@ -42,36 +40,29 @@ class Game {
     }
 
     
-
-    
-
-    handleDiscardClick() {
+    handleDiscardClick(discardPositions, allColors) {
         const cards = this.players[0].hand
         cards.forEach(card => {
             if (card.selected) {
-                let cardColorIdx = this.allColors.indexOf(card.color)
-                console.log(cardColorIdx)
-                card.pos = this.discardPositions[cardColorIdx]
-                this.playOrDiscard("discard")
+                let cardColorIdx = allColors.indexOf(card.color)
+                card.pos = discardPositions[cardColorIdx]
+                card.selected = false;
+                this.playOrDiscard(card, "discard", discardPositions, allColors)
             }
         })    
-
     }
-    handlePlayClick(ctx) {
+
+    handlePlayClick(playPositions, allColors) {
         const cards = this.players[0].hand
         cards.forEach(card => {
             if (card.selected) {
-                console.log("old card pos " + card.pos)
-                let cardColorIdx = this.allColors.indexOf(card.color)
-                console.log(cardColorIdx)
-                card.pos = this.playPositions[cardColorIdx]
-                console.log("new card pos " + card.pos)
-                this.playOrDiscard("play", ctx)
+                let cardColorIdx = allColors.indexOf(card.color)
+                card.pos = playPositions[cardColorIdx]
+                card.selected = false;
+                this.playOrDiscard(card, "play", playPositions, allColors)
             }
         })    
-
     }
-
 
     switchTurns() {
         let temp = this.players[0]
@@ -83,8 +74,6 @@ class Game {
 
     makeMove() {
         if (this.numTurns >= 2) {
-
-            
               //user selects a card from the other player's hand
             //they can either select a pile from the play area or a pile from the discard area or clue
         } else {
@@ -93,43 +82,28 @@ class Game {
         }
     }
 
-    // play() {
-    //     this.drawObjects(this.gameCtx, this.playerCtx)
-    //     console.log("inside play function")
 
-        
-    // }
-
-    
-    playOrDiscard(moveType, ctx) {
-        let pivotCard;
-        let pivotIdx;
-        
+    playOrDiscard(pivotCard, moveType, positions, allColors) {
         const cards = this.currentPlayer.hand
 
-        cards.forEach(card => {
-            if (card.selected) {
-                pivotCard = card;
-                pivotIdx = cards.indexOf(pivotCard);
-            }
-        })
+        // let pivotCard = card
+        let pivotIdx = cards.indexOf(pivotCard)
 
         let pile;
-        let positions;
         
         if (moveType === "discard") {
+            this.numClues -= 1
             pile = this.discardPiles
-            positions = this.discardPositions;
         } else {
             pile = this.playPiles;
-            positions = this.playPositions;
         }
         
         this.currentPlayer.hand = this.currentPlayer.hand.slice(0, pivotIdx).concat(this.currentPlayer.hand.slice(pivotIdx + 1))
 
-        let colorIdx = this.allColors.indexOf(pivotCard.color)       
-        pivotCard.revealedColor == true;
-        pivotCard.revealedNum == true;
+        let colorIdx = allColors.indexOf(pivotCard.color)       
+        pivotCard.revealedColor = true;
+        pivotCard.revealedNum = true;
+        // pivotCard.selected = false;
         pile[colorIdx].push(pivotCard)
         this.addCard(this.currentPlayer.hand)
         // this.drawObjects(ctx)
@@ -166,6 +140,22 @@ class Game {
 
     over() {
         return this.numTurns === 0 || this.numFuses === 0
+    }
+
+    // currentHands() {
+    //     const hands = []
+    //     this.players[0].
+    //     console.log(this.players[0].hand)
+    //     console.log(this.players[0].hand.concat(this.players[1].hand))
+    //     const cards = this.players[0].hand.concat(this.players[1]).hand
+    //     console.log(cards)
+    //     return cards;
+    // }
+
+    anyCardsSelected() {
+        const cards = this.players[0].hand.concat(this.players[1])
+        console.log(this.currentHands().some(card => card.selected))
+        return this.currentHands().some(card => card.selected)
     }
 
 

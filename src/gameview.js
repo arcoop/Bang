@@ -9,6 +9,8 @@ class GameView {
     // constructor(ele, gameCtx, playerCtx){
     constructor(ele, gameCtx, canvas){
         this.canvas = canvas
+        this.clues = []
+        this.fuses = []
         this.ele = ele
         this.gameCtx = gameCtx
         this.game = new Game("player1", "player2")
@@ -41,31 +43,43 @@ class GameView {
     createClues() {
         let x = 640
         let y = 148
-        while (this.game.clues.length < 4) {
-            this.game.clues.push(new Clue(this, "yellow", [x, y]))
+        let i = 0;
+        while (i < 4) {
+            this.clues.push(new Clue(this, "yellow", [x, y]))
             x += 65
+            i++
         }
         y += 70
         x = 640
-        while (this.game.clues.length >= 4 && this.game.clues.length < 8) {
-            this.game.clues.push(new Clue(this, "yellow", [x, y]))
+        while (i >= 4 && i < 8) {
+            this.clues.push(new Clue(this, "yellow", [x, y]))
             x += 65
+            i++
         }
     }
 
     createFuses() {
         let x = 650
         let y = 70
-        while (this.game.fuses.length < 3) {
-            this.game.fuses.push(new Fuse(this, "orange", [x, y]))
+        let i = 0;
+        for(let i = 0; i < 3; i++) {
+            this.fuses.push(new Fuse(this, "orange", [x, y]))
             x += 90
         }
     }
     
     handleEvents() {
+        window.addEventListener("mousemove", (e) => {
+            let clickY = e.clientY - e.target.getBoundingClientRect().top;
+            let clickX = e.clientX - e.target.getBoundingClientRect().left;
+            console.log([clickX, clickY])
+        })
         window.addEventListener("click", (e) => {
-            let clickX = e.pageX;
-            let clickY = e.pageY;
+            let clickY = e.clientY - e.target.getBoundingClientRect().top;
+            let clickX = e.clientX - e.target.getBoundingClientRect().left;
+            console.log(clickY)
+            console.log(clickX)
+
             //add any selected logic
                 this.currentHands().forEach(card => {
                     let xStart = card.pos[0];
@@ -78,30 +92,30 @@ class GameView {
                     }
                 })
             // }
-                let xStart = 85
-                let yStart = 290
-                let xEnd = 220;
-                let yEnd = 330;
+                let xStart = 300
+                let yStart = 750
+                let xEnd = 1115;
+                let yEnd = 1030;
                 if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                    this.game.handleDiscardClick();
+                    this.game.handleDiscardClick(this.discardPositions, this.allColors);
                     this.drawObjects(this.gameCtx)
                 }
-                xStart = 680
-                yStart = 380
-                xEnd = 780;
-                yEnd = 428;
+                xStart = 300
+                yStart = 362
+                xEnd = 1115;
+                yEnd = 730;
                 if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                    this.game.handlePlayClick(this.gameCtx);
+                    this.game.handlePlayClick(this.playPositions, this.allColors);
                     this.drawObjects(this.gameCtx)
                 }
 
         })
         
-        this.drawObjects(this.gameCtx, this.canvas)
+        this.drawObjects(this.gameCtx)
         
     }
 
-    drawObjects(gameCtx, canvas) {
+    drawObjects(gameCtx) {
 
         gameCtx.clearRect(0,0,1800,1800)
 
@@ -140,25 +154,30 @@ class GameView {
             card.draw(gameCtx, true, true)
         }
 
-        for (const fuse of this.game.fuses) {
+        for (const fuse of this.fuses) {
             fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
         }
 
-        for (const clue of this.game.clues) {
+        for (const clue of this.clues) {
             clue.draw(gameCtx, clue.pos[0], clue.pos[1])
         }
+
+        //render x's on used clues
+        //render x's on used bombs
 
         //render discard piles
         for (let i = 0; i < 5; i ++){
             let pile = this.game.discardPiles[i]
+            let yDelta = 0;
             if (pile.length > 0) {
                 pile.forEach(card => {
-                    card.draw(gameCtx, card.pos[0], card.pos[i], card.selected, card.revealedColor, card.revealedNum)
+                    card.draw(gameCtx, card.pos[0], card.pos[i] + yDelta, card.selected, card.revealedColor, card.revealedNum)
+                    yDelta += 220
                 })
             } else {
                 let x = this.discardPositions[i][0]
                 let y = this.discardPositions[i][1]
-                gameCtx.roundRect(x, y, 140, 200, 15)
+                gameCtx.roundRect(x, y, 140, 220, 15)
                 gameCtx.lineWidth = 1;
                 gameCtx.strokeStyle = "gray"
                 gameCtx.stroke();
@@ -174,7 +193,7 @@ class GameView {
             } else {
                 let x = this.playPositions[i][0]
                 let y = this.playPositions[i][1]
-                gameCtx.roundRect(x, y, 140, 200, 15)
+                gameCtx.roundRect(x, y, 140, 220, 15)
                 gameCtx.lineWidth = 1;
                 gameCtx.strokeStyle = "gray"
                 gameCtx.stroke();
@@ -220,7 +239,7 @@ class GameView {
     setupBackground(gameCtx) {
         gameCtx.beginPath();
         gameCtx.roundRect(1200,0,800,1000, 30);
-        gameCtx.fillStyle = "#8CF1DB";
+        gameCtx.fillStyle = "#DBDADA";
         gameCtx.fill();
     }
 
@@ -234,7 +253,7 @@ class GameView {
         gameCtx.fillText("Score:", 85, 100)
         gameCtx.font = "40px Helvetica"
         gameCtx.strokeStyle = "green"
-        gameCtx.strokeText(`${this.score}`, 105, 145)
+        gameCtx.strokeText(`${this.game.score}`, 105, 145)
     }
 
 

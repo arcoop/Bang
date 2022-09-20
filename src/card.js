@@ -5,7 +5,7 @@ class Card extends GameObject {
     constructor(game, color, pos, num) {
         // this.game = game;
         super(game, color, pos);
-
+        this.touched = false;
         this.num = num
         this.selected = false;
         this.revealedNum = false;
@@ -13,6 +13,7 @@ class Card extends GameObject {
         this.discarded = false;
         this.revealed = this.revealedNum && this.revealedColor;
     }
+    
     
     handleCardClick(event) {
         event.preventDefault();
@@ -29,7 +30,12 @@ class Card extends GameObject {
             ctx.lineWidth = 15;
             ctx.strokeStyle = "pink";
             ctx.stroke();
-        } else {
+        } else if (this.touched) {
+            ctx.roundRect(this.pos[0]-1, this.pos[1]-1, 145, 223, 15);
+            ctx.lineWidth = 13;
+            ctx.strokeStyle = "#40E0D0";
+            ctx.stroke();
+        }else {
             ctx.roundRect(this.pos[0], this.pos[1], 140, 220, 15);
             ctx.lineWidth = 1;
             ctx.strokeStyle = "gray"
@@ -39,7 +45,7 @@ class Card extends GameObject {
             ctx.fillStyle = this.color
             ctx.fill();
         } else {
-            ctx.fillStyle = "gray"
+            ctx.fillStyle = this.color //"gray"
             ctx.fill();
         }
         if (revealedNum) {
