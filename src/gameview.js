@@ -2,6 +2,8 @@ const Game = require('./game.js')
 const Deck = require('./deck.js')
 const Card = require('./card.js')
 const Player = require('./player.js')
+const Fuse = require('./fuse.js')
+const Clue = require('./clue.js')
 
 class GameView {
     // constructor(ele, gameCtx, playerCtx){
@@ -9,7 +11,6 @@ class GameView {
         this.canvas = canvas
         this.ele = ele
         this.gameCtx = gameCtx
-        // this.playerCtx = playerCtx
         this.game = new Game("player1", "player2")
         this.playPositions = {
             0: [320, 500],
@@ -26,22 +27,47 @@ class GameView {
             3: [800, 800],
             4: [960, 800],
         }
-
         this.allColors = ["blue", "white", "red", "yellow", "green"]
     }
 
-    start() 
+    start() {
+        this.createClues();
+        this.createFuses()
+        this.game.dealCards();
         this.drawObjects(this.gameCtx, this.canvas);
         // this.play();
+    }
+
+    createClues() {
+        let x = 640
+        let y = 148
+        while (this.game.clues.length < 4) {
+            this.game.clues.push(new Clue(this, "yellow", [x, y]))
+            x += 65
+        }
+        y += 70
+        x = 640
+        while (this.game.clues.length >= 4 && this.game.clues.length < 8) {
+            this.game.clues.push(new Clue(this, "yellow", [x, y]))
+            x += 65
+        }
+    }
+
+    createFuses() {
+        let x = 650
+        let y = 70
+        while (this.game.fuses.length < 3) {
+            this.game.fuses.push(new Fuse(this, "orange", [x, y]))
+            x += 90
+        }
     }
     
     handleEvents() {
         window.addEventListener("click", (e) => {
             let clickX = e.pageX;
             let clickY = e.pageY;
-            console.log(clickX)
-            console.log(clickY)
-            this.currentHands().forEach(card => {
+            //add any selected logic
+                this.currentHands().forEach(card => {
                     let xStart = card.pos[0];
                     let yStart = card.pos[1];
                     let xEnd = xStart + 140;
@@ -50,7 +76,8 @@ class GameView {
                         card.handleCardClick(e)
                         this.drawObjects(this.gameCtx)
                     }
-            })
+                })
+            // }
                 let xStart = 85
                 let yStart = 290
                 let xEnd = 220;
@@ -59,7 +86,6 @@ class GameView {
                     this.game.handleDiscardClick();
                     this.drawObjects(this.gameCtx)
                 }
-
                 xStart = 680
                 yStart = 380
                 xEnd = 780;
@@ -79,13 +105,12 @@ class GameView {
 
         gameCtx.clearRect(0,0,1800,1800)
 
-        this.game.setupBackground(gameCtx);
-        this.game.renderClueText(gameCtx);
-        this.game.addScoreBox(gameCtx);
-        this.game.addText(gameCtx);
-        this.game.renderDiscardText(gameCtx);
-        this.game.renderPlayPiles(gameCtx);
-        this.game.renderClueText(gameCtx);
+        this.setupBackground(gameCtx);
+        this.addScoreBox(gameCtx);
+        this.addText(gameCtx);
+        this.renderDiscardText(gameCtx);
+        this.renderClueText(gameCtx);
+        this.renderTurnText(gameCtx);
 
         const currentPlayerPositions = {
             0: [1210, 170],
@@ -106,14 +131,13 @@ class GameView {
         for (let i = 0; i < this.game.currentPlayer.hand.length; i++){
             let card = this.game.currentPlayer.hand[i]
             card.pos = currentPlayerPositions[i]
-            card.draw(gameCtx, card.pos[0], card.pos[i], card.selected, card.revealedColor, card.revealedNum)
-            
+            card.draw(gameCtx)
         }
 
         for (let i = 0; i < this.game.players[1].hand.length; i++) {
             let card = this.game.players[1].hand[i]
             card.pos = otherPlayerPositions[i]
-            card.draw(gameCtx, card.pos[0], card.pos[i], card.selected, card.revealedColor, card.revealedNum)
+            card.draw(gameCtx, true, true)
         }
 
         for (const fuse of this.game.fuses) {
@@ -140,17 +164,102 @@ class GameView {
                 gameCtx.stroke();
             }
         }
+        //render play piles
+        for (let i = 0; i < 5; i ++){
+            let pile = this.game.playPiles[i]
+            if (pile.length > 0) {
+                pile.forEach(card => {
+                    card.draw(gameCtx, card.pos[0], card.pos[i], card.selected, card.revealedColor, card.revealedNum)
+                })
+            } else {
+                let x = this.playPositions[i][0]
+                let y = this.playPositions[i][1]
+                gameCtx.roundRect(x, y, 140, 200, 15)
+                gameCtx.lineWidth = 1;
+                gameCtx.strokeStyle = "gray"
+                gameCtx.stroke();
+            }
+        }
 
     }
+
+    addText(gameCtx) {
+        gameCtx.font = "50px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.strokeText("My Hand", 1500, 120);
+
+        gameCtx.font = "50px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.strokeText("Player 2's Hand", 1400, 480);
+
+    }
+
+    renderTurnText(gameCtx) {
+        gameCtx.font = "20px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 1240, 50)
+    }
+
+    renderClueText(gameCtx) {
+        const cards = this.game.players[1].hand
+
+        cards.forEach(card => {
+            if (card.selected) {
+                gameCtx.beginPath();
+                gameCtx.roundRect(card.pos[0], card.pos[1] + 240, 60, 60, 3);
+                gameCtx.fillStyle = card.color;
+                gameCtx.fill();
+                gameCtx.font = "30px Helvetica"
+                gameCtx.fillStyle = "black"
+                gameCtx.fillText(card.num, card.pos[0] + 75, card.pos[1] + 280)
+
+            }
+        })
+    }
+
+    setupBackground(gameCtx) {
+        gameCtx.beginPath();
+        gameCtx.roundRect(1200,0,800,1000, 30);
+        gameCtx.fillStyle = "#8CF1DB";
+        gameCtx.fill();
+    }
+
+    addScoreBox(gameCtx) {
+        gameCtx.beginPath();
+        gameCtx.roundRect(10, 70, 230, 90, 35);
+        gameCtx.strokeStyle = "black"
+        gameCtx.stroke();
+        gameCtx.font = "20px Helvetica"
+        gameCtx.fillStyle = "black"
+        gameCtx.fillText("Score:", 85, 100)
+        gameCtx.font = "40px Helvetica"
+        gameCtx.strokeStyle = "green"
+        gameCtx.strokeText(`${this.score}`, 105, 145)
+    }
+
+
+    renderDiscardText(gameCtx) {
+        const cards = this.game.currentPlayer.hand
+ 
+        if (cards.some(card => card.selected)) {
+            gameCtx.font = "45px Helvetica"
+            gameCtx.strokeStyle = "red"
+            gameCtx.strokeText("Discard", 640, 780)
+            gameCtx.strokeText("Play", 650, 400)
+          
+        } else {
+            gameCtx.font = "35px Helvetica"
+            gameCtx.strokeStyle = "black"
+            gameCtx.strokeText("Discard", 640, 780) 
+            gameCtx.strokeText("Play", 650, 400) 
+        }
+    } 
 
     currentHands() {
         const hands = this.game.players[0].hand.concat(this.game.players[1].hand)
-        // const hands = [];
-        // this.game.players.forEach(player => {
-        //     hands.push(player.hand)
-        // })
         return hands;
     }
+  
 
     play() {
         // this.game.drawObjects(this.gameCtx, this.playerCtx)

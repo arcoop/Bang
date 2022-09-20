@@ -16,38 +16,37 @@ class Card extends GameObject {
     
     handleCardClick(event) {
         event.preventDefault();
-        console.log(this)
         if (!this.selected) {
             this.selected = true
         } else this.selected = false;
 
     }
 
-    draw(ctx, xPos, yPos, selected, revealedColor, revealedNumber) {
+    draw(ctx, revealedColor, revealedNum) {
         ctx.beginPath();
-        if (selected) {
-            ctx.roundRect(xPos-1, yPos-1, 148, 225, 15);
+        if (this.selected) {
+            ctx.roundRect(this.pos[0]-1, this.pos[1]-1, 148, 225, 15);
             ctx.lineWidth = 15;
             ctx.strokeStyle = "pink";
             ctx.stroke();
         } else {
-            ctx.roundRect(xPos, yPos, 140, 220, 15);
+            ctx.roundRect(this.pos[0], this.pos[1], 140, 220, 15);
             ctx.lineWidth = 1;
             ctx.strokeStyle = "gray"
             ctx.stroke();
         }
         if (revealedColor) {
-            ctx.fillStyle = color
+            ctx.fillStyle = this.color
             ctx.fill();
         } else {
             ctx.fillStyle = "gray"
             ctx.fill();
         }
-        if (revealedNumber) {
+        if (revealedNum) {
             ctx.font = "30px Helvetica"
             ctx.fillStyle="black"
-            ctx.fillText(`${this.pos}`, xPos, yPos+90)
-            ctx.fillText(`${number}`, xPos+60, yPos+115)
+            ctx.fillText(`${this.pos}`, this.pos[0], this.pos[1]+90)
+            ctx.fillText(`${this.num}`, this.pos[0]+60, this.pos[1]+115)
         }
     }
 

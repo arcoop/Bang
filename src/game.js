@@ -21,59 +21,16 @@ class Game {
         this.numClues = this.clues.length;
         this.numFuses = this.fuses.length;
         this.numTurns = 2
-        this.createFuses();
-        this.createClues();
         this.dealCards();
         this.playSelected = false;
         this.discardSelected = false;
 
-        this.playPositions = {
-            0: [320, 500],
-            1: [480, 500],
-            2: [640, 500],
-            3: [800, 500],
-            4: [960, 500],
-        }
-
-        this.discardPositions = {
-            0: [15, 320],
-            1: [15, 480],
-            2: [15, 640],
-            3: [15, 800],
-            4: [15, 960],
-        }
-
-        this.allColors = ["blue", "white", "red", "yellow", "green"]
     }
 
-    createFuses() {
-        let x = 650
-        let y = 70
-        while (this.fuses.length < 3) {
-            this.fuses.push(new Fuse(this, "orange", [x, y]))
-            x += 90
-        }
-    }
-
-    createClues() {
-        let x = 640
-        let y = 148
-        while (this.clues.length < 4) {
-            this.clues.push(new Clue(this, "yellow", [x, y]))
-            x += 65
-        }
-        y += 70
-        x = 640
-        while (this.clues.length >= 4 && this.clues.length < 8) {
-            this.clues.push(new Clue(this, "yellow", [x, y]))
-            x += 65
-        }
-    }
 
     addCard(hand) {
         hand.unshift(this.deck.deckArray.shift())
     }
-
 
     dealCards() {
         for (let i = 0; i < this.players.length; i++) {
@@ -84,42 +41,9 @@ class Game {
         }
     }
 
-    setupBackground(gameCtx) {
-        gameCtx.beginPath();
-        gameCtx.roundRect(1200,0,800,1000, 30);
-        gameCtx.fillStyle = "#8CF1DB";
-        gameCtx.fill();
-    }
+    
 
-    addScoreBox(gameCtx) {
-        gameCtx.beginPath();
-        gameCtx.roundRect(10, 70, 230, 90, 35);
-        gameCtx.strokeStyle = "black"
-        gameCtx.stroke();
-        gameCtx.font = "20px Helvetica"
-        gameCtx.fillStyle = "black"
-        gameCtx.fillText("Score:", 85, 100)
-        gameCtx.font = "40px Helvetica"
-        gameCtx.strokeStyle = "green"
-        gameCtx.strokeText(`${this.score}`, 105, 145)
-    }
-
-    addText(gameCtx) {
-        gameCtx.font = "50px Helvetica"
-        gameCtx.fillStyle = "black"
-        gameCtx.strokeText("My Hand", 1500, 120);
-
-        gameCtx.font = "50px Helvetica"
-        gameCtx.fillStyle = "black"
-        gameCtx.strokeText("Player 2's Hand", 1400, 480);
-
-    }
-
-    renderTurnText(gameCtx) {
-        gameCtx.font = "20px Helvetica"
-        gameCtx.fillStyle = "black"
-        gameCtx.fillText(`${this.currentPlayer.name}'s turn`, 1240, 50)
-    }
+    
 
     handleDiscardClick() {
         const cards = this.players[0].hand
@@ -148,73 +72,6 @@ class Game {
 
     }
 
-    renderClueText(gameCtx) {
-        const cards = this.players[1].hand
-
-        cards.forEach(card => {
-            if (card.selected) {
-                gameCtx.beginPath();
-                gameCtx.roundRect(card.pos[0], card.pos[1] + 240, 60, 60, 3);
-                gameCtx.fillStyle = card.color;
-                gameCtx.fill();
-                gameCtx.font = "30px Helvetica"
-                gameCtx.fillStyle = "black"
-                gameCtx.fillText(card.num, card.pos[0] + 75, card.pos[1] + 280)
-
-            }
-        })
-
-    }
-
-    renderDiscardText(gameCtx) {
-        const cards = this.currentPlayer.hand
- 
-        if (cards.some(card => card.selected)) {
-            gameCtx.font = "45px Helvetica"
-            gameCtx.strokeStyle = "red"
-            gameCtx.strokeText("Discard", 50, 300)
-          
-        } else {
-            gameCtx.font = "35px Helvetica"
-            gameCtx.strokeStyle = "black"
-            gameCtx.strokeText("Discard", 50, 300) 
-        }
-        
-    }
-
-    renderPlayPiles(gameCtx) {
-        const cards = this.currentPlayer.hand
-        if (cards.some(card => card.selected)) {
-                // selectedCard = card;
-                gameCtx.font = "45px Helvetica"
-                gameCtx.strokeStyle = "red"
-                gameCtx.strokeText("Play", 650, 400)
-            } else {
-                gameCtx.font = "35px Helvetica"
-                gameCtx.strokeStyle = "black"
-                gameCtx.strokeText("Play", 650, 400) 
-            }
-
-        this.playPiles.forEach(pile => {
-            if (pile.length > 0) {
-                pile.forEach(card => {
-                    card.draw(gameCtx, card.pos[0], card.pos[1], card.color, card.selected)
-                })
-            } else {
-                for (let i = 0; i < 5; i ++) {
-                    let x = this.playPositions[i][0]
-                    let y = this.playPositions[i][1]
-                    gameCtx.roundRect(x, y, 140, 200, 15);
-                    gameCtx.lineWidth = 1;
-                    gameCtx.strokeStyle = "gray"
-                    gameCtx.stroke();
-                }
-            }
-        })
-
-        
-            
-    }
 
     switchTurns() {
         let temp = this.players[0]
