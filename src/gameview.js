@@ -6,7 +6,6 @@ const Fuse = require('./fuse.js')
 const Clue = require('./clue.js')
 
 class GameView {
-    // constructor(ele, gameCtx, playerCtx){
     constructor(ele, gameCtx, canvas){
         this.canvas = canvas
         this.clues = []
@@ -14,25 +13,25 @@ class GameView {
         this.ele = ele
         this.gameCtx = gameCtx
         this.game = new Game("player1", "player2")
-        this.playPositions = {
-            0: [320, 500],
-            1: [480, 500],
-            2: [640, 500],
-            3: [800, 500],
-            4: [960, 500],
-        }
+    
+        const gameBoardPositions = (x, y) => ({
+            0: [x, y],
+            1: [x + 160, y],
+            2: [x + 320, y],
+            3: [x + 480, y],
+            4: [x + 640, y],
+        });
 
-        this.discardPositions = {
-            0: [320, 800],
-            1: [480, 800],
-            2: [640, 800],
-            3: [800, 800],
-            4: [960, 800],
-        }
-        this.allColors = ["blue", "white", "red", "yellow", "green"]
+        this.playPositions = gameBoardPositions(320, 450)
+        this.discardPositions = gameBoardPositions(320, 800)
+
+        this.playColors = ["blue", "white", "red", "yellow", "green"]
+        this.discardColors = ["blue", "white", "red", "yellow", "green"]
     }
 
     start() {
+        this.playColors.sort((a, b) => 0.5 - Math.random());
+        this.discardColors.sort((a, b) => 0.5 - Math.random());
         this.createClues();
         this.createFuses()
         this.game.dealCards();
@@ -61,7 +60,6 @@ class GameView {
     createFuses() {
         let x = 650
         let y = 70
-        let i = 0;
         for(let i = 0; i < 3; i++) {
             this.fuses.push(new Fuse(this, "orange", [x, y]))
             x += 90
@@ -69,16 +67,16 @@ class GameView {
     }
     
     handleEvents() {
-        window.addEventListener("mousemove", (e) => {
-            let clickY = e.clientY - e.target.getBoundingClientRect().top;
-            let clickX = e.clientX - e.target.getBoundingClientRect().left;
-            console.log([clickX, clickY])
-        })
+        
+        // window.addEventListener("mousemove", (e) => {
+        //     let clickY = e.clientY - e.target.getBoundingClientRect().top;
+        //     let clickX = e.clientX - e.target.getBoundingClientRect().left;
+        //     console.log([clickX, clickY])
+        // })
+        //add functionality for things to render bigger on mouseover
         window.addEventListener("click", (e) => {
             let clickY = e.clientY - e.target.getBoundingClientRect().top;
             let clickX = e.clientX - e.target.getBoundingClientRect().left;
-            console.log(clickY)
-            console.log(clickX)
 
             //add any selected logic
                 this.currentHands().forEach(card => {
@@ -92,27 +90,24 @@ class GameView {
                     }
                 })
             // }
-                let xStart = 300
-                let yStart = 750
-                let xEnd = 1115;
-                let yEnd = 1030;
+                let xStart = this.discardPositions[0][0] - 2//300
+                let yStart = this.discardPositions[0][1]- 2
+                let xEnd = this.discardPositions[4][0] + 150//1115;
+                let yEnd = yStart + 225;
                 if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                    this.game.handleDiscardClick(this.discardPositions, this.allColors);
+                    this.game.handleDiscardClick(this.discardPositions, this.discardColors);
                     this.drawObjects(this.gameCtx)
                 }
-                xStart = 300
-                yStart = 362
-                xEnd = 1115;
-                yEnd = 730;
+                xStart = this.playPositions[0][0] - 2
+                yStart = this.playPositions[0][1] -2
+                xEnd = this.playPositions[4][0] + 150;
+                yEnd = yStart + 225;
                 if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                    this.game.handlePlayClick(this.playPositions, this.allColors);
+                    this.game.handlePlayClick(this.playPositions, this.playColors);
                     this.drawObjects(this.gameCtx)
                 }
-
         })
-        
         this.drawObjects(this.gameCtx)
-        
     }
 
     drawObjects(gameCtx) {
@@ -126,22 +121,18 @@ class GameView {
         this.renderClueText(gameCtx);
         this.renderTurnText(gameCtx);
 
-        const currentPlayerPositions = {
-            0: [1210, 170],
-            1: [1370, 170],
-            2: [1530, 170],
-            3: [1690, 170],
-            4: [1850, 170],
-        }
+        const handPositions = (x, y) => ({
+            0: [x, y],
+            1: [x + 160, y],
+            2: [x + 320, y],
+            3: [x + 480, y],
+            4: [x + 640, y],
+        });
 
-        const otherPlayerPositions = {
-            0: [1210, 500],
-            1: [1370, 500],
-            2: [1530, 500],
-            3: [1690, 500],
-            4: [1850, 500],
-        }
-
+        const currentPlayerPositions = handPositions(1210, 170);
+        const otherPlayerPositions = handPositions(1210, 500);
+        
+        //render hands
         for (let i = 0; i < this.game.currentPlayer.hand.length; i++){
             let card = this.game.currentPlayer.hand[i]
             card.pos = currentPlayerPositions[i]
@@ -154,49 +145,94 @@ class GameView {
             card.draw(gameCtx, true, true)
         }
 
-        for (const fuse of this.fuses) {
-            fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
-        }
-
-        for (const clue of this.clues) {
-            clue.draw(gameCtx, clue.pos[0], clue.pos[1])
-        }
-
-        //render x's on used clues
-        //render x's on used bombs
-
         //render discard piles
         for (let i = 0; i < 5; i ++){
             let pile = this.game.discardPiles[i]
             let yDelta = 0;
+            let xDelta = 0;
             if (pile.length > 0) {
+                pile = pile.sort(function(card1, card2) {
+                    if (card1.num > card2.num) {
+                        return 1
+                    } else return -1
+                })
+                console.log(pile)
                 pile.forEach(card => {
-                    card.draw(gameCtx, card.pos[0], card.pos[i] + yDelta, card.selected, card.revealedColor, card.revealedNum)
-                    yDelta += 220
+                    let orig_pos = card.pos
+                    card.pos = [card.pos[0] + xDelta, card.pos[1] +yDelta]
+                    card.revealedColor = true;
+                    card.revealedNum = true;
+                    card.draw(gameCtx, card.revealedColor, card.revealedNum)
+                    card.pos = orig_pos
+                    yDelta += 110
+                    xDelta += 2
                 })
             } else {
                 let x = this.discardPositions[i][0]
                 let y = this.discardPositions[i][1]
-                gameCtx.roundRect(x, y, 140, 220, 15)
-                gameCtx.lineWidth = 1;
-                gameCtx.strokeStyle = "gray"
-                gameCtx.stroke();
+                this.game.draw(gameCtx, x, y);
+                // gameCtx.roundRect(x, y, 140, 220, 15)
+                // gameCtx.lineWidth = 1;
+                // gameCtx.strokeStyle = "gray"
+                // gameCtx.stroke();
             }
         }
         //render play piles
         for (let i = 0; i < 5; i ++){
             let pile = this.game.playPiles[i]
             if (pile.length > 0) {
+                pile = pile.sort(function(card1, card2) {
+                    if (card1.num > card2.num) {
+                        return 1
+                    } else return -1
+                })
                 pile.forEach(card => {
-                    card.draw(gameCtx, card.pos[0], card.pos[i], card.selected, card.revealedColor, card.revealedNum)
+                    card.revealedNum = true;
+                    card.revealedColor = true;
+                    card.draw(gameCtx)
                 })
             } else {
                 let x = this.playPositions[i][0]
                 let y = this.playPositions[i][1]
-                gameCtx.roundRect(x, y, 140, 220, 15)
-                gameCtx.lineWidth = 1;
-                gameCtx.strokeStyle = "gray"
-                gameCtx.stroke();
+                this.game.draw(gameCtx, x, y);
+                // gameCtx.roundRect(x, y, 140, 220, 15)
+                // gameCtx.lineWidth = 1;
+                // gameCtx.strokeStyle = "gray"
+                // gameCtx.stroke();
+            }
+        }
+
+        //render fuses
+        if (this.game.numFuses < 3) {
+            let length = 3 
+            for (let i = 0; i < length; i++) {
+                let fuse = this.fuses[i]
+                fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
+            }
+            for (let i = length; i < 3; i ++) {
+                fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
+                //draw Xs
+            }
+        } else {
+            for (const fuse of this.fuses) {
+                fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
+            }
+        }
+
+        //render clues
+        if (this.game.numClues < 8) {
+            let length = 8
+            for (let i = 0; i < length; i++) {
+                let clue = this.clue[i]
+                clue.draw(gameCtx, clue.pos[0], clue.pos[1])
+            }
+            for (let i = length; i < 8; i ++) {
+                clue.draw(gameCtx, clue.pos[0], clue.pos[1])
+                //draw Xs
+            }
+        } else {
+            for (const clue of this.clues) {
+                clue.draw(gameCtx, clue.pos[0], clue.pos[1])
             }
         }
 
@@ -236,6 +272,13 @@ class GameView {
         })
     }
 
+    anyCardsSelected() {
+        this.currentHands().forEach(card => {
+            if (card.selected) return true;
+        })
+        return false;
+    }
+
     setupBackground(gameCtx) {
         gameCtx.beginPath();
         gameCtx.roundRect(1200,0,800,1000, 30);
@@ -255,7 +298,6 @@ class GameView {
         gameCtx.strokeStyle = "green"
         gameCtx.strokeText(`${this.game.score}`, 105, 145)
     }
-
 
     renderDiscardText(gameCtx) {
         const cards = this.game.currentPlayer.hand
@@ -279,55 +321,8 @@ class GameView {
         return hands;
     }
   
-
-    play() {
-        // this.game.drawObjects(this.gameCtx, this.playerCtx)
-        // this.game.switchTurns();
-    }
     
 }
 
 module.exports = GameView;
 
-
-     // let xStart = 50;
-            // let yStart = 300;
-            // let xEnd = 200;
-            // let yEnd= 340;
-            // if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-            //     console.log("discard selected")
-            //     this.game.handleMoveClick(e, this.gameCtx, clickX, clickY)
-            //     this.game.drawObjects(this.gameCtx, this.playerCtx)
-            // }
-            
-    
-
-            // window.addEventListener("click", (e) => {
-            // let clickX = e.pageX;
-            // let clickY = e.pageY;
-            // let xStart = 50;
-            // let yStart = 300;
-            // let xEnd = 150;
-            // let yEnd= 340;
-            // if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-            //     this.game.handleMoveClick(e, this.gameCtx)
-            //     this.game.drawObjects(this.gameCtx, this.playerCtx)
-            // }
-            // const piles = this.game.playPositions.concat(this.game.discardPositions)
-            // const piles = this.game.playPiles.concat(this.game.discardPiles)
-            // const pilePositions = this.game
-            // this.game.playPiles.forEach(pile => {
-            //     for (let i = 0; i < piles.length; i++) {
-            //         let xStart = piles[i][0];
-            //         let yStart = piles[i][1];
-            //         // console.log("card y start" + yStart)
-            //         let xEnd = xStart + 140;
-            //         // console.log("card x end" + xEnd)
-            //         let yEnd = yStart + 200;
-            //         handleCardClick(e);
-            //         this.game.drawObjects(this.gameCtx, this.canvas)
-            //     }
-                
-            // })
-        
-        

@@ -6,7 +6,6 @@ class Deck {
         this.deckArray = []
         this.createDeck()
     }
-    
 
     createDeck() {
         const CARDNUMS = [1,1,1,2,2,3,3,4,4,5]

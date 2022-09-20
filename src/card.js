@@ -6,11 +6,12 @@ class Card extends GameObject {
         // this.game = game;
         super(game, color, pos);
         this.touched = false;
+        // this.played = false;
         this.num = num
         this.selected = false;
         this.revealedNum = false;
         this.revealedColor = false;
-        this.discarded = false;
+        // this.discarded = false;
         this.revealed = this.revealedNum && this.revealedColor;
     }
     
@@ -20,7 +21,6 @@ class Card extends GameObject {
         if (!this.selected) {
             this.selected = true
         } else this.selected = false;
-
     }
 
     draw(ctx, revealedColor, revealedNum) {
@@ -35,24 +35,26 @@ class Card extends GameObject {
             ctx.lineWidth = 13;
             ctx.strokeStyle = "#40E0D0";
             ctx.stroke();
-        }else {
+        } else {
             ctx.roundRect(this.pos[0], this.pos[1], 140, 220, 15);
             ctx.lineWidth = 1;
             ctx.strokeStyle = "gray"
             ctx.stroke();
         }
         if (revealedColor) {
+             console.log(revealedColor)
+            console.log("revealed color is true")
             ctx.fillStyle = this.color
             ctx.fill();
         } else {
-            ctx.fillStyle = this.color //"gray"
+            ctx.fillStyle = "gray"
             ctx.fill();
         }
         if (revealedNum) {
             ctx.font = "30px Helvetica"
             ctx.fillStyle="black"
-            ctx.fillText(`${this.pos}`, this.pos[0], this.pos[1]+90)
-            ctx.fillText(`${this.num}`, this.pos[0]+60, this.pos[1]+115)
+            // ctx.fillText(`${this.pos}`, this.pos[0], this.pos[1]+90)
+            ctx.fillText(`${this.num}`, this.pos[0]+20, this.pos[1]+33)
         }
     }
 
