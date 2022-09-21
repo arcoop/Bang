@@ -7,8 +7,9 @@ const { _ } = require('core-js');
 
 
 class Game {
-    constructor(name1, name2) {
+    constructor(name1, name2, ctx) {
         this.score = 0;
+        this.ctx = ctx
         this.deck = new Deck(this)
         this.player1 = new Player(name1);
         this.player2 = new Player(name2);
@@ -89,13 +90,28 @@ class Game {
         cards.forEach(card => {
             if (card.selected) {
                 if (this.validMove(card, playColors)) {
-                    this.playOrDiscard(card, "play", playPositions, playColors)
-                } //else {
-                //     console.log("misplay!")
-                //     this.playOrDiscard(card, "discard", discardPositions, discardColors)
-                // }
+                    this.playOrDiscard(card, "play", playPositions, playColors, this.ctx)
+                } else {
+                    this.misplay(this.ctx)
+                    this.playOrDiscard(card, "discard", discardPositions, discardColors, this.ctx, true)
+                }
             }
         })    
+    }
+
+    delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+    misplay(ctx) {
+        this.numFuses -= 1
+        this.delay(300).then(() => {
+            ctx.font = "30px Futura"
+            ctx.fillStyle = "red"
+            if (this.numFuses === 1 ) {
+                ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 930, 180)
+            } else ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 930, 180)
+        })
     }
 
     handleClueHover(e, type, attribute) {
@@ -116,17 +132,17 @@ class Game {
             }
     } 
 
-    error(num) {
-        switch(num) {
-            case 1:
-                return "not enough clues, must discard or play"
-                break;
-            case "misplay":
-                return "misplay!"
-                break;
-        }
-        // console.log("Not a valid move")
-    }
+    // error(num) {
+    //     switch(num) {
+    //         case 1:
+    //             return "not enough clues, must discard or play"
+    //             break;
+    //         case "misplay":
+    //             return "misplay!"
+    //             break;
+    //     }
+    //     // console.log("Not a valid move")
+    // }
 
     switchTurns() {
         let temp = this.players[0]
@@ -135,25 +151,26 @@ class Game {
         this.currentPlayer = this.players[0]
     }
 
-    playOrDiscard(pivotCard, moveType, positions, allColors) {
+    playOrDiscard(pivotCard, moveType, positions, allColors, ctx, misplay=false) {
         console.log("colors array: " + allColors)
         const cards = this.currentPlayer.hand
         let pivotIdx = cards.indexOf(pivotCard)
         let pile;
-        // console.log("discard piles " + this.discardPiles)
-        if (moveType === "discard") {
-            // console.log("moveType = " + moveType)
-            // if (this.numClues < 8) {
-                this.numClues += 1
+        if (misplay) {
+            pile = this.discardPiles
+        } else if (moveType === "discard") {
+            if (this.numClues < 8) {
+                this.numClues +=1 ;
                 pile = this.discardPiles
-                console.log(pile)
-            // } //else {
-            //     console.log("cannot discard, too many clues")
-            // }
+            } else {
+                ctx.font = "30px Futura"
+                ctx.fillStyle = "red"
+                ctx.fillText(`Must have fewer than 8 clues to discard`, 800, 1000)
+            }
         } else {
             pile = this.playPiles;
-        } 
-        
+        }
+
         this.currentPlayer.hand = this.currentPlayer.hand.slice(0, pivotIdx).concat(this.currentPlayer.hand.slice(pivotIdx + 1))
         
         let colorIdx = allColors.indexOf(pivotCard.color)
@@ -186,25 +203,26 @@ class Game {
         
     }
 
-    giveClue(cards, info) {        
+    giveClue(cards, info, ctx) {   
         if (this.numClues >= 0) {
-            // console.log(cards)
             cards.forEach(card => {
                 console.log(card)
                 card.touched = true;
                 if (info === "color") {
                     card.revealedColor = true;
-                    console.log(card.revealedColor)
                 } else if (info === "number") {
                     card.touched = true;
                     card.revealedNum = true;
-                    console.log(card.revealedNum)
                 }
             })
-            this.numClues -= 1
+            this.delay(200).then(() => {
+                this.numClues -= 1
+            })
             
         } else {
-            console.log("not enough clues")
+            ctx.font = "30px Helvetica"
+            ctx.fillStyle = "red"
+            ctx.fillText(`Not enough clues! You must discard or play.`, 800, 1000)
         }
         
     }

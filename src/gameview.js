@@ -12,7 +12,7 @@ class GameView {
         this.fuses = []
         this.ele = ele
         this.gameCtx = gameCtx
-        this.game = new Game("player1", "player2")
+        this.game = new Game("player1", "player2", this.gameCtx)
 
         const gameBoardPositions = (x, y) => ({
             0: [x, y],
@@ -66,10 +66,20 @@ class GameView {
         gameCtx.drawImage(image, this.width/3 + 60, 350, 500, 700)
     }
 
+    drawGameOver() {
+        this.gameCtx.clearRect(0,0, this.width, this.height)
+        this.gameCtx.font = "100px Cursive"
+        this.gameCtx.fillStyle = "black"
+        this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, this.width/4, 250)
+    }
+
     handleEvents() {
         if (this.game.won()) {
             this.drawWon()
-        } else {
+        } else if (this.game.over()) {
+            this.drawGameOver()
+        }
+        else {
         window.addEventListener("mousemove", (e) => {
             let clickX = e.clientX - e.target.getBoundingClientRect().left;
             let clickY = e.clientY - e.target.getBoundingClientRect().top;
@@ -154,7 +164,7 @@ class GameView {
                             }
                         })
 
-                        this.game.giveClue(cluedCards, "color")
+                        this.game.giveClue(cluedCards, "color", this.gameCtx)
                         this.currentHands().forEach(card => {
                             card.selected = false;
                             card.secondarySelected = false;
@@ -241,6 +251,8 @@ class GameView {
                 })
                 // console.log(pile)
                 pile.forEach(card => {
+                    card.selected = false;
+                    card.touched = false;
                     let orig_pos = card.pos
                     card.pos = [card.pos[0] + xDelta, card.pos[1] +yDelta]
                     card.revealedColor = true;
@@ -272,6 +284,8 @@ class GameView {
                     } else return -1
                 })
                 pile.forEach(card => {
+                    card.selected = false;
+                    card.touched = false;
                     let orig_pos = card.pos
                     card.pos = [card.pos[0] + xDelta, card.pos[1] +yDelta]
                     card.revealedColor = true;
@@ -362,7 +376,6 @@ class GameView {
         gameCtx.beginPath();
         let width = (this.width / 2)
         gameCtx.roundRect(0,4, width, 1000, 30)
-        // gameCtx.roundRect(1200,0,800,1000, 30);
         gameCtx.fillStyle = "#DBDADA";
         gameCtx.fill();
     }
@@ -375,9 +388,11 @@ class GameView {
         gameCtx.font = "20px Futura"
         gameCtx.fillStyle = "black"
         gameCtx.fillText("Score:", 85, 50)
-        gameCtx.font = "40px Futura"
-        gameCtx.strokeStyle = "green"
-        gameCtx.strokeText(`${this.game.score}`, 105, 93)
+        gameCtx.font = "40px Helvetica"
+        gameCtx.fillStyle = "green"
+        gameCtx.fillText(`${this.game.score}`, 105, 93)
+        // gameCtx.strokeStyle = "green"
+        // gameCtx.strokeText(`${this.game.score}`, 105, 93)
     }
 
     renderTurnText(gameCtx) {
