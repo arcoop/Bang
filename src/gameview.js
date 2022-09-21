@@ -14,7 +14,6 @@ class GameView {
         this.gameCtx = gameCtx
         this.game = new Game("player1", "player2")
 
-    
         const gameBoardPositions = (x, y) => ({
             0: [x, y],
             1: [x + 160, y],
@@ -44,47 +43,42 @@ class GameView {
     }
 
     handleEvents() {
-        if (this.game.over()) {
-            if (this.game.won()) {
-                console.log("game won!")
-            } else console.log(`your score is ${this.game.score}`)
-        } else {
-            window.addEventListener("mousemove", (e) => {
-                this.currentHands().forEach(card => {
-                    let clickX = e.clientX - e.target.getBoundingClientRect().left;
-                    let clickY = e.clientY - e.target.getBoundingClientRect().top;
-                    if (card.selected) {
-                        let innerXStart = card.pos[0]
-                        let innerYStart = card.pos[1] + 240
-                        let innerXEnd = innerXStart + 60
-                        let innerYEnd = innerXStart + 60
+        window.addEventListener("mousemove", (e) => {
+            let clickX = e.clientX - e.target.getBoundingClientRect().left;
+            let clickY = e.clientY - e.target.getBoundingClientRect().top;
+            this.game.players[1].hand.forEach(card => {
+                if (card.selected) {
+                    let innerXStart = card.pos[0]
+                    let innerYStart = card.pos[1] + 240
+                    let innerXEnd = innerXStart + 60
+                    let innerYEnd = innerYStart + 60
+                    if ((clickX >= innerXStart && clickX <= innerXEnd) && (clickY >= innerYStart && clickY <= innerYEnd)) {
+                        this.game.handleClueHover(e, "color", card.color)
+                        this.drawObjects(this.gameCtx, "color")
+                    } else {
+                        innerXStart = card.pos[0] + 97
+                        innerYStart = card.pos[1] + 240
+                        innerXEnd = innerXStart + 60
+                        innerYEnd = innerYStart + 60
                         if ((clickX >= innerXStart && clickX <= innerXEnd) && (clickY >= innerYStart && clickY <= innerYEnd)) {
-                            console.log("clue hover")
-                            this.game.handleClueHover("color", card.color)
-                            this.drawObjects(this.gameCtx, "color")
+                            this.game.handleClueHover(e, "number", card.num)
+                            this.drawObjects(this.gameCtx, "number")
                         } else {
-                            innerXStart = card.pos[0] + 97
-                            innerYStart = card.pos[1] + 240
-                            innerXEnd = innerXStart + 60
-                            innerYEnd = innerXStart + 60
-                            if ((clickX >= innerXStart && clickX <= innerXEnd) && (clickY >= innerYStart && clickY <= innerYEnd)) {
-                                console.log("clue hover")
-                                this.game.handleClueHover("number", card.num)
-                                this.drawObjects(this.gameCtx, "number")
-                            } else {
-                                this.drawObjects(this.gameCtx)
-                            }
+                            this.drawObjects(this.gameCtx)
                         }
                     }
-                })
+                }
             })
-            
+        })            
             window.addEventListener("click", (e) => {
                 let clickY = e.clientY - e.target.getBoundingClientRect().top;
                 let clickX = e.clientX - e.target.getBoundingClientRect().left;
     
-                //add any selected logic
-                    this.currentHands().forEach(card => {
+                this.currentHands().forEach(card => {
+                    if (card.selected) {
+                        card.handleCardClick(e)
+                        this.drawObjects(this.gameCtx)
+                    } else {
                         let xStart = card.pos[0];
                         let yStart = card.pos[1];
                         let xEnd = xStart + 140;
@@ -93,27 +87,29 @@ class GameView {
                             card.handleCardClick(e)
                             this.drawObjects(this.gameCtx)
                         }
-                    })
+                    }
+                })
     
-                    let xStart = this.discardPositions[0][0] - 2
-                    let yStart = this.discardPositions[0][1]- 2
-                    let xEnd = this.discardPositions[4][0] + 150
-                    let yEnd = yStart + 225;
-                    if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                        this.game.handleDiscardClick(this.discardPositions, this.discardColors);
-                        this.drawObjects(this.gameCtx)
-                    }
-                    xStart = this.playPositions[0][0] - 2
-                    yStart = this.playPositions[0][1] -2
-                    xEnd = this.playPositions[4][0] + 150;
-                    yEnd = yStart + 225;
-                    if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                        this.game.handlePlayClick(this.playPositions, this.playColors);
-                        this.drawObjects(this.gameCtx)
-                    }
+                let xStart = this.discardPositions[0][0] - 2
+                let yStart = this.discardPositions[0][1]- 2
+                let xEnd = this.discardPositions[4][0] + 150
+                let yEnd = yStart + 230;
+                if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
+                    this.game.handleDiscardClick(e, this.discardPositions, this.discardColors);
+                    this.drawObjects(this.gameCtx)
+                }
+                xStart = this.playPositions[0][0] - 2
+                yStart = this.playPositions[0][1] -2
+                xEnd = this.playPositions[4][0] + 150;
+                yEnd = yStart + 230;
+                if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
+                    this.game.handlePlayClick(this.playPositions, this.playColors);
+                    this.drawObjects(this.gameCtx)
+                }
+                
             })
             this.drawObjects(this.gameCtx)
-        }
+        // }
         
         //add functionality for things to render bigger on mouseover
         
@@ -121,15 +117,15 @@ class GameView {
 
     drawObjects(gameCtx, hoveredStatus) {
         //render errors
-
-        gameCtx.clearRect(0,0,1800,1800)
-        gameCtx.strokeStyle = "black"
+        gameCtx.clearRect(0,0,this.width, this.height)
+        // gameCtx.strokeStyle = "black"
 
         this.setupBackground(gameCtx);
         this.addScoreBox(gameCtx);
         this.addText(gameCtx);
         this.renderDiscardText(gameCtx);
-        this.renderClueText(gameCtx, hoveredStatus);
+        this.renderClueColor(gameCtx, hoveredStatus);
+        this.renderClueNum(gameCtx, hoveredStatus)
         this.renderTurnText(gameCtx);
 
         const handPositions = (x, y) => ({
@@ -225,40 +221,20 @@ class GameView {
         }
 
         //render fuses
-        if (this.game.numFuses < 3) {
-            let length = 3 
-            for (let i = 0; i < length; i++) {
-                let fuse = this.fuses[i]
-                fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
-            }
-            for (let i = length; i < 3; i ++) {
-                fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
-                //draw Xs
-            }
-        } else {
-            for (const fuse of this.fuses) {
-                fuse.draw(gameCtx, fuse.pos[0], fuse.pos[1])
-            }
+        let fuseImg = document.getElementById('fuse')
+        for (let i = 0; i < this.game.numFuses; i++) {
+            let fuse = this.fuses[i]
+            gameCtx.drawImage(fuseImg, fuse.pos[0], fuse.pos[1], 75, 75)
         }
 
-        //render clues
-        if (this.game.numClues < 8) {
-            let length = 8
-            for (let i = 0; i < length; i++) {
-                let clue = this.clues[i]
-                clue.draw(gameCtx, clue.pos[0], clue.pos[1])
-            }
-            for (let i = length; i < 8; i ++) {
-                clue.draw(gameCtx, clue.pos[0], clue.pos[1])
-                //draw Xs
-            }
-        } else {
-            for (const clue of this.clues) {
-                clue.draw(gameCtx, clue.pos[0], clue.pos[1])
-            }
+        let clueImg = document.getElementById('clue')
+        for (let i = 0; i < this.game.numClues; i++) {
+            let clue = this.clues[i]
+            gameCtx.drawImage(clueImg, clue.pos[0], clue.pos[1], 75, 75)
         }
-
+        
     }
+   
 
     addText(gameCtx) {
         gameCtx.font = "50px Helvetica"
@@ -271,36 +247,30 @@ class GameView {
 
     }
 
-    renderClueText(gameCtx, hoveredStatus) {
-     
+    renderClueColor(gameCtx, hoveredStatus) {
         const cards = this.game.players[1].hand
-
         cards.forEach(card => {
             if (card.selected) {
                 gameCtx.beginPath();
                 gameCtx.roundRect(card.pos[0], card.pos[1] + 240, 60, 60, 3);
                 gameCtx.fillStyle = card.color;
                 gameCtx.fill();
-                if (hoveredStatus === "color") {
-                    gameCtx.lineWidth = "40px"
-                    gameCtx.strokeStyle = "pink"
-                    gameCtx.stroke();
-                }
+            }
+        })
+    }
 
+    renderClueNum(gameCtx, hoveredStatus) {
+        const cards = this.game.players[1].hand
+        cards.forEach(card => {
+            if (card.selected) {
                 gameCtx.beginPath();
                 gameCtx.roundRect(card.pos[0] + 80, card.pos[1] + 240, 60, 60, 3);
                 gameCtx.strokeStyle = "black"
                 gameCtx.stroke();
-                if (hoveredStatus === "number") {
-                    gameCtx.lineWidth = "40px"
-                    gameCtx.strokeStyle = "pink"
-                    gameCtx.stroke();
-                }
-
+                gameCtx.beginPath();
                 gameCtx.font = "30px Helvetica"
-                gameCtx.fillStyle = "black"
-                gameCtx.fillText(card.num, card.pos[0] + 97, card.pos[1] + 280)
-
+                gameCtx.strokeStyle = "black"
+                gameCtx.stroke();
             }
         })
     }
@@ -364,16 +334,16 @@ class GameView {
  
     
     createClues() {
-        let x = (this.width/2) - 300
-        let y = 148
+        let x = (this.width/5) - 20
+        let y = 40
         let i = 0;
         while (i < 4) {
             this.clues.push(new Clue(this, "yellow", [x, y]))
             x += 65
             i++
         }
-        y += 70
-        x = (this.width/2) - 300
+        y += 100
+        x = (this.width/5) - 20
         while (i >= 4 && i < 8) {
             this.clues.push(new Clue(this, "yellow", [x, y]))
             x += 65
@@ -382,8 +352,8 @@ class GameView {
     }
 
     createFuses() {
-        let x = (this.width/2) - 290
-        let y = 70
+        let x = (this.width/2) - 300
+        let y = 40
         for(let i = 0; i < 3; i++) {
             this.fuses.push(new Fuse(this, "orange", [x, y]))
             x += 90

@@ -68,7 +68,8 @@ class Game {
     }
 
     
-    handleDiscardClick(discardPositions, allColors) {
+    handleDiscardClick(event, discardPositions, allColors) {
+        event.preventDefault();
         const cards = this.players[0].hand
         cards.forEach(card => {
             if (card.selected) {
@@ -91,47 +92,25 @@ class Game {
         })    
     }
 
-    handleClueHover(type, attribute) {
+    handleClueHover(e, type, attribute) {
+        e.preventDefault();
         const cards = this.players[1].hand
-        let touchedCards;
         if (type === "color") {
-                touchedCards = []
                 cards.forEach(card => {
                     if (card.color === attribute) {
                         card.secondarySelected = true
-                        touchedCards.push(card)
+                        this.giveClue("color")
                     }
                 })
             } else {
-                let touchedCards = []
                 cards.forEach(card => {
                     if(card.num === attribute) {
                         card.secondarySelected = true
                         touchedCards.push(card)
+                        this.giveClue("number")
                     }
                 })
             }
-            window.addEventListener("click", (e) => {
-                let clickY = e.clientY - e.target.getBoundingClientRect().top;
-                let clickX = e.clientX - e.target.getBoundingClientRect().left;
-                cards.forEach(card => {
-                    let innerXStart = card.pos[0]
-                    let innerYStart = card.pos[1] + 240
-                    let innerXEnd = innerXStart + 60
-                    let innerYEnd = innerXStart + 60
-                    if ((clickX >= innerXStart && clickX <= innerXEnd) && (clickY >= innerYStart && clickY <= innerYEnd)) {
-                        this.giveClue(touchedCards, "color")
-                    } else {
-                        innerXStart = card.pos[0] + 80
-                        innerYStart = card.pos[1] + 240
-                        innerXEnd = innerXStart + 60
-                        innerYEnd = innerXStart + 60
-                        if ((clickX >= innerXStart && clickX <= innerXEnd) && (clickY >= innerYStart && clickY <= innerYEnd)) {
-                            this.giveClue(touchedCards, "number")
-                        }
-                    }
-                })
-            })
     } 
 
     error(num) {
@@ -163,13 +142,10 @@ class Game {
         } else {
             if (this.validMove(pivotCard, allColors)) {
                 pile = this.playPiles;
-                // console.log("valid move")
             } else {
-                pile = this.discardPiles;
-                // console.log(this.discardPiles)
+                pile = this.discardPiles;//need to send new positions and colors arrays
                 console.log("misplay")
                 this.numFuses -= 1;
-                console.log(this.numFuses)
             }
         }
         
@@ -188,7 +164,6 @@ class Game {
     }
 
     validMove(currentCard, allColors) {
-        // console.log("all colors" + allColors)
         let colorIdx = allColors.indexOf(currentCard.color)
 
         let pile = this.playPiles[colorIdx]
@@ -201,37 +176,26 @@ class Game {
             if (currentCard.num === 1) return true
         }
         return false;
-        
-        // this.playPiles.forEach(pile) {
-        //     if (pile.length )
-        // }
-
-
-        // const playNums = this.playPiles.map(card => card.num)
+  
         
     }
 
-    giveClue(cards, info) {
-
+    giveClue(card, info) {
         if (this.numClues >= 0) {
-            if (info === "color") {
-                cards.forEach(card => {
+            cards.forEach(card => {
+                card.touched = true;
+                card.selected = false;
+                card.secondarySelected = false;
+                if (info === "color") {
                     card.revealedColor = true;
-                    card.touched = true;
-                    card.selected = false;
-                    console.log(card.revealedColor)
-                })
-            } else if (info === "number") {
-                cards.forEach(card => {
+                } else if (info === "number") {
                     card.revealedNum = true;
-                    card.touched = true;
-                    card.selected = false;
-                })
-            }
+                }
+            })
             this.numClues -= 1
             this.switchTurns();
         } else {
-            this.error(1)
+            console.log("not enough clues")
         }
         
     }

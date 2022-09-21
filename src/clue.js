@@ -6,6 +6,7 @@ class Clue extends GameObject {
         this.radius = 20;
     }
 
+
     draw(ctx, xPos, yPos) {
         ctx.beginPath();
         ctx.arc(xPos, yPos, this.radius, 0, 2*Math.PI, true);
