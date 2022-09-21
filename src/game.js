@@ -25,33 +25,10 @@ class Game {
 
     }
 
-    //game logic:
-    
-    //1. player either discards, plays, or gives clue
-    //2. if discard --> 
-    //  2a. call PlayorDiscard(discard)
-    //      2a.a. update discard piles and positions
-    //      2a.b if num clues < 8, num clues += 1
-    //  2a. switch turns
-    //3. if play -->
-    //  3a. call play or discard(play)
-    //      3a.a check for valid play 
-    //          3.a.a if valid --> update play piles and card position
-    //          3.a.b if not valid --> move to dsicard, fuse -= 1
-    //      switch tunrs
-    //4 if clue -->
-    //      num clues -=1
-    //      clued card.touched = true
-    //      if the clue is color 
-    //          card.revealedColor = true
-    //      else if clue is number
-    //          card.revealedNum = true
-    //  switch turns
-    // 
     draw(ctx, x, y) {
         ctx.roundRect(x, y, 140, 220, 15);
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "black"
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "white"
         ctx.stroke();
     }
 
@@ -132,18 +109,6 @@ class Game {
             }
     } 
 
-    // error(num) {
-    //     switch(num) {
-    //         case 1:
-    //             return "not enough clues, must discard or play"
-    //             break;
-    //         case "misplay":
-    //             return "misplay!"
-    //             break;
-    //     }
-    //     // console.log("Not a valid move")
-    // }
-
     switchTurns() {
         let temp = this.players[0]
         this.players[0] = this.players[1]
@@ -178,6 +143,7 @@ class Game {
         pivotCard.revealedNum = true;
         pivotCard.selected = false;
         pivotCard.pos = positions[colorIdx]
+        if (pivotCard.num === 5) this.numClues += 1
         this.addCard(this.currentPlayer.hand)
         this.switchTurns();
         this.updateScore();

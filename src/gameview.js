@@ -249,19 +249,7 @@ class GameView {
         
         
         //render hands
-        for (let i = 0; i < this.game.currentPlayer.hand.length; i++){
-            let card = this.game.currentPlayer.hand[i]
-            card.pos = this.currentPlayerPositions[i]
-            // card.selected = false;
-            card.secondarySelected = false;
-            card.draw(gameCtx, card.revealedColor, card.revealedNum, hoveredStatus)
-        }
-
-        for (let i = 0; i < this.game.players[1].hand.length; i++) {
-            let card = this.game.players[1].hand[i]
-            card.pos = this.otherPlayerPositions[i]
-            card.draw(gameCtx, true, true, hoveredStatus)
-        }
+        
 
         //render discard piles
         for (let i = 0; i < 5; i ++){
@@ -333,6 +321,20 @@ class GameView {
             }
         }
 
+        for (let i = 0; i < this.game.currentPlayer.hand.length; i++){
+            let card = this.game.currentPlayer.hand[i]
+            card.pos = this.currentPlayerPositions[i]
+            // card.selected = false;
+            card.secondarySelected = false;
+            card.draw(gameCtx, card.revealedColor, card.revealedNum, hoveredStatus)
+        }
+
+        for (let i = 0; i < this.game.players[1].hand.length; i++) {
+            let card = this.game.players[1].hand[i]
+            card.pos = this.otherPlayerPositions[i]
+            card.draw(gameCtx, true, true, hoveredStatus)
+        }
+
         //render fuses
         let fuseImg = document.getElementById('fuse')
         for (let i = 0; i < this.game.numFuses; i++) {
@@ -376,7 +378,7 @@ class GameView {
     renderViewTeammatesHandText() {
         this.gameCtx.font = "20px Futura"
         this.gameCtx.fillStyle = "black"
-        this.gameCtx.fillText(`What does ${this.game.players[1].name} know?`, this.width/6 + 50, this.height/2 - 50,)
+        this.gameCtx.fillText(`What does ${this.game.players[1].name} know?`, this.width/6 + 50, this.height/2 - 30,)
     }
 
     renderClueNum(gameCtx, hoveredStatus, clueNumberPositions) {
@@ -416,6 +418,10 @@ class GameView {
 
     setupBackground(gameCtx) {
         gameCtx.beginPath();
+        gameCtx.rect(0,0,this.width, this.height)
+        gameCtx.fillStyle = "#4B0082"
+        gameCtx.fill();
+        gameCtx.beginPath();
         let shadowWidth = this.width/2 + 6
         gameCtx.roundRect(1, 5, shadowWidth, 1010, 30)
         gameCtx.fillStyle = "#606060"
@@ -423,7 +429,7 @@ class GameView {
         gameCtx.beginPath();
         let width = (this.width / 2)
         gameCtx.roundRect(1,6, width, 1000, 30)
-        gameCtx.fillStyle = "#DBDADA";
+        gameCtx.fillStyle = "#F0F8FF";
         gameCtx.fill();
     }
 
@@ -459,7 +465,7 @@ class GameView {
           
         } else {
             gameCtx.font = "35px Futura"
-            gameCtx.fillStyle = "black"
+            gameCtx.fillStyle = "white"
             gameCtx.fillText("Discard", this.discardPositions[2][0] + 7, this.discardPositions[0][1] - 40) 
             gameCtx.fillText("Play", this.playPositions[2][0] + 32, this.playPositions[0][1] - 40) 
         }
