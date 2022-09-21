@@ -83,11 +83,17 @@ class Game {
         })    
     }
 
-    handlePlayClick(playPositions, allColors) {
+    handlePlayClick(event, discardPositions, playPositions, playColors, discardColors) {
+        event.preventDefault();
         const cards = this.players[0].hand
         cards.forEach(card => {
             if (card.selected) {
-                this.playOrDiscard(card, "play", playPositions, allColors)
+                if (this.validMove(card, playColors)) {
+                    this.playOrDiscard(card, "play", playPositions, playColors)
+                } //else {
+                //     console.log("misplay!")
+                //     this.playOrDiscard(card, "discard", discardPositions, discardColors)
+                // }
             }
         })    
     }
@@ -99,15 +105,12 @@ class Game {
                 cards.forEach(card => {
                     if (card.color === attribute) {
                         card.secondarySelected = true
-                        this.giveClue("color")
                     }
                 })
             } else {
                 cards.forEach(card => {
                     if(card.num === attribute) {
                         card.secondarySelected = true
-                        touchedCards.push(card)
-                        this.giveClue("number")
                     }
                 })
             }
@@ -133,27 +136,30 @@ class Game {
     }
 
     playOrDiscard(pivotCard, moveType, positions, allColors) {
+        console.log("colors array: " + allColors)
         const cards = this.currentPlayer.hand
         let pivotIdx = cards.indexOf(pivotCard)
         let pile;
+        // console.log("discard piles " + this.discardPiles)
         if (moveType === "discard") {
-            if (this.numClues < 8) this.numClues += 1
-            pile = this.discardPiles
+            // console.log("moveType = " + moveType)
+            // if (this.numClues < 8) {
+                this.numClues += 1
+                pile = this.discardPiles
+                console.log(pile)
+            // } //else {
+            //     console.log("cannot discard, too many clues")
+            // }
         } else {
-            if (this.validMove(pivotCard, allColors)) {
-                pile = this.playPiles;
-            } else {
-                pile = this.discardPiles;//need to send new positions and colors arrays
-                console.log("misplay")
-                this.numFuses -= 1;
-            }
-        }
+            pile = this.playPiles;
+        } 
         
         this.currentPlayer.hand = this.currentPlayer.hand.slice(0, pivotIdx).concat(this.currentPlayer.hand.slice(pivotIdx + 1))
         
-    
-        let colorIdx = allColors.indexOf(pivotCard.color)       
+        let colorIdx = allColors.indexOf(pivotCard.color)
+        console.log(pile)       
         pile[colorIdx].push(pivotCard)
+        console.log(pile)
         pivotCard.revealedColor = true;
         pivotCard.revealedNum = true;
         pivotCard.selected = false;
@@ -180,20 +186,19 @@ class Game {
         
     }
 
-    giveClue(card, info) {
+    giveClue(cards, info) {
         if (this.numClues >= 0) {
             cards.forEach(card => {
                 card.touched = true;
-                card.selected = false;
-                card.secondarySelected = false;
                 if (info === "color") {
                     card.revealedColor = true;
                 } else if (info === "number") {
+                    card.touched = true;
                     card.revealedNum = true;
                 }
             })
             this.numClues -= 1
-            this.switchTurns();
+            
         } else {
             console.log("not enough clues")
         }

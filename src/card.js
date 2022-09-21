@@ -24,11 +24,11 @@ class Card extends GameObject {
         } else this.selected = false;
     }
 
-    draw(ctx, revealedColor, revealedNum) {
+    draw(ctx, revealedColor, revealedNum, hoveredStatus) {
         ctx.beginPath();
         if (this.selected || this.secondarySelected) {
             ctx.roundRect(this.pos[0]-1, this.pos[1]-1, 148, 225, 15);
-            ctx.lineWidth = 15;
+            ctx.lineWidth = 20;
             ctx.strokeStyle = "pink";
             ctx.stroke();
         } else if (this.touched) {
@@ -36,7 +36,13 @@ class Card extends GameObject {
             ctx.lineWidth = 13;
             ctx.strokeStyle = "#40E0D0";
             ctx.stroke();
-        } else {
+        } else if (hoveredStatus === true) {
+            ctx.roundRect(this.pos[0], this.pos[1], 140, 220, 15);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "gray"
+            ctx.globalAlpha = .7
+            ctx.stroke();
+        } else {  
             ctx.roundRect(this.pos[0], this.pos[1], 140, 220, 15);
             ctx.lineWidth = 1;
             ctx.strokeStyle = "gray"
@@ -50,9 +56,8 @@ class Card extends GameObject {
             ctx.fill();
         }
         if (revealedNum) {
-            ctx.font = "30px Helvetica"
+            ctx.font = "30px Luminari"
             ctx.fillStyle="black"
-            // ctx.fillText(`${this.pos}`, this.pos[0], this.pos[1]+90)
             ctx.fillText(`${this.num}`, this.pos[0]+20, this.pos[1]+33)
         }
     }

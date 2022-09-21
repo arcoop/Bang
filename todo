@@ -1,1 +1,15 @@
-card positions arent rendering properly because of position on page
+//card positions arent rendering properly because of position on page
+
+
+//  window.addEventListener("mouseover", (e) => {
+        //     this.game.currentHands().forEach(card => {
+        //         let x = card.pos[0]
+        //         let y = card.pos[1]
+        //         let xEnd = x + 140
+        //         let yEnd = x + 220
+        //         if ((clickX >= x && clickX <= xEnd) && (clickY >= y && clickY <= yEnd)) {
+        //             console.log("hovered")
+        //             this.drawObjects(this.gameCtx, "", true)
+        //         }
+        //     })
+        // })        
