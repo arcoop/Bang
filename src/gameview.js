@@ -54,9 +54,22 @@ class GameView {
         this.game.dealCards();
         this.drawObjects(this.gameCtx, this.canvas);
         this.handleEvents();
+        
+    }
+
+    drawWon() {
+        this.gameCtx.clearRect(0,0, this.width, this.height)
+        this.gameCtx.font = "100px Cursive"
+        this.gameCtx.fillStyle = "black"
+        this.gameCtx.fillText("You won!", this.width/3 + 70, 180)
+        let image = document.getElementById("firework")
+        gameCtx.drawImage(image, this.width/3 + 60, 350, 500, 700)
     }
 
     handleEvents() {
+        if (this.game.won()) {
+            this.drawWon()
+        } else {
         window.addEventListener("mousemove", (e) => {
             let clickX = e.clientX - e.target.getBoundingClientRect().left;
             let clickY = e.clientY - e.target.getBoundingClientRect().top;
@@ -133,11 +146,14 @@ class GameView {
                     xEnd = xStart + 60
                     yEnd = yStart + 60
                     if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                        console.log("clicked color")
 
-                        const cluedCards = this.game.players[1].hand.filter(card => {
-                            card.selected || card.secondarySelected
+                        const cluedCards = []
+                        this.game.players[1].hand.forEach(card => {
+                            if (card.selected || card.secondarySelected) {
+                                cluedCards.push(card)
+                            }
                         })
+
                         this.game.giveClue(cluedCards, "color")
                         this.currentHands().forEach(card => {
                             card.selected = false;
@@ -152,9 +168,11 @@ class GameView {
                         xEnd = xStart + 60
                         yEnd = yStart + 60
                         if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                            console.log("clicked num")
-                            const cluedCards = this.game.players[1].hand.filter(card => {
-                                card.selected || card.secondarySelected
+                            const cluedCards = []
+                            this.game.players[1].hand.forEach(card => {
+                                if (card.selected || card.secondarySelected) {
+                                    cluedCards.push(card)
+                                }
                             })
                             this.game.giveClue(cluedCards, "number")
                             this.currentHands().forEach(card => {
@@ -162,6 +180,7 @@ class GameView {
                                 card.secondarySelected = false;
                             })
                             this.game.switchTurns();
+                            this.drawObjects(this.gameCtx)
                         }
 
                         this.drawObjects(this.gameCtx)
@@ -176,26 +195,12 @@ class GameView {
         
         //add functionality for things to render bigger on mouseover
         
-    }
+    } 
+}
 
     drawObjects(gameCtx, hoveredStatus, cardHover = false) {
         //render errors
-        gameCtx.clearRect(0,0,this.width, this.height)
-        // gameCtx.strokeStyle = "black"
-
-        // const handPositions = (x, y) => ({
-        //     0: [x, y],
-        //     1: [x + 160, y],
-        //     2: [x + 320, y],
-        //     3: [x + 480, y],
-        //     4: [x + 640, y],
-        // });
-
-        // const currentPlayerPositions = handPositions(this.width/11, 320);
-        // const otherPlayerPositions = handPositions(currentPlayerPositions[0][0], currentPlayerPositions[0][1] + 320);
-
-        // const clueColorPositions = handPositions(otherPlayerPositions[0][0], otherPlayerPositions[0][1] + 240)
-        // const clueNumberPositions = handPositions(otherPlayerPositions[0][0] + 80, otherPlayerPositions[0][1] + 240)
+        gameCtx.clearRect(0,0, this.width, this.height)
 
         this.setupBackground(gameCtx);
         this.addScoreBox(gameCtx);

@@ -14,14 +14,12 @@ class Deck {
    
         for (let i = 0; i < CARDCOLORS.length; i++) {
             for (let j = 0; j < CARDNUMS.length; j++) {
-                
                 let color = CARDCOLORS[i];
                 let num = CARDNUMS[j]
                 this.deckArray.push(new Card(this.game, color, [], num))
             }
         }
         this.shuffleDeck()
-        
     }
 
     shuffleDeck() {

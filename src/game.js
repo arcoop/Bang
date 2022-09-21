@@ -186,15 +186,19 @@ class Game {
         
     }
 
-    giveClue(cards, info) {
+    giveClue(cards, info) {        
         if (this.numClues >= 0) {
+            // console.log(cards)
             cards.forEach(card => {
+                console.log(card)
                 card.touched = true;
                 if (info === "color") {
                     card.revealedColor = true;
+                    console.log(card.revealedColor)
                 } else if (info === "number") {
                     card.touched = true;
                     card.revealedNum = true;
+                    console.log(card.revealedNum)
                 }
             })
             this.numClues -= 1
@@ -217,6 +221,8 @@ class Game {
         return this.playPiles.every(pile => {
             pile[pile.length - 1] === 5
         })
+
+        // return true;
     }
 
     lost() {

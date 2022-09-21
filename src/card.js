@@ -52,8 +52,10 @@ class Card extends GameObject {
             ctx.fillStyle = this.color
             ctx.fill();
         } else {
-            ctx.fillStyle = "gray"
-            ctx.fill();
+            let image = document.getElementById("card-background")
+            // ctx.fillStyle = "gray"
+            ctx.drawImage(image, this.pos[0] + 6, this.pos[1] + 48, 120, 120)
+            // ctx.fill();
         }
         if (revealedNum) {
             ctx.font = "30px Luminari"
