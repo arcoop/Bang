@@ -7,6 +7,34 @@ html, body {
   margin: 0;
 }
 
+header {
+  background-color: cadetblue;
+}
+header div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+header h1 {
+  display: flex;
+  justify-content: flex-start;
+  margin: 15px;
+  padding: 15px;
+}
+header h2 {
+  display: flex;
+  justify-content: flex-start;
+  margin: 15px;
+  padding-left: 15px;
+}
+header a {
+  margin: 15px;
+  display: flex;
+}
+header i {
+  font-size: 50px;
+}
+
 img {
   display: none;
 }

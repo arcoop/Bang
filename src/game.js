@@ -51,7 +51,7 @@ class Game {
     draw(ctx, x, y) {
         ctx.roundRect(x, y, 140, 220, 15);
         ctx.lineWidth = 1;
-        ctx.strokeStyle = "gray"
+        ctx.strokeStyle = "black"
         ctx.stroke();
     }
 
@@ -152,7 +152,6 @@ class Game {
     }
 
     playOrDiscard(pivotCard, moveType, positions, allColors, ctx, misplay=false) {
-        console.log("colors array: " + allColors)
         const cards = this.currentPlayer.hand
         let pivotIdx = cards.indexOf(pivotCard)
         let pile;
@@ -174,9 +173,7 @@ class Game {
         this.currentPlayer.hand = this.currentPlayer.hand.slice(0, pivotIdx).concat(this.currentPlayer.hand.slice(pivotIdx + 1))
         
         let colorIdx = allColors.indexOf(pivotCard.color)
-        console.log(pile)       
         pile[colorIdx].push(pivotCard)
-        console.log(pile)
         pivotCard.revealedColor = true;
         pivotCard.revealedNum = true;
         pivotCard.selected = false;
@@ -206,7 +203,6 @@ class Game {
     giveClue(cards, info, ctx) {   
         if (this.numClues >= 0) {
             cards.forEach(card => {
-                console.log(card)
                 card.touched = true;
                 if (info === "color") {
                     card.revealedColor = true;
@@ -260,11 +256,10 @@ class Game {
         return cards;
     }
 
-    anyCardsSelected() {
-        const cards = this.players[0].hand.concat(this.players[1])
-        console.log(this.currentHands().some(card => card.selected))
-        return this.currentHands().some(card => card.selected)
-    }
+    // anyCardsSelected() {
+    //     const cards = this.players[0].hand.concat(this.players[1])
+    //     return this.currentHands().some(card => card.selected)
+    // }
 
 
 }

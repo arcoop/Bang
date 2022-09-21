@@ -39,13 +39,12 @@ class Card extends GameObject {
         } else if (hoveredStatus === true) {
             ctx.roundRect(this.pos[0], this.pos[1], 140, 220, 15);
             ctx.lineWidth = 1;
-            ctx.strokeStyle = "gray"
-            ctx.globalAlpha = .7
+            ctx.strokeStyle = "black"
             ctx.stroke();
         } else {  
             ctx.roundRect(this.pos[0], this.pos[1], 140, 220, 15);
             ctx.lineWidth = 1;
-            ctx.strokeStyle = "gray"
+            ctx.strokeStyle = "black"
             ctx.stroke();
         }
         if (revealedColor) {

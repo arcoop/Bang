@@ -72,7 +72,7 @@ class GameView {
         this.gameCtx.fillStyle = "black"
         this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, this.width/4, 250)
     }
-
+    
     handleEvents() {
         if (this.game.won()) {
             this.drawWon()
@@ -83,6 +83,7 @@ class GameView {
         window.addEventListener("mousemove", (e) => {
             let clickX = e.clientX - e.target.getBoundingClientRect().left;
             let clickY = e.clientY - e.target.getBoundingClientRect().top;
+
             this.game.players[1].hand.forEach(card => {
                 if (card.selected) {
                     let innerXStart = card.pos[0]
@@ -107,17 +108,28 @@ class GameView {
                     }
                 }
             })
+
+            this.game.players[1].hand.forEach(card => {
+                let xStart = card.pos[0];
+                let yStart = card.pos[1];
+                let xEnd = xStart + 140;
+                let yEnd = yStart + 220;
+                if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
+                    this.game.players[1].hand.forEach(innerCard => {
+                        if (innerCard.secondarySelected) {
+                            innerCard.secondarySelected = false
+                        }
+                    })
+                }
+
+            })
         })
         window.addEventListener("click", (e) => {
             let clickX = e.clientX - e.target.getBoundingClientRect().left;
             let clickY = e.clientY - e.target.getBoundingClientRect().top;
 
-            //selecting a card
+
             this.currentHands().forEach(card => {
-                // if (card.selected) {
-                //     card.handleCardClick(e)
-                //     this.drawObjects(this.gameCtx)
-                // } else {
                     let xStart = card.pos[0];
                     let yStart = card.pos[1];
                     let xEnd = xStart + 140;
@@ -129,6 +141,7 @@ class GameView {
                 // }
             })
 
+            
     
             let xStart = this.discardPositions[0][0] - 2
             let yStart = this.discardPositions[0][1]- 2
@@ -139,6 +152,7 @@ class GameView {
                 this.drawObjects(this.gameCtx)
 
             }
+
             xStart = this.playPositions[0][0] - 2
             yStart = this.playPositions[0][1] -2
             xEnd = this.playPositions[4][0] + 150;
@@ -198,6 +212,18 @@ class GameView {
                 }
             }
 
+            console.log(clickX, clickY)
+            xStart = this.width/6 - 25
+            console.log(xStart)
+            yStart = this.height/2 - 80
+            xEnd = xStart + 500
+            yEnd = yStart + 50
+            if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
+                console.log("calling next method")
+                this.viewTeammatesPerspective();
+            }
+
+
             
         })
         this.drawObjects(this.gameCtx)
@@ -219,7 +245,7 @@ class GameView {
         this.renderClueColor(gameCtx, hoveredStatus, this.clueColorPositions);
         this.renderClueNum(gameCtx, hoveredStatus, this.clueNumberPositions)
         this.renderTurnText(gameCtx);
-
+        this.renderViewTeammatesHandText();
         
         
         //render hands
@@ -311,13 +337,13 @@ class GameView {
         let fuseImg = document.getElementById('fuse')
         for (let i = 0; i < this.game.numFuses; i++) {
             let fuse = this.fuses[i]
-            gameCtx.drawImage(fuseImg, fuse.pos[0], fuse.pos[1], 75, 75)
+            gameCtx.drawImage(fuseImg, fuse.pos[0], fuse.pos[1], 75, 70)
         }
 
         let clueImg = document.getElementById('clue')
         for (let i = 0; i < this.game.numClues; i++) {
             let clue = this.clues[i]
-            gameCtx.drawImage(clueImg, clue.pos[0], clue.pos[1], 75, 75)
+            gameCtx.drawImage(clueImg, clue.pos[0], clue.pos[1], 74, 75)
         }
         
     }
@@ -347,6 +373,12 @@ class GameView {
         }
     }
 
+    renderViewTeammatesHandText() {
+        this.gameCtx.font = "20px Futura"
+        this.gameCtx.fillStyle = "black"
+        this.gameCtx.fillText(`What does ${this.game.players[1].name} know?`, this.width/6 + 50, this.height/2 - 50,)
+    }
+
     renderClueNum(gameCtx, hoveredStatus, clueNumberPositions) {
         const cards = this.game.players[1].hand
         for (let i = 0; i < cards.length; i ++) {
@@ -372,10 +404,25 @@ class GameView {
         return false;
     }
 
+    viewTeammatesPerspective() {
+        this.game.players[1].hand.forEach(card => {
+            this.gameCtx.clearRect(card.pos[0], card.pos[1], 140, 220)
+            card.draw(this.gameCtx, card.revealedColor, card.revealedNum, false)
+            this.game.delay(1000).then(() => {
+                this.drawObjects(this.gameCtx)
+            })
+        })
+    }
+
     setupBackground(gameCtx) {
         gameCtx.beginPath();
+        let shadowWidth = this.width/2 + 6
+        gameCtx.roundRect(1, 5, shadowWidth, 1010, 30)
+        gameCtx.fillStyle = "#606060"
+        gameCtx.fill();
+        gameCtx.beginPath();
         let width = (this.width / 2)
-        gameCtx.roundRect(0,4, width, 1000, 30)
+        gameCtx.roundRect(1,6, width, 1000, 30)
         gameCtx.fillStyle = "#DBDADA";
         gameCtx.fill();
     }
@@ -405,16 +452,16 @@ class GameView {
         const cards = this.game.currentPlayer.hand
  
         if (cards.some(card => card.selected)) {
-            gameCtx.font = "45px Helvetica"
+            gameCtx.font = "45px Futura"
             gameCtx.strokeStyle = "red"
             gameCtx.strokeText("Discard", this.discardPositions[0][0] + 325, this.discardPositions[0][1] - 40)
             gameCtx.strokeText("Play", this.playPositions[2][0] + 32, this.playPositions[0][1] - 40)
           
         } else {
-            gameCtx.font = "35px Helvetica"
-            gameCtx.strokeStyle = "black"
-            gameCtx.strokeText("Discard", this.discardPositions[2][0] + 7, this.discardPositions[0][1] - 40) 
-            gameCtx.strokeText("Play", this.playPositions[2][0] + 32, this.playPositions[0][1] - 40) 
+            gameCtx.font = "35px Futura"
+            gameCtx.fillStyle = "black"
+            gameCtx.fillText("Discard", this.discardPositions[2][0] + 7, this.discardPositions[0][1] - 40) 
+            gameCtx.fillText("Play", this.playPositions[2][0] + 32, this.playPositions[0][1] - 40) 
         }
     } 
 

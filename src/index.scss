@@ -4,6 +4,39 @@ html, body {
     margin: 0;
     // display: flex;
 }
+header {
+
+    background-color:  cadetblue;
+
+    div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    h1 {
+        display: flex;
+        justify-content: flex-start;
+        margin: 15px;
+        padding: 15px;
+    }
+    h2 {
+        display: flex;
+        justify-content: flex-start;
+        margin: 15px;
+        padding-left: 15px;
+
+    }
+   
+    a {
+        margin: 15px;
+        display: flex;
+    }
+    i {
+        font-size: 50px;
+    }
+}
+
 img {
     display: none;
 }

@@ -14,11 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // const gameView = new GameView(ele, gameCtx, playerCtx);
     const gameView = new GameView(ele, gameCtx, gameCanvasEl);
     window.gameCtx = gameCtx;
+    // gameView.renderstartPage();
     gameView.start();
     // gameView.handleEvents();
     
   })
-  
   
   // canvasEl.width = window.innerWidth
   // canvasEl.height = window.innerHeight
