@@ -29,9 +29,15 @@ aside {
 }
 
 #submit-button {
-  font-size: large;
+  font-size: 30px;
   margin: 15px;
+  padding: 8px;
+}
+
+input {
+  margin: 10px;
   padding: 15px;
+  font-size: 20px;
 }
 
 header {

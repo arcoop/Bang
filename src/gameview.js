@@ -363,7 +363,7 @@ class GameView {
             this.gameCtx.clearRect(0,0, this.width, this.height)
             this.gameCtx.font = "100px Albert Sans"
             this.gameCtx.fillStyle = "black"
-            this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, 300, 350)
+            this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, 280, 350)
 
         }
         
