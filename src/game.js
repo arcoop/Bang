@@ -86,8 +86,8 @@ class Game {
             ctx.font = "30px Futura"
             ctx.fillStyle = "red"
             if (this.numFuses === 1 ) {
-                ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 930, 180)
-            } else ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 930, 180)
+                ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 900, 90)
+            } else ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 700, 40)
         })
     }
 
@@ -194,7 +194,17 @@ class Game {
         this.playPiles.forEach(pile => {
             if (pile.length > 0) score += pile[pile.length - 1].num
         })
-        return this.score = score
+        this.score = score
+        if (this.won()) {this.drawWon()}
+    }
+
+    drawWon() {
+        this.ctx.clearRect(0,0, this.width, this.height)
+        this.ctx.font = "100px Cursive"
+        this.ctx.fillStyle = "black"
+        this.ctx.fillText("You won!", this.width/3 + 70, 180)
+        let image = document.getElementById("firework")
+        this.ctx.drawImage(image, this.width/3 + 60, 350, 500, 700)
     }
 
     won() {

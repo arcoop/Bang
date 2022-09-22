@@ -57,15 +57,6 @@ class GameView {
         
     }
 
-    drawWon() {
-        this.gameCtx.clearRect(0,0, this.width, this.height)
-        this.gameCtx.font = "100px Cursive"
-        this.gameCtx.fillStyle = "black"
-        this.gameCtx.fillText("You won!", this.width/3 + 70, 180)
-        let image = document.getElementById("firework")
-        gameCtx.drawImage(image, this.width/3 + 60, 350, 500, 700)
-    }
-
     drawGameOver() {
         this.gameCtx.clearRect(0,0, this.width, this.height)
         this.gameCtx.font = "100px Cursive"
@@ -212,9 +203,7 @@ class GameView {
                 }
             }
 
-            console.log(clickX, clickY)
             xStart = 4
-            console.log(xStart)
             yStart = 710
             xEnd = xStart + 258
             yEnd = yStart + 25
@@ -283,7 +272,6 @@ class GameView {
                         return 1
                     } else return -1
                 })
-                // console.log(pile)
                 pile.forEach(card => {
                     card.selected = false;
                     card.touched = false;
