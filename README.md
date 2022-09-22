@@ -15,15 +15,20 @@ On a given turn, they can either:
 3. Give the other player a clue about either the color or the number (not both) of cards in their hand. Any clue about one card much be given about all the cards that fit the same attribute (ie if there are three 4s you must clue about all of them.)
 ### Playing
 In order to play a card, select the card you'd like to play and then click anywhere in the "play area", as seen in the image below. 
+![Selected Card](assets/selected_card.png)
+![Played Card](assets/played_card.png)
 A card is playable if it is one number higher than the previous card on the board of that color. For example a purple 2 is playable if there is already a purple 1 played. 
 #### Misplays
 If an unplayable card is played, this is considered a "misfire." There are three misfires per game, represented by the fuses in the top right corner (see image).
+![Misfire](assets/misfire.png)
 ### Discarding
 Similarly, to discard, select the card you'd like to discard and then click anywhere in the "discard area." 
 Conventionally, players should discard from the rightmost card of their untouched cards. A touched card referes to any card that has been clued. In this app those will be indicated by a light blue border. See image for details.
+![Discard Conventions](assets/discard_convention.png)
 ### Clueing
 There are 8 clues in the game.
 In order to clue a card, click on the card in the other player's hand that you would like to clue. A box will pop up below where you can choose either the color or the number. Whichever you choose will automatically select the other cards in the hand that match that attribute. Those cards will now become "touched."
+![Touched Cards](assets/touched_cards.png) 
 ### End of a turn
 A turn ends after either playing, discarding, or clueing. In this app, the hands will switch and you will now play as the other player.
 
@@ -34,10 +39,6 @@ The game goes until either:
 - The deck is empty
 
 
-With some pictures or gifs demoing your project
-Technical implementation details with (good-looking) code snippets.
-To-dos / future features.
-
 ## Technologies Used
 This app was built entirely using Canvas to draw, select, and animate the game elements.
 I used Google Fonts to implement fonts that are universally available rather than broswer-dependent.
@@ -45,7 +46,14 @@ In addition, I used Webpack and Babel to bundle the Javascript code and npm to m
 
 
 ## Technical Implementation
-This app was built on Canvas, relying on event listeners and the positions of items in order to make the game move.
+The logic of this game was build in JavaScript. I built a Game class, a Deck class, a Card class, a Game Objects class which is extended by the Clue and Fuse classes, and a Player class.
+The logic for discarding, playing, clueing, updating the score, and switching turns takes place in the Game class.
+
+
+The app was built on Canvas, relying on event listeners and the positions of items in order to make the game move. 
+
+
+
 The game starts with an HTML Aside element where users can log in. The Javascript captures their names, rendering the game canvas and starting a new game with the players' names.
 There is an event listener for click and mouseover which compares the location of cards to the location of the mouse in order to determine if a card was clicked. A click of a card triggers the drawObjects method which will redraw the cards based on their "selected" status.
 A click of the "play" or "discard" areas will update the card's position and trigger drawObjects which will read the card's position and draw them there.

@@ -16,7 +16,9 @@ class GameView {
         this.ele = ele
         this.gameCtx = gameCtx
         this.game = new Game(player1name, player2name, this.gameCtx)
-        
+
+
+        //create dynamic positions for all play and discard cards
         const gameBoardPositions = (x, y) => ({
             0: [x, y],
             1: [x + 160, y],
@@ -34,6 +36,7 @@ class GameView {
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         
+        //create dynamic positions for all dealt hands
         const handPositions = (x, y) => ({
             0: [x, y],
             1: [x + 160, y],
@@ -50,7 +53,6 @@ class GameView {
     }
 
     
-    
     start() {
         this.playColors.sort((a, b) => 0.5 - Math.random());
         this.discardColors.sort((a, b) => 0.5 - Math.random());
@@ -59,20 +61,18 @@ class GameView {
         this.game.dealCards();
         this.drawObjects(this.gameCtx, this.canvas);
         this.handleEvents();
-        
     }
     
+    //bulk of game logic in event listeners:
     handleEvents() {
-        // if (this.game.won()) {
-        //     this.drawWon()
-        // } else if (this.game.over()) {
-        //     this.game.drawGameOver()
-        // }
-        // else {
+
             window.addEventListener("mousemove", (e) => {
+
+                //bind mouse cursor to canvas location
                 let clickX = e.clientX - e.target.getBoundingClientRect().left;
                 let clickY = e.clientY - e.target.getBoundingClientRect().top;
                 
+                //when hovering over a specific clue type, select all cards that fit the attribute of the hovered clue 
                 this.game.players[1].hand.forEach(card => {
                     if (card.selected) {
                         let innerXStart = card.pos[0]
@@ -98,6 +98,7 @@ class GameView {
                     }
                 })
                 
+                //when mouse moves off the clue object, deselect related cards
                 this.game.players[1].hand.forEach(card => {
                     let xStart = card.pos[0];
                     let yStart = card.pos[1];
@@ -113,11 +114,12 @@ class GameView {
                     
                 })
             })
+
             window.addEventListener("click", (e) => {
                 let clickX = e.clientX - e.target.getBoundingClientRect().left;
                 let clickY = e.clientY - e.target.getBoundingClientRect().top;
                 
-                
+                // change a clicked card to selected state
                 this.currentHands().forEach(card => {
                     let xStart = card.pos[0];
                     let yStart = card.pos[1];
@@ -127,11 +129,10 @@ class GameView {
                         card.handleCardClick(e)
                         this.drawObjects(this.gameCtx)
                     }
-                    // }
                 })
                 
                 
-                
+                // move a selected card to discard pile
                 let xStart = this.discardPositions[0][0] - 2
                 let yStart = this.discardPositions[0][1]- 2
                 let xEnd = this.discardPositions[4][0] + 150
@@ -142,6 +143,7 @@ class GameView {
                     
                 }
                 
+                //move a selected card to play pile
                 xStart = this.playPositions[0][0] - 2
                 yStart = this.playPositions[0][1] -2
                 xEnd = this.playPositions[4][0] + 150;
@@ -150,6 +152,7 @@ class GameView {
                     this.game.handlePlayClick(e, this.discardPositions, this.playPositions, this.playColors, this.discardColors);
                     this.drawObjects(this.gameCtx)
                 }
+                
                 
                 for (let i = 0; i < this.game.players[1].hand.length; i ++) {
                     let card = this.game.players[1].hand[i]
@@ -226,7 +229,7 @@ class GameView {
             let card = cards[i]
             if (card.selected) {
                 numImage = document.getElementById(`${card.num}`)
-                this.gameCtx.drawImage(numImage, card.pos[0] + 90, card.pos[1] + 258, 20, 20)
+                this.gameCtx.drawImage(numImage, card.pos[0] + 90, card.pos[1] + 258, 20, 30)
                 // this.gameCtx.beginPath();
                 // this.gameCtx.roundRect(this.clueNumberPositions[i][0],this.clueNumberPositions[i][1], 60, 60, 3);
                 // this.gameCtx.strokeStyle = "black"
@@ -414,6 +417,7 @@ class GameView {
         gameCtx.fillText(`${this.game.score}`, 70, 80)
     }
     
+
     renderViewTeammatesHandText() {
         this.gameCtx.font = "20px Albert Sans"
         this.gameCtx.fillStyle = "black"

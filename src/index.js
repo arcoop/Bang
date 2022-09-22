@@ -16,8 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const player1TextInput = document.getElementById('player-1-name')
       const player2TextInput = document.getElementById('player-2-name')
-      player1Name = player1TextInput.value
-      player2Name = player2TextInput.value
+      if (player1TextInput.value === "") {
+        player1Name = "Player 1"
+      } else {
+        player1Name = player1TextInput.value[0].toUpperCase()+player1TextInput.value.slice(1)
+      }
+      if (player2TextInput.value === "") {
+        player2Name = "Player 2"
+      } else {
+        player2Name = player2TextInput.value[0].toUpperCase()+player2TextInput.value.slice(1)
+      }
       const aside = document.getElementById('welcome-screen')
       aside.classList.toggle("hidden")
       const gameView = new GameView(ele, gameCtx, gameCanvasEl, player1Name, player2Name);

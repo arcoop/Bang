@@ -51,7 +51,7 @@ class Card extends GameObject {
             ctx.drawImage(image, this.pos[0] + 6, this.pos[1] + 48, 120, 120)
         }
         if (revealedNum) {
-            ctx.font = "30px Luminari"
+            ctx.font = "30px Albert Sans"
             ctx.fillStyle="black"
             ctx.fillText(`${this.num}`, this.pos[0]+20, this.pos[1]+33)
         }

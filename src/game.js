@@ -24,7 +24,6 @@ class Game {
         this.discardSelected = false;
         this.won = false
         this.over = false;
-
     }
 
     draw(ctx, x, y) {
@@ -47,7 +46,7 @@ class Game {
         }
     }
 
-    
+    //Discard Click Logic
     handleDiscardClick(event, discardPositions, allColors) {
         event.preventDefault();
         const cards = this.players[0].hand
@@ -63,6 +62,7 @@ class Game {
         })    
     }
 
+    //Play Click Logic
     handlePlayClick(event, discardPositions, playPositions, playColors, discardColors) {
         event.preventDefault();
         const cards = this.players[0].hand
@@ -132,6 +132,7 @@ class Game {
         }
     }
 
+    //Play or Dicard moves use similar logic so they are in one method.
     playOrDiscard(pivotCard, moveType, positions, allColors, ctx, misplay=false) {
         const cards = this.currentPlayer.hand
         let pivotIdx = cards.indexOf(pivotCard)
@@ -178,10 +179,8 @@ class Game {
             if (currentCard.num === 1) return true
         }
         return false;
-  
-        
     }
-
+    
     giveClue(cards, info) {   
         if (this.numClues > 0) {
             cards.forEach(card => {
@@ -200,26 +199,16 @@ class Game {
             this.ctx.fillStyle = "red"
             this.ctx.fillText(`Not enough clues! You must discard or play.`, 50, 300)
         }
-        
     }
 
+
     updateScore() {
-        // if (this.won()) {
-        //     this.drawWon();
-        // } else if (this.over()){
-        //     this.drawGameOver();
-        // } else {
+            //needs to update every time because it should only check the top card of the play pile. Otherwise it would add to the previous score each turn.
             let score = 0
             this.playPiles.forEach(pile => {
                 if (pile.length > 0) score += pile[pile.length - 1].num
             })
             this.score = score
-            // if (this.won()) {
-            //     this.drawWon();
-            // } else if (this.over ){
-            //     this.drawGameOver();
-            // }
-        // }
     }
 
     drawWon() {
@@ -239,36 +228,15 @@ class Game {
         this.ctx.fillText(`Game Over! Your score was ${this.score}!`, 500, 500)
     }
 
-    // won() {
-    //     return this.score === 25
-    // }
-
-    // lost() {
-    //    return this.over() && !this.won()
-    // }
-
     deckEmpty() {
         return this.deck.deckArray.length === 0;
     }
-
-    // over() {
-    //     return this.deckEmpty() || this.numFuses === 0
-    //     // return this.numTurns === 0 || this.numFuses === 0
-    // }
 
     currentHands() {
         const cards = this.players[0].hand.concat(this.players[1].hand)
         return cards;
     }
 
-    // anyCardsSelected() {
-    //     const cards = this.players[0].hand.concat(this.players[1])
-    //     return this.currentHands().some(card => card.selected)
-    // }
-
-
 }
-
-
 
 module.exports = Game;
