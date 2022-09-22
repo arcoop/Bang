@@ -127,7 +127,7 @@ class Game {
                 this.numClues +=1 ;
                 pile = this.discardPiles
             } else {
-                ctx.font = "30px Futura"
+                ctx.font = "30px Futura, Trebuchet MS, Arial, sans-serif"
                 ctx.fillStyle = "red"
                 ctx.fillText(`Must have fewer than 8 clues to discard`, 800, 1000)
             }
@@ -166,8 +166,8 @@ class Game {
         
     }
 
-    giveClue(cards, info, ctx) {   
-        if (this.numClues >= 0) {
+    giveClue(cards, info) {   
+        if (this.numClues > 0) {
             cards.forEach(card => {
                 card.touched = true;
                 if (info === "color") {
@@ -177,14 +177,12 @@ class Game {
                     card.revealedNum = true;
                 }
             })
-            this.delay(200).then(() => {
-                this.numClues -= 1
-            })
+            this.numClues -= 1
             
         } else {
-            ctx.font = "30px Helvetica"
-            ctx.fillStyle = "red"
-            ctx.fillText(`Not enough clues! You must discard or play.`, 800, 1000)
+            this.ctx.font = "30px Helvetica"
+            this.ctx.fillStyle = "red"
+            this.ctx.fillText(`Not enough clues! You must discard or play.`, 50, 300)
         }
         
     }
