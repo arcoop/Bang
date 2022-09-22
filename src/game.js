@@ -199,12 +199,12 @@ class Game {
             this.playPiles.forEach(pile => {
                 if (pile.length > 0) score += pile[pile.length - 1].num
             })
-        //     this.score = score
-        //     if (this.won()) {
-        //         this.drawWon();
-        //     } else if (this.over ){
-        //         this.drawGameOver();
-        //     }
+            this.score = score
+            // if (this.won()) {
+            //     this.drawWon();
+            // } else if (this.over ){
+            //     this.drawGameOver();
+            // }
         // }
     }
 
