@@ -4,7 +4,7 @@
 
 ## Instructions:
 Bang! is based on the classic tabletop card game, [Hanabi](https://boardgamegeek.com/boardgame/98778/hanabi). 
-In this game, two players work together towards the end foal of building the perfect firework show.
+In this game, two players work together towards the goal of building the perfect firework show.
 The game consists of 5 suits (differentiated by color). Each suit has one 1, two 2s, two 3s, two 4s, and one 5 (40 cards total).
 The perfect firework show is represented by having played the numbers 1-5 in every color on the board.
 While Bang is a two-person game, this app is currently intended for one person two simulate the two-person experience. 
@@ -23,7 +23,7 @@ Similarly, to discard, select the card you'd like to discard and then click anyw
 Conventionally, players should discard from the rightmost card of their untouched cards. A touched card referes to any card that has been clued. In this app those will be indicated by a light blue border. See image for details.
 ### Clueing
 There are 8 clues in the game.
-In order to clue a card, click on the card in the other player's hand that you would like to discard. A box will pop up below where you can choose either the color or the number. Whichever you choose will automatically select the other cards in the hand that match that attribute. Those cards will now become "touched."
+In order to clue a card, click on the card in the other player's hand that you would like to clue. A box will pop up below where you can choose either the color or the number. Whichever you choose will automatically select the other cards in the hand that match that attribute. Those cards will now become "touched."
 ### End of a turn
 A turn ends after either playing, discarding, or clueing. In this app, the hands will switch and you will now play as the other player.
 
@@ -45,59 +45,19 @@ In addition, I used Webpack and Babel to bundle the Javascript code and npm to m
 
 
 ## Technical Implementation
+This app was built on Canvas, relying on event listeners and the positions of items in order to make the game move.
+The game starts with an HTML Aside element where users can log in. The Javascript captures their names, rendering the game canvas and starting a new game with the players' names.
+There is an event listener for click and mouseover which compares the location of cards to the location of the mouse in order to determine if a card was clicked. A click of a card triggers the drawObjects method which will redraw the cards based on their "selected" status.
+A click of the "play" or "discard" areas will update the card's position and trigger drawObjects which will read the card's position and draw them there.
+The game also tracks the score using an updateScore method.
+Users can also toggle the view so that they can see what the other player knows about their hand.
 
-
-# Functionality & MVPs
-## In Bang! users will be able to:
-- Start a new game
-- View their teammate's cards
-- Select cards to clue, discard, or play
-- View their points and progress throughout the game
-- End a game
-
-## In addition, this project will include:
-- An AI player version
-- An extra suit for choosing various settings
-- Toggle the view so they can see what information their partner has
-- an "Undo move" feature
-- a "Replay" feature where players can view the last few movies
-- instructions
-- README
-
-## Wireframes
-[https://wireframe.cc/pegn8d]
-- Game controls will include new game, end game, undo last move (bonus)
-- Red cards will be various colors based on their suits
-
-
-## Technologies, Libraries, APIs
-For this project I will use:
-- Canvas to build and draw the game elements.
-- DOM to create HTML elements. 
-- Webpack and Babel to bundle the Javascript code
-- npm to manage dependencies
-I am also considering using:
-- [This library](https://github.com/einaregilsson/cards.js) which provides code for creating playing cards. Since my game does not use the standard deck of cards, I would need to modify the cards to reflect the deck I'm using.
-- [Firebase](https://firebase.google.com/docs/games/setup) to make the two-player user experience smoother.
-
-## Implementation Timeline
-- Friday afternoon and Weekend:
-    - Continue researching libraries
-    - Begin rendering elements using Canvas and DOM
-    - Create player class and deck
-- Monday:
-    - Create game class
-    - Begin implementing game logic
-- Tuesday
-    - Create working controllers to start and end game
-- Wednesday
-    - Finish rendering elements and complete game functionality
-    - Work on styling game
-    - Begin work on AI logic
-- Thursday
-    - Finish up project
-    - Deploy to GitHub
-
+## To Dos and Bonus Features
+I am working towards creating a computer player class with some basic AI functionality. 
+The computer will prioritize when to give clues, discard, or play.
+I would also like to introduce an "undo" feature that users can use to redo a play when desired.
+I hope to create a sixth suit, as the original game has, which will allow users to choose from a variety of difficulty settings.
+I will also work towards a log that tracks and prints recent moves.
 
 
 

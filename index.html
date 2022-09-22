@@ -21,7 +21,7 @@
     <img id="5" src="https://svgsilh.com/svg/146025.svg" alt="">
     <script src="https://kit.fontawesome.com/6111c8d6d3.js" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="noselect">
     <header>
         <div>
             <h1>Bang!</h1>
@@ -43,6 +43,26 @@
             <label>Player 2 name:
                 <input id="player-2-name" type="text">
             </label>
+            <div>
+                <h3>Instructions:</h3>
+                <p>The goal of this game is to build the perfect fireworks show by playing the cards 1-5 in each of the five colors.</p>
+                <p>Users interacting with this app will be simulating a two-player game by acting as both players.</p>
+                <p>On a given turn, a user can:
+                    <ul> 
+                        <li>
+                            Play a card: Select the card you'd like to play and then click anywhere in the "play area".
+                        </li>
+                        <br>
+                        <li>
+                            Discard a card: Conventionally, players should discard from the rightmost card of their untouched card. A "touched" card is any card that has been clued. In this app, that will be indicated by a blue border.
+                        </li>
+                        <br>
+                        <li>
+                            Give a clue: click on the card in the other player's hand that you would like to clue. A box will pop up below where you can choose either the color or the number. Whichever you choose will automatically select the other cards in the hand that match that attribute.
+                        </li>
+                    </ul>
+                </p>
+            </div>
             <button id="submit-button" type="submit">Start game!</button>
         </aside>
     </div>
