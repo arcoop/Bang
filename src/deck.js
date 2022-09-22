@@ -23,6 +23,7 @@ class Deck {
     }
 
     shuffleDeck() {
+        //common deck shuffling method that I found on Stack Overflow
         const shuffledArr = this.deckArray.sort((a, b) => 0.5 - Math.random());
 
         return this.deckArray = shuffledArr;

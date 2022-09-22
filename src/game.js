@@ -154,6 +154,7 @@ class Game {
 
         this.currentPlayer.hand = this.currentPlayer.hand.slice(0, pivotIdx).concat(this.currentPlayer.hand.slice(pivotIdx + 1))
         
+        //move card to the play or discard pile that matches the color of the card
         let colorIdx = allColors.indexOf(pivotCard.color)
         pile[colorIdx].push(pivotCard)
         pivotCard.revealedColor = true;
@@ -166,6 +167,7 @@ class Game {
         this.updateScore();
     }
 
+    //check if the current card is playable (is equal to one more than the last card played of its color)
     validMove(currentCard, allColors) {
         let colorIdx = allColors.indexOf(currentCard.color)
 
@@ -180,7 +182,8 @@ class Game {
         }
         return false;
     }
-    
+
+    //reveal the color or number of card and set it to touched
     giveClue(cards, info) {   
         if (this.numClues > 0) {
             cards.forEach(card => {

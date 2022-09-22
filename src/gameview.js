@@ -45,14 +45,16 @@ class GameView {
             4: [x + 640, y],
         });
         
+        //use handpositions to render the current player hand (top of page) and the second players hand (bottom of page)
         this.currentPlayerPositions = handPositions(95, 118);
         this.otherPlayerPositions = handPositions(this.currentPlayerPositions[0][0], this.currentPlayerPositions[0][1] + 290);
         
+        //use handpositions to render clue positions in relation to their card positions
         this.clueColorPositions = handPositions(this.otherPlayerPositions[0][0], this.otherPlayerPositions[0][1] + 240)
         this.clueNumberPositions = handPositions(this.otherPlayerPositions[0][0] + 80, this.otherPlayerPositions[0][1] + 240)
     }
 
-    
+
     start() {
         this.playColors.sort((a, b) => 0.5 - Math.random());
         this.discardColors.sort((a, b) => 0.5 - Math.random());
@@ -73,6 +75,9 @@ class GameView {
                 let clickY = e.clientY - e.target.getBoundingClientRect().top;
                 
                 //when hovering over a specific clue type, select all cards that fit the attribute of the hovered clue 
+                //First, check if the card is selected 
+                //Then, check if the mouse location is in the same position as either the color clue or number clue icons
+                //If so, then call the handle clue hover method
                 this.game.players[1].hand.forEach(card => {
                     if (card.selected) {
                         let innerXStart = card.pos[0]
@@ -153,7 +158,7 @@ class GameView {
                     this.drawObjects(this.gameCtx)
                 }
                 
-                
+
                 for (let i = 0; i < this.game.players[1].hand.length; i ++) {
                     let card = this.game.players[1].hand[i]
                     if (card.selected) {
@@ -203,7 +208,8 @@ class GameView {
                         }
                     }
                 }
-                
+                //event listener checks if click is located on the "view teammates perspective" button
+                //calls a method that re-renders the card from the teammates perspective
                 xStart = 4
                 yStart = 710
                 xEnd = xStart + 258
@@ -424,6 +430,8 @@ class GameView {
         this.gameCtx.fillText(`What does ${this.game.players[1].name} know?`, 20 , this.height - 20,)
     }
     
+    //This method redraws cards in the other player's hands based on what they know.
+    //Uses a delay and then returns the hand back to the normal rendering.
     viewTeammatesPerspective() {
         this.game.players[1].hand.forEach(card => {
             this.gameCtx.clearRect(card.pos[0], card.pos[1], 140, 220)

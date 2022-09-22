@@ -49,16 +49,25 @@ In addition, I used Webpack and Babel to bundle the Javascript code and npm to m
 The logic of this game was build in JavaScript. I built a Game class, a Deck class, a Card class, a Game Objects class which is extended by the Clue and Fuse classes, and a Player class.
 The logic for discarding, playing, clueing, updating the score, and switching turns takes place in the Game class.
 
+All graphics and elements in this app were built on Canvas. I built a GameView class which contains the drawing methods and event listeners. The bulk of the animation happens inside of the "handle events" listener which contains all of the event listeners. 
 
-The app was built on Canvas, relying on event listeners and the positions of items in order to make the game move. 
+The following two screenshots show the event listener I wrote for mousing over the clue icons:
+![MouseMove Event Listener](assets/clue_hover_methods.png)
+![MouseOff Logic](assets/mouse_off_method.png)
 
+These two screenshots show the event listener I wrote for clicking on and selecting a card, and then moving it to the discard pile. 
+![Card Select and Move](assets/card_selected_method.png)
 
+Almost all drawings are contained in a drawObjects method which goes through and calls helper methods. When the event listeners are triggered, the drawObjects method is called and redraws the objects according to their new positions. The following method shows the logic for drawing cards based on their different states.
+![Draw Card](assets/draw_card.png)
+
+I also used an event listener to write a method that allows users to toggle the view to see what the other player knows about their hand:
+![Toggle View Listener](assets/event_listener_toggle_view.png)
+![Toggle View](assets/toggle_view.png)
 
 The game starts with an HTML Aside element where users can log in. The Javascript captures their names, rendering the game canvas and starting a new game with the players' names.
-There is an event listener for click and mouseover which compares the location of cards to the location of the mouse in order to determine if a card was clicked. A click of a card triggers the drawObjects method which will redraw the cards based on their "selected" status.
-A click of the "play" or "discard" areas will update the card's position and trigger drawObjects which will read the card's position and draw them there.
+
 The game also tracks the score using an updateScore method.
-Users can also toggle the view so that they can see what the other player knows about their hand.
 
 ## To Dos and Bonus Features
 I am working towards creating a computer player class with some basic AI functionality. 
@@ -66,6 +75,7 @@ The computer will prioritize when to give clues, discard, or play.
 I would also like to introduce an "undo" feature that users can use to redo a play when desired.
 I hope to create a sixth suit, as the original game has, which will allow users to choose from a variety of difficulty settings.
 I will also work towards a log that tracks and prints recent moves.
+In a later version, this will be fully functional as a two-player game.
 
 
 
