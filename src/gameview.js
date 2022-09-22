@@ -214,18 +214,21 @@ class GameView {
         
     } 
 }
-    renderClueNum(gameCtx, clueNumberPositions) {
+    renderClueNum(gameCtx) {
         const cards = this.game.players[1].hand
+        let numImage;
         for (let i = 0; i < cards.length; i ++) {
             let card = cards[i]
             if (card.selected) {
-                gameCtx.beginPath();
-                gameCtx.roundRect(clueNumberPositions[i][0],clueNumberPositions[i][1], 60, 60, 3);
-                gameCtx.strokeStyle = "black"
-                gameCtx.stroke();
-                gameCtx.font = "20px Futura"
-                gameCtx.fillStyle = "black"
-                gameCtx.fillText(`${card.num}`, card.pos[0] + 102, card.pos[1] + 274)
+                numImage = document.getElementById(`${card.num}`)
+                this.gameCtx.drawImage(numImage, card.pos[0] + 90, card.pos[1] + 258, 20, 20)
+                // this.gameCtx.beginPath();
+                // this.gameCtx.roundRect(this.clueNumberPositions[i][0],this.clueNumberPositions[i][1], 60, 60, 3);
+                // this.gameCtx.strokeStyle = "black"
+                // this.gameCtx.stroke();
+                // this.gameCtx.font = "20px Futura"
+                // this.gameCtx.fillStyle = "black"
+                // this.gameCtx.fillText(`${card.num}`, card.pos[0] + 102, card.pos[1] + 274)
 
             }
         }
@@ -238,8 +241,8 @@ class GameView {
         this.setupBackground(gameCtx);
         this.addText(gameCtx);
         this.renderDiscardText(gameCtx);
-        this.renderClueColor(gameCtx, this.clueColorPositions);
-        this.renderClueNum(gameCtx, this.clueNumberPositions)
+        this.renderClueColor(gameCtx);
+        this.renderClueNum(gameCtx)
         this.renderTurnText(gameCtx);
         this.renderViewTeammatesHandText();
         this.addScore(gameCtx);
@@ -361,7 +364,7 @@ class GameView {
 
     }
 
-    renderClueColor(gameCtx, clueColorPositions) {
+    renderClueColor(gameCtx) {
         const cards = this.game.players[1].hand
         for (let i = 0; i < cards.length; i ++) {
             let card = cards[i]

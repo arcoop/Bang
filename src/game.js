@@ -192,7 +192,7 @@ class Game {
     updateScore() {
         if (this.won()) {
             this.drawWon();
-        } else if (this.over ){
+        } else if (this.over()){
             this.drawGameOver();
         }
         let score = 0
@@ -220,7 +220,7 @@ class Game {
         this.ctx.clearRect(0,0, this.width, this.height)
         this.ctx.font = "100px Cursive"
         this.ctx.fillStyle = "black"
-        this.ctx.fillText(`Game Over! Your score was ${this.game.score}!`, this.width/4, 250)
+        this.ctx.fillText(`Game Over! Your score was ${this.score}!`, this.width/4, 250)
     }
 
     won() {
@@ -236,7 +236,8 @@ class Game {
     }
 
     over() {
-        return this.numTurns === 0 || this.numFuses === 0
+        return this.deckEmpty || this.numFuses === 0
+        // return this.numTurns === 0 || this.numFuses === 0
     }
 
     currentHands() {
