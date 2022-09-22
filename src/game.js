@@ -83,7 +83,7 @@ class Game {
     misplay(ctx) {
         this.numFuses -= 1
         this.delay(300).then(() => {
-            ctx.font = "30px Futura"
+            ctx.font = "30px Passion One"
             ctx.fillStyle = "red"
             if (this.numFuses === 1 ) {
                 ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 900, 90)

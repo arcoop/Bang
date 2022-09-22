@@ -249,7 +249,7 @@ class GameView {
         this.renderViewTeammatesHandText();
         this.addScore(gameCtx);
         
-        gameCtx.font = "20px Futura, Trebuchet MS, Arial, sans-serif"
+        gameCtx.font = "20px Passion One"
         if (this.game.deck.deckArray.length > 5) {
             gameCtx.fillStyle = "black"
             gameCtx.fillText(`Cards left: ${this.game.deck.deckArray.length}`, 830, this.height - 20)
@@ -356,11 +356,11 @@ class GameView {
     
     
     addText(gameCtx) {
-        gameCtx.font = "40px Futura, Trebuchet MS, Arial, sans-serif"
+        gameCtx.font = "40px Passion One"
         gameCtx.fillStyle = "green"
         gameCtx.fillText("My Hand", (this.width/4) - 85, this.height/7 - 22);
         
-        gameCtx.font = "40px Futura, Trebuchet MS, Arial, sans-serif"
+        gameCtx.font = "40px Passion One"
         gameCtx.fillStyle = "green"
         gameCtx.fillText(`${this.game.players[1].name}'s hand`, (this.width/4) - 120, (this.height/2) + 14 );
         
@@ -380,7 +380,7 @@ class GameView {
     }
     
     addScore(gameCtx,) {
-        gameCtx.font = "20px Futura, Trebuchet MS, Arial, sans-serif"
+        gameCtx.font = "20px Passion One"
         gameCtx.fillStyle = "black"
         gameCtx.fillText("Score:", 50, 40)
         gameCtx.font = "40px Helvetica"
@@ -390,7 +390,7 @@ class GameView {
     
     
     renderViewTeammatesHandText() {
-        this.gameCtx.font = "20px Futura, Trebuchet MS, Arial, sans-serif"
+        this.gameCtx.font = "20px Passion One"
         this.gameCtx.fillStyle = "black"
         this.gameCtx.fillText(`What does ${this.game.players[1].name} know?`, 20 , this.height - 20,)
     }
@@ -432,7 +432,7 @@ class GameView {
     }
     
     renderTurnText(gameCtx) {
-        gameCtx.font = "30px Futura, Trebuchet MS, Arial, sans-serif"
+        gameCtx.font = "30px Passion One"
         gameCtx.fillStyle = "black"
         gameCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 15, 110)
     }
@@ -441,13 +441,13 @@ class GameView {
         const cards = this.game.currentPlayer.hand
         
         if (cards.some(card => card.selected)) {
-            gameCtx.font = "45px Futura,"
+            gameCtx.font = "45px Passion One,"
             gameCtx.fillStyle = "yellow"
             gameCtx.fillText("Discard", this.discardPositions[0][0] + 325, this.discardPositions[0][1] - 40)
             gameCtx.fillText("Play", this.playPositions[2][0] + 32, this.playPositions[0][1] - 40)
             
         } else {
-            gameCtx.font = "35px Futura, Trebuchet MS, Arial, sans-serif"
+            gameCtx.font = "35px Passion One"
             gameCtx.fillStyle = "white"
             gameCtx.fillText("Discard", this.discardPositions[2][0] + 7, this.discardPositions[0][1] - 40) 
             gameCtx.fillText("Play", this.playPositions[2][0] + 32, this.playPositions[0][1] - 40) 
