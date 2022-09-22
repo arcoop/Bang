@@ -414,7 +414,6 @@ class GameView {
         gameCtx.fillText(`${this.game.score}`, 70, 80)
     }
     
-    
     renderViewTeammatesHandText() {
         this.gameCtx.font = "20px Albert Sans"
         this.gameCtx.fillStyle = "black"
