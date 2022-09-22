@@ -22,6 +22,8 @@ class Game {
         this.numTurns = 2
         this.playSelected = false;
         this.discardSelected = false;
+        this.won = false
+        this.over = false;
 
     }
 
@@ -83,11 +85,13 @@ class Game {
     misplay(ctx) {
         this.numFuses -= 1
         this.delay(300).then(() => {
-            ctx.font = "30px Passion One"
+            ctx.font = "30px Futura"
             ctx.fillStyle = "red"
             if (this.numFuses === 1 ) {
-                ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 900, 90)
-            } else ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 700, 40)
+                ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 700, 40)
+            } else if (this.numFuses > 0) {
+                ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 700, 40)   
+            }
         })
     }
 
@@ -110,10 +114,22 @@ class Game {
     } 
 
     switchTurns() {
-        let temp = this.players[0]
-        this.players[0] = this.players[1]
-        this.players[1] = temp
-        this.currentPlayer = this.players[0]
+        if (this.numFuses === 0 || this.numTurns === 0) {
+            console.log("first")
+            this.over = true;
+        } else if (this.score === 25) {
+            console.log("second")
+            this.won = true;
+        } else {
+            console.log("third")
+            let temp = this.players[0]
+            this.players[0] = this.players[1]
+            this.players[1] = temp
+            this.currentPlayer = this.players[0]
+            if (this.deck.deckArray.length === 0) {
+                this.numTurns -= 1
+            }
+        }
     }
 
     playOrDiscard(pivotCard, moveType, positions, allColors, ctx, misplay=false) {
@@ -216,28 +232,29 @@ class Game {
     }
 
     drawGameOver() {
+        console.log('in draw game over')
         this.ctx.clearRect(0,0, this.width, this.height)
         this.ctx.font = "100px Cursive"
         this.ctx.fillStyle = "black"
-        this.ctx.fillText(`Game Over! Your score was ${this.score}!`, this.width/4, 250)
+        this.ctx.fillText(`Game Over! Your score was ${this.score}!`, 500, 500)
     }
 
-    won() {
-        return this.score === 25
-    }
+    // won() {
+    //     return this.score === 25
+    // }
 
-    lost() {
-       return this.over() && !this.won()
-    }
+    // lost() {
+    //    return this.over() && !this.won()
+    // }
 
     deckEmpty() {
         return this.deck.deckArray.length === 0;
     }
 
-    over() {
-        return this.deckEmpty() || this.numFuses === 0
-        // return this.numTurns === 0 || this.numFuses === 0
-    }
+    // over() {
+    //     return this.deckEmpty() || this.numFuses === 0
+    //     // return this.numTurns === 0 || this.numFuses === 0
+    // }
 
     currentHands() {
         const cards = this.players[0].hand.concat(this.players[1].hand)

@@ -6,13 +6,16 @@ const Fuse = require('./fuse.js')
 const Clue = require('./clue.js')
 
 class GameView {
-    constructor(ele, gameCtx, canvas){
+    constructor(ele, gameCtx, canvas, player1name, player2name){
+        console.log(player1name)
+        this.player1name = player1name
+        this.player2name - player2name
         this.canvas = canvas
         this.clues = []
         this.fuses = []
         this.ele = ele
         this.gameCtx = gameCtx
-        this.game = new Game("player1", "player2", this.gameCtx)
+        this.game = new Game(player1name, player2name, this.gameCtx)
         
         const gameBoardPositions = (x, y) => ({
             0: [x, y],
@@ -236,7 +239,7 @@ class GameView {
         }
     }
     
-    drawObjects(gameCtx) {
+    drawObjects(gameCtx, won=false, over=false) {
         //render errors
         gameCtx.clearRect(0,0, this.width, this.height)
         
@@ -249,7 +252,7 @@ class GameView {
         this.renderViewTeammatesHandText();
         this.addScore(gameCtx);
         
-        gameCtx.font = "20px Passion One"
+        gameCtx.font = "20px Albert Sans"
         if (this.game.deck.deckArray.length > 5) {
             gameCtx.fillStyle = "black"
             gameCtx.fillText(`Cards left: ${this.game.deck.deckArray.length}`, 830, this.height - 20)
@@ -346,21 +349,44 @@ class GameView {
             let fuse = this.fuses[i]
             gameCtx.drawImage(fuseImg, fuse.pos[0], fuse.pos[1], 75, 70)
         }
+
+        if (this.game.score === 25) {
+            this.gameCtx.clearRect(0,0, this.width, this.height)
+            this.gameCtx.font = "100px Cursive"
+            this.gameCtx.fillStyle = "black"
+            this.gameCtx.fillText("You won!", this.width/3 + 70, 180)
+            let image = document.getElementById("firework")
+            this.gameCtx.drawImage(image, this.width/3 + 60, 350, 500, 700)
+        }
+
+        if (this.game.numFuses === 0) {
+            this.gameCtx.clearRect(0,0, this.width, this.height)
+            this.gameCtx.font = "100px Albert Sans"
+            this.gameCtx.fillStyle = "black"
+            this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, 300, 350)
+
+        }
         
+
         let clueImg = document.getElementById('clue')
         for (let i = 0; i < this.game.numClues; i++) {
             let clue = this.clues[i]
-            gameCtx.drawImage(clueImg, clue.pos[0], clue.pos[1], 55, 60)
+            // clue.pos = clue.pos
+            console.log(clue.pos)
+            if (this.game.score !== 25 && this.game.numFuses > 0) {
+                gameCtx.drawImage(clueImg, clue.pos[0], clue.pos[1], 55, 60)
+            }
         }
+
     }
     
     
     addText(gameCtx) {
-        gameCtx.font = "40px Passion One"
+        gameCtx.font = "40px Albert Sans"
         gameCtx.fillStyle = "green"
-        gameCtx.fillText("My Hand", (this.width/4) - 85, this.height/7 - 22);
+        gameCtx.fillText(`${this.game.currentPlayer.name}'s hand`, (this.width/4) - 85, this.height/7 - 22);
         
-        gameCtx.font = "40px Passion One"
+        gameCtx.font = "40px Albert Sans"
         gameCtx.fillStyle = "green"
         gameCtx.fillText(`${this.game.players[1].name}'s hand`, (this.width/4) - 120, (this.height/2) + 14 );
         
@@ -380,7 +406,7 @@ class GameView {
     }
     
     addScore(gameCtx,) {
-        gameCtx.font = "20px Passion One"
+        gameCtx.font = "20px Albert Sans"
         gameCtx.fillStyle = "black"
         gameCtx.fillText("Score:", 50, 40)
         gameCtx.font = "40px Helvetica"
@@ -390,19 +416,10 @@ class GameView {
     
     
     renderViewTeammatesHandText() {
-        this.gameCtx.font = "20px Passion One"
+        this.gameCtx.font = "20px Albert Sans"
         this.gameCtx.fillStyle = "black"
         this.gameCtx.fillText(`What does ${this.game.players[1].name} know?`, 20 , this.height - 20,)
     }
-    
-    
-    
-    // anyCardsSelected() {
-    //     this.currentHands().forEach(card => {
-    //         if (card.selected) return true;
-    //     })
-    //     return false;
-    // }
     
     viewTeammatesPerspective() {
         this.game.players[1].hand.forEach(card => {
@@ -432,7 +449,7 @@ class GameView {
     }
     
     renderTurnText(gameCtx) {
-        gameCtx.font = "30px Passion One"
+        gameCtx.font = "30px Albert Sans"
         gameCtx.fillStyle = "black"
         gameCtx.fillText(`${this.game.currentPlayer.name}'s turn`, 15, 110)
     }
@@ -441,13 +458,13 @@ class GameView {
         const cards = this.game.currentPlayer.hand
         
         if (cards.some(card => card.selected)) {
-            gameCtx.font = "45px Passion One,"
+            gameCtx.font = "45px Albert Sans,"
             gameCtx.fillStyle = "yellow"
             gameCtx.fillText("Discard", this.discardPositions[0][0] + 325, this.discardPositions[0][1] - 40)
             gameCtx.fillText("Play", this.playPositions[2][0] + 32, this.playPositions[0][1] - 40)
             
         } else {
-            gameCtx.font = "35px Passion One"
+            gameCtx.font = "35px Albert Sans"
             gameCtx.fillStyle = "white"
             gameCtx.fillText("Discard", this.discardPositions[2][0] + 7, this.discardPositions[0][1] - 40) 
             gameCtx.fillText("Play", this.playPositions[2][0] + 32, this.playPositions[0][1] - 40) 

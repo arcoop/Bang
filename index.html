@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./dist/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@200;400;500;600&family=Passion+One&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300&family=Montserrat+Alternates:wght@200;400;500;600&family=Passion+One&display=swap" rel="stylesheet">
     <script src = "./dist/main.js"></script>
     <title>Bang!</title>
     <img id="fuse" src="https://cdn.pixabay.com/photo/2013/07/12/14/09/bomb-147841_1280.png" width="20px" height="20px">
@@ -32,9 +32,21 @@
         </div>
         <h2>The Fireworks Game</h2>
     </header>
+    <div class="below-header">
         <figure class="game-board"> 
-        <canvas id="game-canvas" width="1900" height="750"></canvas>
-    </figure>
+            <canvas id="game-canvas" width="1900" height="750"></canvas>
+        </figure>
+        <aside id="welcome-screen">
+            <label>Player 1 Name:
+                <input id="player-1-name" type="text">
+            </label>
+            <label>Player 2 name:
+                <input id="player-2-name" type="text">
+            </label>
+            <button id="submit-button" type="submit">Start game!</button>
+        </aside>
+    </div>
+    
 </body>
 </html>
 

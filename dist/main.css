@@ -5,8 +5,37 @@ html, body {
   background-color: indigo;
 }
 
+.hidden {
+  display: none;
+}
+
+.below-header {
+  position: relative;
+}
+
+aside {
+  width: 100vw;
+  height: 100%;
+  position: absolute;
+  background: indigo;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: Albert Sans;
+  font-size: 30px;
+  color: white;
+}
+
+#submit-button {
+  font-size: large;
+  margin: 15px;
+  padding: 15px;
+}
+
 header {
-  font-family: Passion One;
+  font-family: Albert Sans;
   font-size: 20px;
   height: 5 px;
   width: 100%;
@@ -31,6 +60,7 @@ header h2 {
   padding-left: 15px;
 }
 header a {
+  text-decoration: none;
   margin: 15px;
   display: flex;
 }
