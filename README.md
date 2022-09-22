@@ -1,6 +1,6 @@
 # Welcome to Bang!
 
-## Link Link: [Bang](https://arcoop.github.io/Bang/)
+## Link: [Bang](https://arcoop.github.io/Bang/)
 
 ## Instructions:
 Bang! is based on the classic tabletop card game, [Hanabi](https://boardgamegeek.com/boardgame/98778/hanabi). 
