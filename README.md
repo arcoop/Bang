@@ -74,8 +74,10 @@ I am working towards creating a computer player class with some basic AI functio
 The computer will prioritize when to give clues, discard, or play.
 I would also like to introduce an "undo" feature that users can use to redo a play when desired.
 I hope to create a sixth suit, as the original game has, which will allow users to choose from a variety of difficulty settings.
+I also hope to add sound effects that are triggered by different plays.
 I will also work towards a log that tracks and prints recent moves.
 In a later version, this will be fully functional as a two-player game.
+
 
 
 
