@@ -25,8 +25,8 @@ class GameView {
         this.width = this.gameCtx['canvas'].width
         this.height = this.gameCtx['canvas'].height
 
-        this.playPositions = gameBoardPositions((this.width/2) + 100, (this.height/5) - 70)
-        this.discardPositions = gameBoardPositions(this.playPositions[0][0], 500)
+        this.playPositions = gameBoardPositions((this.width/2) + 100, (this.height/5) - 75)
+        this.discardPositions = gameBoardPositions(this.playPositions[0][0], 520)
 
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
@@ -55,13 +55,6 @@ class GameView {
         this.drawObjects(this.gameCtx, this.canvas);
         this.handleEvents();
         
-    }
-
-    drawGameOver() {
-        this.gameCtx.clearRect(0,0, this.width, this.height)
-        this.gameCtx.font = "100px Cursive"
-        this.gameCtx.fillStyle = "black"
-        this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, this.width/4, 250)
     }
     
     handleEvents() {

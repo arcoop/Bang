@@ -190,12 +190,21 @@ class Game {
     }
 
     updateScore() {
+        if (this.won()) {
+            this.drawWon();
+        } else if (this.over ){
+            this.drawGameOver();
+        }
         let score = 0
         this.playPiles.forEach(pile => {
             if (pile.length > 0) score += pile[pile.length - 1].num
         })
         this.score = score
-        if (this.won()) {this.drawWon()}
+        if (this.won()) {
+            this.drawWon();
+        } else if (this.over ){
+            this.drawGameOver();
+        }
     }
 
     drawWon() {
@@ -205,6 +214,13 @@ class Game {
         this.ctx.fillText("You won!", this.width/3 + 70, 180)
         let image = document.getElementById("firework")
         this.ctx.drawImage(image, this.width/3 + 60, 350, 500, 700)
+    }
+
+    drawGameOver() {
+        this.ctx.clearRect(0,0, this.width, this.height)
+        this.ctx.font = "100px Cursive"
+        this.ctx.fillStyle = "black"
+        this.ctx.fillText(`Game Over! Your score was ${this.game.score}!`, this.width/4, 250)
     }
 
     won() {
