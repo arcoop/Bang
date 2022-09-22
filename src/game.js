@@ -190,21 +190,22 @@ class Game {
     }
 
     updateScore() {
-        if (this.won()) {
-            this.drawWon();
-        } else if (this.over()){
-            this.drawGameOver();
-        }
-        let score = 0
-        this.playPiles.forEach(pile => {
-            if (pile.length > 0) score += pile[pile.length - 1].num
-        })
-        this.score = score
-        if (this.won()) {
-            this.drawWon();
-        } else if (this.over ){
-            this.drawGameOver();
-        }
+        // if (this.won()) {
+        //     this.drawWon();
+        // } else if (this.over()){
+        //     this.drawGameOver();
+        // } else {
+            let score = 0
+            this.playPiles.forEach(pile => {
+                if (pile.length > 0) score += pile[pile.length - 1].num
+            })
+        //     this.score = score
+        //     if (this.won()) {
+        //         this.drawWon();
+        //     } else if (this.over ){
+        //         this.drawGameOver();
+        //     }
+        // }
     }
 
     drawWon() {
@@ -228,15 +229,15 @@ class Game {
     }
 
     lost() {
-       return this.over() && !won()
+       return this.over() && !this.won()
     }
 
     deckEmpty() {
-        return deckArray.length === 0;
+        return this.deck.deckArray.length === 0;
     }
 
     over() {
-        return this.deckEmpty || this.numFuses === 0
+        return this.deckEmpty() || this.numFuses === 0
         // return this.numTurns === 0 || this.numFuses === 0
     }
 
