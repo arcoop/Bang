@@ -6,7 +6,10 @@ html, body {
 }
 
 header {
-  background-color: cadetblue;
+  font-family: Futura;
+  height: 5 px;
+  width: 100%;
+  background-color: rgb(255, 240, 245);
   box-shadow: 5px 5px;
 }
 header div {
@@ -14,16 +17,16 @@ header div {
   justify-content: space-between;
   align-items: center;
 }
+header div div {
+  display: flex;
+  align-items: flex-end;
+}
 header h1 {
   display: flex;
   justify-content: flex-start;
   margin: 15px;
-  padding: 15px;
 }
 header h2 {
-  display: flex;
-  justify-content: flex-start;
-  margin: 15px;
   padding-left: 15px;
 }
 header a {
@@ -31,7 +34,12 @@ header a {
   display: flex;
 }
 header i {
-  font-size: 50px;
+  margin-right: 15px;
+  font-size: 40px;
+}
+header a:hover {
+  color: white;
+  transition: color 0.5s ease;
 }
 
 img {

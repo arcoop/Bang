@@ -3,26 +3,29 @@ html, body {
     // display: flex;
 }
 header {
-
-    background-color:  cadetblue;
+    font-family: Futura;
+    height: 5 px;
+    width: 100%;
+    background-color: rgb(255, 240, 245);
     box-shadow: 5px 5px;
 
     div {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        div {
+            display: flex;
+            align-items: flex-end;
+        }
     }
     
     h1 {
         display: flex;
         justify-content: flex-start;
         margin: 15px;
-        padding: 15px;
     }
     h2 {
-        display: flex;
-        justify-content: flex-start;
-        margin: 15px;
         padding-left: 15px;
 
     }
@@ -32,7 +35,12 @@ header {
         display: flex;
     }
     i {
-        font-size: 50px;
+        margin-right: 15px;
+        font-size: 40px;
+    }
+    a:hover {
+        color: white;
+        transition: color .5s ease;
     }
 }
 

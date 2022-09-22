@@ -9,11 +9,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const ele = document.querySelector('.game-board')
     const gameCanvasEl = document.getElementById('game-canvas');
     const gameCtx = gameCanvasEl.getContext('2d');
-    // const playerCanvasEl = document.getElementById('players-canvas');
-    // const playerCtx = playerCanvasEl.getContext('2d')
-    // const gameView = new GameView(ele, gameCtx, playerCtx);
+
     const gameView = new GameView(ele, gameCtx, gameCanvasEl);
     window.gameCtx = gameCtx;
+
+    // const newPlayers = document.createElement("div")
+    // ele.appendChild(newPlayers)
+    // const input1 = document.createElement("input")
+    // input1.setAttribute("type", "text")
+    // input1.setAttribute("name", "Player 1 Name:")
+    // input1.id = "player-1-name"
+    // newPlayers.append(input1)
+
+    
+
+    // ele.appendChild
     // gameView.renderstartPage();
     gameView.start();
     // gameView.handleEvents();

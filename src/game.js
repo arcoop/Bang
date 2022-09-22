@@ -198,11 +198,7 @@ class Game {
     }
 
     won() {
-        return this.playPiles.every(pile => {
-            pile[pile.length - 1] === 5
-        })
-
-        // return true;
+        return this.score === 25
     }
 
     lost() {
