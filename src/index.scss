@@ -10,11 +10,6 @@ html, body {
     border: none;
 }
 
-button:hover {
-    transition: color white .5s ease;
-    cursor: pointer;
-}
-
 .hidden {
     display: none;
 }
@@ -114,7 +109,7 @@ header {
         // justify-content: flex-start;
         margin-top: 15px;
         margin-left: 15px;
-        margin-bottom: 2px;
+        margin-bottom: 1px;
     }
     h2 {
         padding-left: 15px;
@@ -132,6 +127,12 @@ header {
     a:hover {
         color: white;
         transition: color .5s ease;
+    }
+
+    button#question-mark:hover {
+        color: white;
+        transition: color .5s ease;
+        cursor: pointer;
     }
 }
 
