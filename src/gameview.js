@@ -7,6 +7,7 @@ const Clue = require('./clue.js')
 
 class GameView {
     constructor(ele, gameCtx, canvas, player1name, player2name){
+        console.log(player1name)
         this.player1name = player1name
         this.player2name - player2name
         this.canvas = canvas
@@ -372,6 +373,7 @@ class GameView {
             this.gameCtx.font = "100px Albert Sans"
             this.gameCtx.fillStyle = "black"
             this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, 280, 350)
+
         }
         
 
@@ -432,7 +434,7 @@ class GameView {
         this.game.players[1].hand.forEach(card => {
             this.gameCtx.clearRect(card.pos[0], card.pos[1], 140, 220)
             card.draw(this.gameCtx, card.revealedColor, card.revealedNum, false)
-            this.game.delay(1000).then(() => {
+            this.game.delay(2000).then(() => {
                 this.drawObjects(this.gameCtx)
             })
         })
