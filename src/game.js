@@ -115,13 +115,10 @@ class Game {
 
     switchTurns() {
         if (this.numFuses === 0 || this.numTurns === 0) {
-            console.log("first")
             this.over = true;
         } else if (this.score === 25) {
-            console.log("second")
             this.won = true;
         } else {
-            console.log("third")
             let temp = this.players[0]
             this.players[0] = this.players[1]
             this.players[1] = temp
@@ -186,6 +183,7 @@ class Game {
     //reveal the color or number of card and set it to touched
     giveClue(cards, info) {   
         if (this.numClues > 0) {
+            console.log("enough clues")
             cards.forEach(card => {
                 card.touched = true;
                 if (info === "color") {
@@ -198,6 +196,7 @@ class Game {
             this.numClues -= 1
             
         } else {
+            console.log("not enough clues")
             this.ctx.font = "30px Helvetica"
             this.ctx.fillStyle = "red"
             this.ctx.fillText(`Not enough clues! You must discard or play.`, 50, 300)
@@ -224,7 +223,6 @@ class Game {
     }
 
     drawGameOver() {
-        console.log('in draw game over')
         this.ctx.clearRect(0,0, this.width, this.height)
         this.ctx.font = "100px Cursive"
         this.ctx.fillStyle = "black"

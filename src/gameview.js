@@ -7,7 +7,6 @@ const Clue = require('./clue.js')
 
 class GameView {
     constructor(ele, gameCtx, canvas, player1name, player2name){
-        console.log(player1name)
         this.player1name = player1name
         this.player2name - player2name
         this.canvas = canvas
@@ -373,15 +372,12 @@ class GameView {
             this.gameCtx.font = "100px Albert Sans"
             this.gameCtx.fillStyle = "black"
             this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, 280, 350)
-
         }
         
 
         let clueImg = document.getElementById('clue')
         for (let i = 0; i < this.game.numClues; i++) {
             let clue = this.clues[i]
-            // clue.pos = clue.pos
-            console.log(clue.pos)
             if (this.game.score !== 25 && this.game.numFuses > 0) {
                 gameCtx.drawImage(clueImg, clue.pos[0], clue.pos[1], 55, 60)
             }
