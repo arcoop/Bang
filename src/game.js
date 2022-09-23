@@ -196,10 +196,12 @@ class Game {
             this.numClues -= 1
             
         } else {
-            console.log("not enough clues")
             this.ctx.font = "30px Helvetica"
-            this.ctx.fillStyle = "red"
-            this.ctx.fillText(`Not enough clues! You must discard or play.`, 50, 300)
+            this.delay(10).then(()=> {
+                this.ctx.fillStyle = "red"
+                this.ctx.fillText(`Not enough clues! You must discard or play.`, 100, 680)
+            })
+            this.switchTurns()
         }
     }
 
