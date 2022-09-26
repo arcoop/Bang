@@ -141,7 +141,7 @@ class Game {
                 this.numClues +=1 ;
                 pile = this.discardPiles
             } else {
-                ctx.font = "30px Futura, Trebuchet MS, Arial, sans-serif"
+                ctx.font = "30px Albert Sans"
                 ctx.fillStyle = "red"
                 ctx.fillText(`Must have fewer than 8 clues to discard`, 800, 1000)
             }
