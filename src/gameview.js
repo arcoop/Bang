@@ -17,7 +17,6 @@ class GameView {
         this.gameCtx = gameCtx
         this.game = new Game(player1name, player2name, this.gameCtx)
 
-
         //create dynamic positions for all play and discard cards
         const gameBoardPositions = (x, y) => ({
             0: [x, y],
@@ -136,7 +135,6 @@ class GameView {
                     }
                 })
                 
-                
                 // move a selected card to discard pile
                 let xStart = this.discardPositions[0][0] - 2
                 let yStart = this.discardPositions[0][1]- 2
@@ -145,7 +143,6 @@ class GameView {
                 if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
                     this.game.handleDiscardClick(e, this.discardPositions, this.discardColors);
                     this.drawObjects(this.gameCtx)
-                    
                 }
                 
                 //move a selected card to play pile
@@ -218,8 +215,6 @@ class GameView {
                     this.viewTeammatesPerspective();
                 }
                 
-                
-                
             })
             this.drawObjects(this.gameCtx)
             // }
@@ -277,11 +272,11 @@ class GameView {
             let yDelta = 0;
             let xDelta = 0;
             if (pile.length > 0) {
-                pile = pile.sort(function(card1, card2) {
-                    if (card1.num > card2.num) {
-                        return 1
-                    } else return -1
-                })
+                // pile = pile.sort(function(card1, card2) {
+                //     if (card1.num > card2.num) {
+                //         return 1
+                //     } else return -1
+                // })
                 pile.forEach(card => {
                     card.selected = false;
                     card.touched = false;
@@ -368,12 +363,18 @@ class GameView {
             this.gameCtx.drawImage(image, this.width/3 + 60, 350, 500, 700)
         }
 
-        if (this.game.numFuses === 0) {
+        if (this.game.numFuses === 0 && this.game.score < 25) {
             this.gameCtx.clearRect(0,0, this.width, this.height)
             this.gameCtx.font = "100px Albert Sans"
             this.gameCtx.fillStyle = "black"
             this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, 280, 350)
+        }
 
+        if (this.game.numTurns === 0 && this.game.score < 25) {
+            this.gameCtx.clearRect(0,0, this.width, this.height)
+            this.gameCtx.font = "100px Albert Sans"
+            this.gameCtx.fillStyle = "black"
+            this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, 280, 350)
         }
         
 
@@ -384,7 +385,6 @@ class GameView {
                 gameCtx.drawImage(clueImg, clue.pos[0], clue.pos[1], 55, 60)
             }
         }
-
     }
     
     
@@ -396,7 +396,6 @@ class GameView {
         gameCtx.font = "40px Albert Sans"
         gameCtx.fillStyle = "green"
         gameCtx.fillText(`${this.game.players[1].name}'s hand`, (this.width/4) - 120, (this.height/2) + 14 );
-        
     }
     
     renderClueColor(gameCtx) {
