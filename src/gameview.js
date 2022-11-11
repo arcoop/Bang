@@ -118,13 +118,68 @@ class GameView {
                     
                 })
             })
+            window.addEventListener("mousedown", (e) => {
+                let clickX = e.clientX - e.target.getBoundingClientRect().left;
+                let clickY = e.clientY - e.target.getBoundingClientRect().top;
+                let originalCardPos;
+          
+                // change a clicked card from current player's hand to selected state
+                this.game.currentPlayer.hand.forEach((card, idx) => {
+                    console.log(card.width)
+                    let xStart = card.pos[0];
+                    let yStart = card.pos[1];
+                    let xEnd = xStart + 140;
+                    let yEnd = yStart + 220;
+                    
+                    if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
+                        console.log("true")
+                        originalCardPos = card.pos;
+                        if (!card.selected) card.selected = true;
+                        this.drawObjects(this.gameCtx)
+                        originalCardPos = card.pos;
 
+                        window.addEventListener("mousemove", (e) => {
+                            let currentX = e.clientX - e.target.getBoundingClientRect().left;
+                            let currentY = e.clientY - e.target.getBoundingClientRect().top;
+                            card.pos[0] = currentX 
+                            card.pos[1] = currentY
+                            window.setInterval(this.drawObjects(this.gameCtx), 200)
+                            window.addEventListener("mouseup", (e) => {
+                                let releasedX = e.clientX - e.target.getBoundingClientRect().left;
+                                let releasedY = e.clientY - e.target.getBoundingClientRect().top;
+
+                                // move a selected card to discard pile
+                                let xStart = this.discardPositions[0][0] - 2
+                                let yStart = this.discardPositions[0][1]- 2
+                                let xEnd = this.discardPositions[4][0] + 150
+                                let yEnd = yStart + 230;
+                                if ((releasedX >= xStart && releasedX <= xEnd) && (releasedY >= yStart && releasedY <= yEnd)) {
+                                    this.game.handleDiscardClick(e, this.discardPositions, this.discardColors);
+                                    this.drawObjects(this.gameCtx)
+                                } else {
+                                    // move a selected card to play pile
+                                    xStart = this.playPositions[0][0] - 2
+                                    yStart = this.playPositions[0][1] -2
+                                    xEnd = this.playPositions[4][0] + 150;
+                                    yEnd = yStart + 230;
+                                    if ((releasedX >= xStart && releasedX <= xEnd) && (releasedY >= yStart && releasedY <= yEnd)) {
+                                        this.game.handlePlayClick(e, this.discardPositions, this.playPositions, this.playColors, this.discardColors);
+                                        this.drawObjects(this.gameCtx)
+                                    }
+                                }
+                            })
+                        })
+                    }
+                })               
+            })
+
+            // event listener click logic for giving a clue.
             window.addEventListener("click", (e) => {
                 let clickX = e.clientX - e.target.getBoundingClientRect().left;
                 let clickY = e.clientY - e.target.getBoundingClientRect().top;
                 
-                // change a clicked card to selected state
-                this.currentHands().forEach(card => {
+                // change a clicked card from other player's hand to selected state
+                this.game.players[1].hand.forEach(card => {
                     let xStart = card.pos[0];
                     let yStart = card.pos[1];
                     let xEnd = xStart + 140;
@@ -134,35 +189,14 @@ class GameView {
                         this.drawObjects(this.gameCtx)
                     }
                 })
-                
-                // move a selected card to discard pile
-                let xStart = this.discardPositions[0][0] - 2
-                let yStart = this.discardPositions[0][1]- 2
-                let xEnd = this.discardPositions[4][0] + 150
-                let yEnd = yStart + 230;
-                if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                    this.game.handleDiscardClick(e, this.discardPositions, this.discardColors);
-                    this.drawObjects(this.gameCtx)
-                }
-                
-                //move a selected card to play pile
-                xStart = this.playPositions[0][0] - 2
-                yStart = this.playPositions[0][1] -2
-                xEnd = this.playPositions[4][0] + 150;
-                yEnd = yStart + 230;
-                if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
-                    this.game.handlePlayClick(e, this.discardPositions, this.playPositions, this.playColors, this.discardColors);
-                    this.drawObjects(this.gameCtx)
-                }
-                
 
                 for (let i = 0; i < this.game.players[1].hand.length; i ++) {
                     let card = this.game.players[1].hand[i]
                     if (card.selected) {
-                        xStart = this.clueColorPositions[i][0]
-                        yStart = this.clueColorPositions[i][1]
-                        xEnd = xStart + 60
-                        yEnd = yStart + 60
+                        let xStart = this.clueColorPositions[i][0]
+                        let yStart = this.clueColorPositions[i][1]
+                        let xEnd = xStart + 60
+                        let yEnd = yStart + 60
                         if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
                             
                             const cluedCards = []
@@ -207,10 +241,10 @@ class GameView {
                 }
                 //event listener checks if click is located on the "view teammates perspective" button
                 //calls a method that re-renders the card from the teammates perspective
-                xStart = 4
-                yStart = 710
-                xEnd = xStart + 258
-                yEnd = yStart + 25
+                let xStart = 4
+                let yStart = 710
+                let xEnd = xStart + 258
+                let yEnd = yStart + 25
                 if ((clickX >= xStart && clickX <= xEnd) && (clickY >= yStart && clickY <= yEnd)) {
                     this.viewTeammatesPerspective();
                 }
@@ -377,7 +411,6 @@ class GameView {
             this.gameCtx.fillText(`Game Over! Your score was ${this.game.score}!`, 280, 350)
         }
         
-
         let clueImg = document.getElementById('clue')
         for (let i = 0; i < this.game.numClues; i++) {
             let clue = this.clues[i]

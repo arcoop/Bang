@@ -17,6 +17,7 @@ html, body {
 }
 
 .below-header {
+  margin-top: 30px;
   position: relative;
 }
 
