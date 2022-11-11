@@ -387,7 +387,6 @@ class GameView {
         }
     }
     
-    
     addText(gameCtx) {
         gameCtx.font = "40px Albert Sans"
         gameCtx.fillStyle = "green"
