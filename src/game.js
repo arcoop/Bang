@@ -159,7 +159,7 @@ class Game {
         pivotCard.selected = false;
         pivotCard.pos = positions[colorIdx]
         if (pivotCard.num === 5) this.numClues += 1
-        this.addCard(this.currentPlayer.hand)
+        if (this.deck.deckArray.length > 0) this.addCard(this.currentPlayer.hand)
         this.switchTurns();
         this.updateScore();
     }
@@ -221,7 +221,7 @@ class Game {
         this.ctx.fillStyle = "black"
         this.ctx.fillText("You won!", this.width/3 + 70, 180)
         let image = document.getElementById("firework")
-        this.ctx.drawImage(image, this.width/3 + 60, 350, 500, 700)
+        this.ctx.drawImage(image, this.width/3 + 60, 250, 500, 700)
     }
 
     drawGameOver() {
