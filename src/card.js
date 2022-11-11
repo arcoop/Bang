@@ -12,13 +12,14 @@ class Card extends GameObject {
         this.secondarySelected = false;
         this.revealedNum = false;
         this.revealedColor = false;
+        this.width = 145;
+        this.height = 220;
         // this.discarded = false;
         this.revealed = this.revealedNum && this.revealedColor;
     }
     
     
     handleCardClick(event) {
-        event.preventDefault();
         if (!this.selected) {
             this.selected = true
         } else this.selected = false;

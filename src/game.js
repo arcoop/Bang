@@ -48,7 +48,6 @@ class Game {
 
     //Discard Click Logic
     handleDiscardClick(event, discardPositions, allColors) {
-        event.preventDefault();
         const cards = this.players[0].hand
         cards.forEach(card => {
             if (card.selected) {
@@ -63,19 +62,20 @@ class Game {
     }
 
     //Play Click Logic
-    handlePlayClick(event, discardPositions, playPositions, playColors, discardColors) {
-        event.preventDefault();
-        const cards = this.players[0].hand
-        cards.forEach(card => {
-            if (card.selected) {
+    handlePlayClick(card, discardPositions, playPositions, playColors, discardColors) {
+        // const cards = this.players[0].hand
+        // cards.forEach(card => {
+            // if (card.selected) {
                 if (this.validMove(card, playColors)) {
+                    console.log('valid move')
                     this.playOrDiscard(card, "play", playPositions, playColors, this.ctx)
                 } else {
+                    console.log('misfire')
                     this.misplay(this.ctx)
                     this.playOrDiscard(card, "discard", discardPositions, discardColors, this.ctx, true)
                 }
-            }
-        })    
+            // }
+        // })    
     }
 
     delay(time) {
@@ -96,7 +96,6 @@ class Game {
     }
 
     handleClueHover(e, type, attribute) {
-        e.preventDefault();
         const cards = this.players[1].hand
         if (type === "color") {
                 cards.forEach(card => {
@@ -131,6 +130,7 @@ class Game {
 
     //Play or Dicard moves use similar logic so they are in one method.
     playOrDiscard(pivotCard, moveType, positions, allColors, ctx, misplay=false) {
+        console.log("calling playordiscard")
         const cards = this.currentPlayer.hand
         let pivotIdx = cards.indexOf(pivotCard)
         let pile;
