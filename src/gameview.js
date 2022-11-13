@@ -168,6 +168,7 @@ class GameView {
                                     }
                                 }
                             })
+                            this.drawObjects(this.gameCtx)
                         })
                     }
                 })               
