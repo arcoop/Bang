@@ -25,6 +25,8 @@ class Card extends GameObject {
     }
 
     draw(ctx, revealedColor, revealedNum) {
+        console.log(this)
+        console.log(this.pos)
         ctx.beginPath();
         if (this.selected || this.secondarySelected) {
             ctx.roundRect(this.pos[0]-1, this.pos[1]-1, 148, 225, 15);

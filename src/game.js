@@ -35,6 +35,7 @@ class Game {
 
     addCard(hand) {
         hand.unshift(this.deck.deckArray.shift())
+        console.log("added card")
     }
 
     dealCards() {
@@ -47,7 +48,7 @@ class Game {
     }
 
     //Discard Click Logic
-    handleDiscardClick(event, discardPositions, allColors) {
+    handleDiscardClick(event, discardPositions, allColors, ctx) {
         event.preventDefault();
         const cards = this.players[0].hand
         cards.forEach(card => {
@@ -57,22 +58,22 @@ class Game {
                 card.selected = false;
                 card.revealedColor = true;
                 card.revealedNum = true;
-                this.playOrDiscard(card, "discard", discardPositions, allColors)
+                this.playOrDiscard(card, "discard", discardPositions, allColors, ctx)
             }
         })    
     }
 
     //Play Click Logic
-    handlePlayClick(event, discardPositions, playPositions, playColors, discardColors) {
+    handlePlayClick(event, discardPositions, playPositions, playColors, discardColors, ctx) {
         event.preventDefault();
         const cards = this.players[0].hand
         cards.forEach(card => {
             if (card.selected) {
                 if (this.validMove(card, playColors)) {
-                    this.playOrDiscard(card, "play", playPositions, playColors, this.ctx)
+                    this.playOrDiscard(card, "play", playPositions, playColors, ctx)
                 } else {
-                    this.misplay(this.ctx)
-                    this.playOrDiscard(card, "discard", discardPositions, discardColors, this.ctx, true)
+                    this.misplay(ctx)
+                    this.playOrDiscard(card, "discard", discardPositions, discardColors, ctx, true)
                 }
             }
         })    
@@ -127,10 +128,12 @@ class Game {
                 this.numTurns -= 1
             }
         }
+        console.log("switched turns")
     }
 
     //Play or Dicard moves use similar logic so they are in one method.
     playOrDiscard(pivotCard, moveType, positions, allColors, ctx, misplay=false) {
+        console.log(this.currentPlayer.hand)
         const cards = this.currentPlayer.hand
         let pivotIdx = cards.indexOf(pivotCard)
         let pile;
@@ -140,6 +143,7 @@ class Game {
             if (this.numClues < 8) {
                 this.numClues +=1 ;
                 pile = this.discardPiles
+                console.log(pile)
             } else {
                 ctx.font = "30px Albert Sans"
                 ctx.fillStyle = "red"
@@ -159,9 +163,10 @@ class Game {
         pivotCard.selected = false;
         pivotCard.pos = positions[colorIdx]
         if (pivotCard.num === 5) this.numClues += 1
-        if (this.deck.deckArray.length > 0) this.addCard(this.currentPlayer.hand)
-        this.switchTurns();
-        this.updateScore();
+       //if (this.deck.deckArray.length > 0) this.addCard(this.currentPlayer.hand)
+        // this.addCard(this.currentPlayer.hand)
+        // this.switchTurns();
+        // this.updateScore();
     }
 
     //check if the current card is playable (is equal to one more than the last card played of its color)
