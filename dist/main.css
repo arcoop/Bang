@@ -43,6 +43,9 @@ aside {
   font-size: 30px;
   color: white;
 }
+aside #player-1-label {
+  margin-top: 50px;
+}
 aside h3 {
   font-size: 30px;
 }
