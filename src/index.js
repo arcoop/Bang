@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const aside = document.getElementById('welcome-screen')
       aside.classList.toggle("hidden")
       const gameView = new GameView(ele, gameCtx, gameCanvasEl, player1Name, player2Name);
-      window.gameCtx = gameCtx
+      // window.gameCtx = gameCtx
       gameView.start();
     })
     

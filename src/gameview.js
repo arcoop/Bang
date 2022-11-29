@@ -122,7 +122,7 @@ class GameView {
             window.addEventListener("click", (e) => {
                 let clickX = e.clientX - e.target.getBoundingClientRect().left;
                 let clickY = e.clientY - e.target.getBoundingClientRect().top;
-                
+                o
                 // change a clicked card to selected state
                 this.currentHands().forEach(card => {
                     let xStart = card.pos[0];
@@ -263,9 +263,8 @@ class GameView {
         }
         pilesSection.append(discardPile)
         pilesSection.append(playPile)
+        this.ele.append(pilesSection)
     }
-
-
 
 
     drawObjects(gameCtx, won=false, over=false) {
@@ -273,6 +272,7 @@ class GameView {
         gameCtx.clearRect(0,0, this.width, this.height)
         
         this.setupBackground(gameCtx);
+        this.renderDiscardAndPlayPiles
         this.addText(gameCtx);
         this.renderDiscardText(gameCtx);
         this.renderClueColor(gameCtx);
@@ -281,83 +281,83 @@ class GameView {
         this.renderViewTeammatesHandText();
         this.addScore(gameCtx);
         
-        gameCtx.font = "20px Albert Sans"
-        if (this.game.deck.deckArray.length > 5) {
-            gameCtx.fillStyle = "black"
-            gameCtx.fillText(`Cards left: ${this.game.deck.deckArray.length}`, 830, this.height - 20)
-        } else {
-            gameCtx.fillStyle = "red"
-            gameCtx.fillText(`Cards left: ${this.game.deck.deckArray.length}`, 830, this.height - 20)
-        }
+        // gameCtx.font = "20px Albert Sans"
+        // if (this.game.deck.deckArray.length > 5) {
+        //     gameCtx.fillStyle = "black"
+        //     gameCtx.fillText(`Cards left: ${this.game.deck.deckArray.length}`, 830, this.height - 20)
+        // } else {
+        //     gameCtx.fillStyle = "red"
+        //     gameCtx.fillText(`Cards left: ${this.game.deck.deckArray.length}`, 830, this.height - 20)
+        // }
         
-        //render discard piles
-        for (let i = 0; i < 5; i ++){
-            // debugger
-            let pile = this.game.discardPiles[i]
-            let yDelta = 0;
-            let xDelta = 0;
-            if (pile.length > 0) {
-                // pile = pile.sort(function(card1, card2) {
-                //     if (card1.num > card2.num) {
-                //         return 1
-                //     } else return -1
-                // })
-                pile.forEach(card => {
-                    card.selected = false;
-                    card.touched = false;
-                    let orig_pos = card.pos
-                    card.pos = [card.pos[0] + xDelta, card.pos[1] +yDelta]
-                    card.revealedColor = true;
-                    card.revealedNum = true;
-                    card.draw(gameCtx, card.revealedColor, card.revealedNum)
-                    card.pos = orig_pos
-                    yDelta += 40
-                    xDelta += 2
-                })
-            } else {
-                let x = this.discardPositions[i][0]
-                let y = this.discardPositions[i][1]
-                this.game.draw(gameCtx, x, y);
-                // gameCtx.roundRect(x, y, 140, 220, 15)
-                // gameCtx.lineWidth = 1;
-                // gameCtx.strokeStyle = "gray"
-                // gameCtx.stroke();
-            }
-        }
+        // //render discard piles
+        // for (let i = 0; i < 5; i ++){
+        //     // debugger
+        //     let pile = this.game.discardPiles[i]
+        //     let yDelta = 0;
+        //     let xDelta = 0;
+        //     if (pile.length > 0) {
+        //         // pile = pile.sort(function(card1, card2) {
+        //         //     if (card1.num > card2.num) {
+        //         //         return 1
+        //         //     } else return -1
+        //         // })
+        //         pile.forEach(card => {
+        //             card.selected = false;
+        //             card.touched = false;
+        //             let orig_pos = card.pos
+        //             card.pos = [card.pos[0] + xDelta, card.pos[1] +yDelta]
+        //             card.revealedColor = true;
+        //             card.revealedNum = true;
+        //             card.draw(gameCtx, card.revealedColor, card.revealedNum)
+        //             card.pos = orig_pos
+        //             yDelta += 40
+        //             xDelta += 2
+        //         })
+        //     } else {
+        //         let x = this.discardPositions[i][0]
+        //         let y = this.discardPositions[i][1]
+        //         this.game.draw(gameCtx, x, y);
+        //         // gameCtx.roundRect(x, y, 140, 220, 15)
+        //         // gameCtx.lineWidth = 1;
+        //         // gameCtx.strokeStyle = "gray"
+        //         // gameCtx.stroke();
+        //     }
+        // }
         //render play piles
-        for (let i = 0; i < 5; i ++){
-            let pile = this.game.playPiles[i]
-            let yDelta = 0;
-            let xDelta = 0;
-            if (pile.length > 0) {
-                pile = pile.sort(function(card1, card2) {
-                    if (card1.num > card2.num) {
-                        return 1
-                    } else return -1
-                })
-                pile.forEach(card => {
-                    card.selected = false;
-                    card.touched = false;
-                    let orig_pos = card.pos
-                    card.pos = [card.pos[0] + xDelta, card.pos[1] +yDelta]
-                    card.revealedColor = true;
-                    card.revealedNum = true;
-                    card.draw(gameCtx, card.revealedColor, card.revealedNum)
-                    card.pos = orig_pos
-                    xDelta += 2
-                    yDelta += 40
-                })
+        // for (let i = 0; i < 5; i ++){
+        //     let pile = this.game.playPiles[i]
+        //     let yDelta = 0;
+        //     let xDelta = 0;
+        //     if (pile.length > 0) {
+        //         pile = pile.sort(function(card1, card2) {
+        //             if (card1.num > card2.num) {
+        //                 return 1
+        //             } else return -1
+        //         })
+        //         pile.forEach(card => {
+        //             card.selected = false;
+        //             card.touched = false;
+        //             let orig_pos = card.pos
+        //             card.pos = [card.pos[0] + xDelta, card.pos[1] +yDelta]
+        //             card.revealedColor = true;
+        //             card.revealedNum = true;
+        //             card.draw(gameCtx, card.revealedColor, card.revealedNum)
+        //             card.pos = orig_pos
+        //             xDelta += 2
+        //             yDelta += 40
+        //         })
                 
-            } else {
-                let x = this.playPositions[i][0]
-                let y = this.playPositions[i][1]
-                this.game.draw(gameCtx, x, y);
-                // gameCtx.roundRect(x, y, 140, 220, 15)
-                // gameCtx.lineWidth = 1;
-                // gameCtx.strokeStyle = "gray"
-                // gameCtx.stroke();
-            }
-        }
+        //     } else {
+        //         let x = this.playPositions[i][0]
+        //         let y = this.playPositions[i][1]
+        //         this.game.draw(gameCtx, x, y);
+        //         // gameCtx.roundRect(x, y, 140, 220, 15)
+        //         // gameCtx.lineWidth = 1;
+        //         // gameCtx.strokeStyle = "gray"
+        //         // gameCtx.stroke();
+        //     }
+        // }
         
         for (let i = 0; i < this.game.currentPlayer.hand.length; i++){
             let card = this.game.currentPlayer.hand[i]
