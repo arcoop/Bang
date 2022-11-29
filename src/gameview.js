@@ -243,6 +243,31 @@ class GameView {
         }
     }
     
+    renderDiscardAndPlayPiles() {
+        const pilesSection = document.createElement("div")
+        const playPile = document.createElement("div")
+        const discardPile = document.createElement("div")
+        discardPile.setAttribute("class", "play-discard-pile")
+        discardPile.setAttribute("id", "discard-pile")
+        playPile.setAttribute("class", "play-discard-pile")
+        playPile.setAttribute("id", "play-pile")
+        for (let i = 0; i < 5; i++) {
+            const discardSpot = document.createElement("div")
+            const playSpot = document.createElement("div")
+            playSpot.setAttribute("class", "card-spot")
+            playSpot.setAttribute("id", `play${i}`)
+            playPile.append(playSpot)
+            discardSpot.setAttribute("class", "card-spot")
+            discardSpot.setAttribute("id", `discard${i}`)
+            discardPile.append(discardSpot)
+        }
+        pilesSection.append(discardPile)
+        pilesSection.append(playPile)
+    }
+
+
+
+
     drawObjects(gameCtx, won=false, over=false) {
         //render errors
         gameCtx.clearRect(0,0, this.width, this.height)
