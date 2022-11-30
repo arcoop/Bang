@@ -16,7 +16,7 @@ class Deck {
             for (let j = 0; j < CARDNUMS.length; j++) {
                 let color = CARDCOLORS[i];
                 let num = CARDNUMS[j]
-                this.deckArray.push(new Card((i*j)+1, this.game, color, [], num))
+                this.deckArray.push(new Card(this.game, color, num, (i*j)+1))
             }
         }
         this.shuffleDeck()

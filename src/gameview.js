@@ -13,6 +13,7 @@ class GameView {
         this.game = new Game(player1, player2)
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
+        // this.deck = new Deck()
     }
 
     start() {
@@ -34,21 +35,29 @@ class GameView {
         otherPlayerHand.setAttribute("class", "hands-pile")
         otherPlayerHand.setAttribute("id", "other-player-pile")
         this.game.currentPlayer.hand.forEach(card => {
-            console.log(card)
             const currentPlayerCard = document.createElement("div")
             currentPlayerCard.setAttribute("class", "card-spot")
             currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
+            const text = document.createElement("p")
+            text.setAttribute("class", "card-num not-revealed")
+            var html = text.innerHTML;
+            text.innerHTML = card.num;
+            currentPlayerCard.append(text)
             currentPlayerHand.append(currentPlayerCard)
         })
         this.game.players[1].hand.forEach(card => {
             const otherPlayerCard = document.createElement("div")
             otherPlayerCard.setAttribute("class", "card-spot")
             otherPlayerCard.setAttribute("id", `other-player-${card.id}`)
+            const text = document.createElement("p")
+            text.setAttribute("class", "card-num revealed")
+            var html = text.innerHTML;
+            text.innerHTML = card.num;
+            otherPlayerCard.append(text)
             otherPlayerHand.append(otherPlayerCard)
         })
         handsSection.append(currentPlayerHand);
         handsSection.append(otherPlayerHand);
-
     }
 
     renderDiscardAndPlayPiles() {
