@@ -6,23 +6,49 @@ const Fuse = require('./fuse.js')
 const Clue = require('./clue.js')
 
 class GameView {
-    constructor(ele, game) {
+    constructor(ele, player1, player2) {
         this.clues = []
         this.fuses = []
         this.ele = ele
-        this.game = game
+        this.game = new Game(player1, player2)
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
     }
 
     start() {
-        this.playColors.sort((a, b) => 0.5 - Math.random());
-        this.discardColors.sort((a, b) => 0.5 - Math.random());
-        this.drawObjects()
+        // this.playColors.sort((a, b) => 0.5 - Math.random());
+        // this.discardColors.sort((a, b) => 0.5 - Math.random());
+        this.game.dealCards();
+        this.setupBoard()
     }
 
     renderHands() {
-        
+        const handsSection = document.createElement("div")
+        handsSection.setAttribute("class", "game-play-piles")
+        handsSection.setAttribute("id", "hands-section")
+        this.ele.append(handsSection)
+        const currentPlayerHand = document.createElement("div")
+        const otherPlayerHand = document.createElement("div")
+        currentPlayerHand.setAttribute("class", "hands-pile")
+        currentPlayerHand.setAttribute("id", "current-player-pile")
+        otherPlayerHand.setAttribute("class", "hands-pile")
+        otherPlayerHand.setAttribute("id", "other-player-pile")
+        this.game.currentPlayer.hand.forEach(card => {
+            console.log(card)
+            const currentPlayerCard = document.createElement("div")
+            currentPlayerCard.setAttribute("class", "card-spot")
+            currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
+            currentPlayerHand.append(currentPlayerCard)
+        })
+        this.game.players[1].hand.forEach(card => {
+            const otherPlayerCard = document.createElement("div")
+            otherPlayerCard.setAttribute("class", "card-spot")
+            otherPlayerCard.setAttribute("id", `other-player-${card.id}`)
+            otherPlayerHand.append(otherPlayerCard)
+        })
+        handsSection.append(currentPlayerHand);
+        handsSection.append(otherPlayerHand);
+
     }
 
     renderDiscardAndPlayPiles() {
@@ -50,7 +76,8 @@ class GameView {
         this.ele.append(pilesSection)
     }
 
-    drawObjects() {
+    setupBoard() {
+        this.renderHands()
         this.renderDiscardAndPlayPiles()
     }
 }

@@ -1,6 +1,5 @@
 class GameObject {
-    constructor(game, color, pos) {
-        this.game = game
+    constructor(color, pos) {
         this.pos = pos
         this.color = color
     }

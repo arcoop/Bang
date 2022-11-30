@@ -1,8 +1,8 @@
 const Card = require('./card.js')
 
 class Deck {
-    constructor(game) {
-        this.game = game
+    constructor() {
+        // this.game = game
         this.deckArray = []
         this.createDeck()
     }
@@ -16,7 +16,7 @@ class Deck {
             for (let j = 0; j < CARDNUMS.length; j++) {
                 let color = CARDCOLORS[i];
                 let num = CARDNUMS[j]
-                this.deckArray.push(new Card(this.game, color, [], num))
+                this.deckArray.push(new Card((i*j)+1, this.game, color, [], num))
             }
         }
         this.shuffleDeck()
@@ -28,6 +28,19 @@ class Deck {
 
         return this.deckArray = shuffledArr;
     }
+
+    // addCard(hand) {
+    //     hand.unshift(this.deckArray.shift())
+    // }
+
+    // dealCards() {
+    //     for (let i = 0; i < this.game.players.length; i++) {
+    //         let player = this.game.players[i]
+    //         while (player.hand.length < 5) {
+    //             this.addCard(player.hand)
+    //         }
+    //     }
+    // }
 }
 
 

@@ -2,9 +2,10 @@
 const GameObject = require('./game_object.js')
 
 class Card extends GameObject {
-    constructor(game, color, pos, num) {
+    constructor(id, color, pos, num) {
+        super(color, pos);
+        this.id = id;
         // this.game = game;
-        super(game, color, pos);
         this.touched = false;
         // this.played = false;
         this.num = num

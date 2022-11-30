@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // const submit = document.getElementById('submit-button')
     let player1Name = "player1"
     let player2Name = "player2"
-    const game = new Game(player1Name, player2Name)
-    const gameView = new GameView(ele, game);
+    // const game = new Game(player1Name, player2Name)
+    const gameView = new GameView(ele, player1Name, player2Name);
     gameView.start()
     // submit.addEventListener("click", (e) => {
       // e.preventDefault();

@@ -9,7 +9,7 @@ const { _ } = require('core-js');
 class Game {
     constructor(name1, name2) {
         this.score = 0;
-        this.deck = new Deck(this)
+        this.deck = new Deck()
         this.player1 = new Player(name1);
         this.player2 = new Player(name2);
         this.players = [this.player1, this.player2]
