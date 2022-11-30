@@ -19,8 +19,8 @@ class GameView {
     }
 
     start() {
-        // this.playColors.sort((a, b) => 0.5 - Math.random());
-        // this.discardColors.sort((a, b) => 0.5 - Math.random());
+        this.playColors.sort((a, b) => 0.5 - Math.random());
+        this.discardColors.sort((a, b) => 0.5 - Math.random());
         this.game.dealCards();
         this.setupBoard()
     }
@@ -85,16 +85,17 @@ class GameView {
         discardPile.setAttribute("id", "discard-pile")
         playPile.setAttribute("class", "play-discard-pile")
         playPile.setAttribute("id", "play-pile")
-        for (let i = 0; i < 5; i++) {
+        this.playColors.forEach(color => {
             const discardSpot = document.createElement("div")
             const playSpot = document.createElement("div")
-            playSpot.setAttribute("class", "card-spot")
+            playSpot.setAttribute("class", `card-spot ${color}` )
             playSpot.setAttribute("id", `play${i}`)
             playPile.append(playSpot)
-            discardSpot.setAttribute("class", "card-spot")
+            discardSpot.setAttribute("class", `card-spot ${color}`)
             discardSpot.setAttribute("id", `discard${i}`)
             discardPile.append(discardSpot)
-        }
+
+        })
         pilesSection.append(discardPile)
         pilesSection.append(playPile)
         this.ele.append(pilesSection)
