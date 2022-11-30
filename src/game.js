@@ -25,12 +25,6 @@ class Game {
         this.over = false;
     }
 
-    draw(ctx, x, y) {
-        ctx.roundRect(x, y, 140, 220, 15);
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "white"
-        ctx.stroke();
-    }
 
     addCard(hand) {
         hand.unshift(this.deck.deckArray.shift())

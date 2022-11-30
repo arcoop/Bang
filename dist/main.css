@@ -9,6 +9,7 @@
 
 .player-cards {
     display: flex;
+    gap: 10px;
 }
 
 
@@ -30,11 +31,35 @@
     border: 3px solid rgb(220, 210, 210);
 }
 
+.hand-card-spot {
+    width: 80px;
+    height: 150px;
+    border-radius: 5px;
+    border: 3px solid rgb(220, 210, 210);
+}
+
 .not-revealed {
     display: none;
 }
 
+.aF5F5F5{
+    background-color: #F5F5F5;
+}
 
+.aBA55D3 {
+    background-color: #BA55D3;
+}
+
+.a9ACD32 {
+    background-color: #9ACD32;
+}
+
+.a87CEEB {
+    background-color: #87CEEB;
+}
+.aFFA500 {
+    background-color: #FFA500;
+}
 /*!*************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js!./src/index.scss ***!
   \*************************************************************************************************************************************/

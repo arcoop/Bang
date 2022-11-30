@@ -51,7 +51,7 @@ class GameView {
         otherPlayerHand.append(otherPlayerCards)
         this.game.currentPlayer.hand.forEach(card => {
             const currentPlayerCard = document.createElement("div")
-            currentPlayerCard.setAttribute("class", card.revealedColor ? "card-spot-color" : "card-spot")
+            currentPlayerCard.setAttribute("class", card.revealedColor ? "hand-card-spot-color" : "card-spot")
             currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
             const text = document.createElement("p")
             text.setAttribute("class", card.revealedNum ? "card-num revealed" : "card-num not-revealed")
@@ -61,8 +61,9 @@ class GameView {
             currentPlayerCards.append(currentPlayerCard)
         })
         this.game.players[1].hand.forEach(card => {
+            console.log(card)
             const otherPlayerCard = document.createElement("div")
-            otherPlayerCard.setAttribute("class", "card-spot")
+            otherPlayerCard.setAttribute("class", `hand-card-spot a${card.color.slice(1)}`)
             otherPlayerCard.setAttribute("id", `other-player-${card.id}`)
             const text = document.createElement("p")
             text.setAttribute("class", "card-num revealed")
@@ -104,6 +105,15 @@ class GameView {
     setupBoard() {
         this.renderHands()
         this.renderDiscardAndPlayPiles()
+    }
+
+    selectCards() {
+        const card = document.querySelector('.hand-card-spot')
+        card.addEventListener("click", () => {
+            if (card.selected) {
+                card.selected = false;
+            } else card.selected = true;
+        })
     }
 }
 
