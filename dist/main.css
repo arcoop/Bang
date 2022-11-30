@@ -3,8 +3,14 @@
   \********************************************************************************************************/
 .hands-pile {
     display: flex;
+    flex-direction: column;
     gap: 10px;
 }
+
+.player-cards {
+    display: flex;
+}
+
 
 .game-play-piles {
     display: flex;

@@ -10,7 +10,9 @@ class GameView {
         this.clues = []
         this.fuses = []
         this.ele = ele
-        this.game = new Game(player1, player2)
+        this.player1 = player1;
+        this.player2 = player2;
+        this.game = new Game(this.player1, this.player2)
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         // this.deck = new Deck()
@@ -34,16 +36,29 @@ class GameView {
         currentPlayerHand.setAttribute("id", "current-player-pile")
         otherPlayerHand.setAttribute("class", "hands-pile")
         otherPlayerHand.setAttribute("id", "other-player-pile")
+        const myHandHeading = document.createElement("h2")
+        const otherHandHeading = document.createElement("h2")
+        var myHandhtml = myHandHeading.innerHTML;
+        myHandHeading.innerHTML = `${this.player1}'s Hand`
+        otherHandHeading.innerHTML = `${this.player2}'s Hand`
+        currentPlayerHand.append(myHandHeading)
+        otherPlayerHand.append(otherHandHeading)
+        const currentPlayerCards = document.createElement("div")
+        currentPlayerCards.setAttribute("class", "player-cards")
+        currentPlayerHand.append(currentPlayerCards)
+        const otherPlayerCards = document.createElement("div")
+        otherPlayerCards.setAttribute("class", "player-cards")
+        otherPlayerHand.append(otherPlayerCards)
         this.game.currentPlayer.hand.forEach(card => {
             const currentPlayerCard = document.createElement("div")
-            currentPlayerCard.setAttribute("class", "card-spot")
+            currentPlayerCard.setAttribute("class", card.revealedColor ? "card-spot-color" : "card-spot")
             currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
             const text = document.createElement("p")
-            text.setAttribute("class", "card-num not-revealed")
+            text.setAttribute("class", card.revealedNum ? "card-num revealed" : "card-num not-revealed")
             var html = text.innerHTML;
             text.innerHTML = card.num;
             currentPlayerCard.append(text)
-            currentPlayerHand.append(currentPlayerCard)
+            currentPlayerCards.append(currentPlayerCard)
         })
         this.game.players[1].hand.forEach(card => {
             const otherPlayerCard = document.createElement("div")
@@ -54,7 +69,7 @@ class GameView {
             var html = text.innerHTML;
             text.innerHTML = card.num;
             otherPlayerCard.append(text)
-            otherPlayerHand.append(otherPlayerCard)
+            otherPlayerCards.append(otherPlayerCard)
         })
         handsSection.append(currentPlayerHand);
         handsSection.append(otherPlayerHand);
