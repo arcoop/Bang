@@ -85,13 +85,13 @@ class GameView {
         discardPile.setAttribute("id", "discard-pile")
         playPile.setAttribute("class", "play-discard-pile")
         playPile.setAttribute("id", "play-pile")
-        this.playColors.forEach(color => {
+        this.playColors.forEach((color, i) => {
             const discardSpot = document.createElement("div")
             const playSpot = document.createElement("div")
-            playSpot.setAttribute("class", `card-spot ${color}` )
+            playSpot.setAttribute("class", `card-spot` )
             playSpot.setAttribute("id", `play${i}`)
             playPile.append(playSpot)
-            discardSpot.setAttribute("class", `card-spot ${color}`)
+            discardSpot.setAttribute("class", `card-spot`)
             discardSpot.setAttribute("id", `discard${i}`)
             discardPile.append(discardSpot)
 
