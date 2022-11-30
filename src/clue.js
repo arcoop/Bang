@@ -5,17 +5,6 @@ class Clue extends GameObject {
         super(game, color, pos)
         this.radius = 20
     }
-
-
-    draw(ctx, xPos, yPos) {
-        ctx.beginPath();
-        ctx.arc(xPos, yPos, this.radius, 0, 2*Math.PI, true);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.strokeStyle = this.color;
-        ctx.stroke();
-    }
-
 }
 module.exports = Clue;
 

@@ -7,9 +7,8 @@ const { _ } = require('core-js');
 
 
 class Game {
-    constructor(name1, name2, ctx) {
+    constructor(name1, name2) {
         this.score = 0;
-        this.ctx = ctx
         this.deck = new Deck(this)
         this.player1 = new Player(name1);
         this.player2 = new Player(name2);
