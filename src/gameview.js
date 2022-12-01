@@ -22,7 +22,7 @@ class GameView {
         this.discardColors.sort((a, b) => 0.5 - Math.random());
         this.game.dealCards();
         this.setupBoard()
-        this.selectCards()
+        // this.selectClues()
     }
 
     renderHands() {
@@ -39,8 +39,8 @@ class GameView {
         const myHandHeading = document.createElement("h2")
         const otherHandHeading = document.createElement("h2")
         var myHandhtml = myHandHeading.innerHTML;
-        myHandHeading.innerHTML = `${this.player1}'s Hand`
-        otherHandHeading.innerHTML = `${this.player2}'s Hand`
+        myHandHeading.innerHTML = `${this.game.players[0].name}'s Hand`
+        otherHandHeading.innerHTML = `${this.game.players[1].name}'s Hand`
         currentPlayerHand.append(myHandHeading)
         otherPlayerHand.append(otherHandHeading)
         const currentPlayerCards = document.createElement("div")
@@ -53,36 +53,43 @@ class GameView {
             const currentPlayerCard = document.createElement("div")
             currentPlayerCard.setAttribute("class", card.revealedColor ? "card-spot-color" : "card-spot")
             currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
+            if (currentPlayerCard.touched) currentPlayerCard.classList.add("touched")
             const text = document.createElement("p")
             text.setAttribute("class", card.revealedNum ? "card-num revealed" : "card-num not-revealed")
-            var html = text.innerHTML;
             text.innerHTML = card.num;
             currentPlayerCard.append(text)
             currentPlayerCards.append(currentPlayerCard)
         })
-        this.game.players[1].hand.forEach(card => {
+        this.game.players[1].hand.forEach((card, idx) => {
             const otherPlayerCard = document.createElement("div")
             otherPlayerCard.setAttribute("class", `hand-card-spot`)
             const cardObject = document.createElement("div")
             cardObject.setAttribute("class", `card-object a${card.color.slice(1)}`)
-            cardObject.setAttribute("id", `other-player-${card.id}`)
+            cardObject.setAttribute("id", `other-player-${card.id}-${idx}`)
             otherPlayerCard.append(cardObject)
-            const text = document.createElement("p")
-            text.setAttribute("class", "card-num revealed")
-            var html = otherPlayerCard.innerHTML;
-            text.innerHTML = card.num;
+            const numText = document.createElement("p")
+            numText.setAttribute("class", "card-num revealed")
+            numText.innerHTML = card.num;
             //attach number to cards
-            cardObject.append(text)
+            cardObject.append(numText)
+            const cardColorText = document.createElement('p')
+            cardColorText.setAttribute("class", 'color-text')
+            cardColorText.innerHTML = card.color;
+            cardObject.append(cardColorText)
             //render hidden clue options
             const clueOptions = document.createElement("div")
             clueOptions.setAttribute("class", "clue-options")
             clueOptions.setAttribute("id", `clue-options-${cardObject.id}`)
             const numClue = document.createElement("div")
-            numClue.setAttribute("class", "num-clue")
+            numClue.setAttribute("class", "clue num-clue")
             var numclueHTML = numClue.innerHTML;
             numClue.innerHTML = card.num
             const colorClue = document.createElement("div")
-            colorClue.setAttribute("class", `color-clue a${card.color.slice(1)}`)
+            colorClue.setAttribute("class", `clue color-clue a${card.color.slice(1)}`)
+            const clueColorText = document.createElement('p')
+            clueColorText.setAttribute("class", 'color-text')
+            clueColorText.innerHTML = card.color;
+            colorClue.append(clueColorText)
             clueOptions.append(numClue)
             clueOptions.append(colorClue)
             otherPlayerCard.append(clueOptions)
@@ -92,6 +99,22 @@ class GameView {
         })
         handsSection.append(currentPlayerHand);
         handsSection.append(otherPlayerHand);
+        this.renderGiveClueText(handsSection)
+    }
+
+    renderGiveClueText(handsSection) {
+        const giveClue = document.createElement("div")
+        giveClue.setAttribute("class", "give-clue not-clicked")
+        giveClue.setAttribute("id", "give-clue-button")
+        giveClue.innerHTML = "Give Clue"
+        handsSection.append(giveClue)
+        giveClue.addEventListener("click", () => {
+            const cards = document.querySelectorAll(".selected")
+            cards.forEach(card => {
+                card.touched = true;
+            })
+            this.redrawBoard()
+        })
     }
 
     renderDiscardAndPlayPiles() {
@@ -123,18 +146,26 @@ class GameView {
     setupBoard() {
         this.renderHands()
         this.renderDiscardAndPlayPiles()
+        this.selectCards()
+    }
+
+    redrawBoard() {
+        this.game.gameSwitchTurns()
+        const board = document.getElementById("game-board")
+        board.innerHTML=""
+        this.setupBoard()
     }
 
     selectCards() {
-        const nonSelectedCards = document.querySelectorAll('.card-object')
-        nonSelectedCards.forEach((card, idx) => {
+        const cards = document.querySelectorAll('.card-object')
+        cards.forEach((card, idx) => {
             card.addEventListener("click", () => {
                 if (card.classList.contains("selected")) {
                     const clue = document.getElementById(`clue-options-${card.id}`)
                     card.classList.remove("selected")
                     clue.classList.remove("clicked")
                 } else {
-                    nonSelectedCards.forEach(card => {
+                    cards.forEach(card => {
                         const clue = document.getElementById(`clue-options-${card.id}`)
                         card.classList.remove("selected")
                         clue.classList.remove("clicked")
@@ -142,17 +173,56 @@ class GameView {
                     const clue = document.getElementById(`clue-options-${card.id}`)
                     card.classList.add("selected")
                     clue.classList.add("clicked")
+                    this.selectClues(card, clue)
                 }
             })
         })
+    }
 
-   
-        // cards.forEach(card => ).addEventListener("click", () => {
-        //     console.log("click")
-        //     if (card.selected) {
-        //         card.selected = false;
-        //     } else card.selected = true;
-        // })
+    selectClues(mainCard, clue) {
+        const clueOptions = clue.childNodes;
+        const cards = document.querySelectorAll('.card-object')
+        const giveClueButton = document.getElementById('give-clue-button')
+        clueOptions.forEach(clueOption => {
+            clueOption.addEventListener("mouseover", () => {
+                    cards.forEach(card => {
+                    if (clueOption.className.includes("color")) {
+                        const color = clueOption.className.slice(16)
+                        if (card.className.includes(color)) {
+                            if (!card.classList.contains("selected")) card.classList.add("selected")
+                        } else if (card.classList.contains("selected")) card.classList.remove("selected")
+                    } else if (card.childNodes[0].innerHTML === clueOption.innerHTML) {
+                        if (!card.classList.contains("selected")) card.classList.add("selected")
+                    }
+                })
+            })
+
+            const clueMouseOut = () => {
+                giveClueButton.classList.remove("clue-clicked")
+                giveClueButton.classList.add("not-clicked")
+            }
+
+            const cardMouseOut = () => {
+                cards.forEach(card => {
+                    if (card !== mainCard && card.classList.contains("selected")) card.classList.remove("selected")
+                })
+            }
+            clueOption.addEventListener("mouseout", cardMouseOut)
+            clueOption.addEventListener("mouseout", clueMouseOut)
+
+            clueOption.addEventListener("click", () => {
+                clueOption.removeEventListener("mouseout", clueMouseOut)
+                clueOption.removeEventListener("mouseout", cardMouseOut)
+                if (giveClueButton.classList.contains("not-clicked")) {
+                    giveClueButton.classList.remove("not-clicked")
+                    giveClueButton.classList.add("clue-clicked")
+                } else {
+                    clueOption.addEventListener("mouseout", cardMouseOut)
+                    giveClueButton.classList.remove("clue-clicked")
+                    giveClueButton.classList.add("not-clicked")
+                }
+            })
+        })
     }
 }
 

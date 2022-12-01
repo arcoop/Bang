@@ -106,7 +106,7 @@ class Game {
             }
     } 
 
-    switchTurns() {
+    gameSwitchTurns() {
         if (this.numFuses === 0 || this.numTurns === 0) {
             this.over = true;
         } else if (this.score === 25) {
@@ -174,7 +174,7 @@ class Game {
     }
 
     //reveal the color or number of card and set it to touched
-    giveClue(cards, info) {   
+    handleGiveClue(cards, info) {   
         if (this.numClues > 0) {
             console.log("enough clues")
             cards.forEach(card => {
