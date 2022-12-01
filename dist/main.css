@@ -36,6 +36,10 @@
     height: 150px;
     border-radius: 5px;
     border: 3px solid rgb(220, 210, 210);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    background-image: url();
 }
 
 .not-revealed {
@@ -59,6 +63,10 @@
 }
 .aFFA500 {
     background-color: #FFA500;
+}
+
+.selected {
+    border: 5px solid pink;
 }
 /*!*************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js!./src/index.scss ***!

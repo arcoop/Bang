@@ -23,6 +23,7 @@ class GameView {
         this.discardColors.sort((a, b) => 0.5 - Math.random());
         this.game.dealCards();
         this.setupBoard()
+        this.selectCards()
     }
 
     renderHands() {
@@ -61,7 +62,6 @@ class GameView {
             currentPlayerCards.append(currentPlayerCard)
         })
         this.game.players[1].hand.forEach(card => {
-            console.log(card)
             const otherPlayerCard = document.createElement("div")
             otherPlayerCard.setAttribute("class", `hand-card-spot a${card.color.slice(1)}`)
             otherPlayerCard.setAttribute("id", `other-player-${card.id}`)
@@ -108,12 +108,27 @@ class GameView {
     }
 
     selectCards() {
-        const card = document.querySelector('.hand-card-spot')
-        card.addEventListener("click", () => {
-            if (card.selected) {
-                card.selected = false;
-            } else card.selected = true;
+        const nonSelectedCards = document.querySelectorAll('.hand-card-spot')
+        nonSelectedCards.forEach((card, idx) => {
+            card.addEventListener("click", () => {
+                if (card.classList.contains("selected")) {
+                    card.classList.remove("selected")
+                } else {
+                    nonSelectedCards.forEach(card => {
+                        card.classList.remove("selected")
+                    })
+                    card.classList.add("selected")
+                }
+            })
         })
+
+   
+        // cards.forEach(card => ).addEventListener("click", () => {
+        //     console.log("click")
+        //     if (card.selected) {
+        //         card.selected = false;
+        //     } else card.selected = true;
+        // })
     }
 }
 
