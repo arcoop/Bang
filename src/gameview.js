@@ -15,7 +15,6 @@ class GameView {
         this.game = new Game(this.player1, this.player2)
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
-        // this.deck = new Deck()
     }
 
     start() {
@@ -52,7 +51,7 @@ class GameView {
         otherPlayerHand.append(otherPlayerCards)
         this.game.currentPlayer.hand.forEach(card => {
             const currentPlayerCard = document.createElement("div")
-            currentPlayerCard.setAttribute("class", card.revealedColor ? "hand-card-spot-color" : "card-spot")
+            currentPlayerCard.setAttribute("class", card.revealedColor ? "card-spot-color" : "card-spot")
             currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
             const text = document.createElement("p")
             text.setAttribute("class", card.revealedNum ? "card-num revealed" : "card-num not-revealed")
@@ -63,13 +62,32 @@ class GameView {
         })
         this.game.players[1].hand.forEach(card => {
             const otherPlayerCard = document.createElement("div")
-            otherPlayerCard.setAttribute("class", `hand-card-spot a${card.color.slice(1)}`)
-            otherPlayerCard.setAttribute("id", `other-player-${card.id}`)
+            otherPlayerCard.setAttribute("class", `hand-card-spot`)
+            const cardObject = document.createElement("div")
+            cardObject.setAttribute("class", `card-object a${card.color.slice(1)}`)
+            cardObject.setAttribute("id", `other-player-${card.id}`)
+            otherPlayerCard.append(cardObject)
             const text = document.createElement("p")
             text.setAttribute("class", "card-num revealed")
-            var html = text.innerHTML;
+            var html = otherPlayerCard.innerHTML;
             text.innerHTML = card.num;
-            otherPlayerCard.append(text)
+            //attach number to cards
+            cardObject.append(text)
+            //render hidden clue options
+            const clueOptions = document.createElement("div")
+            clueOptions.setAttribute("class", "clue-options")
+            clueOptions.setAttribute("id", `clue-options-${cardObject.id}`)
+            const numClue = document.createElement("div")
+            numClue.setAttribute("class", "num-clue")
+            var numclueHTML = numClue.innerHTML;
+            numClue.innerHTML = card.num
+            const colorClue = document.createElement("div")
+            colorClue.setAttribute("class", `color-clue a${card.color.slice(1)}`)
+            clueOptions.append(numClue)
+            clueOptions.append(colorClue)
+            otherPlayerCard.append(clueOptions)
+
+            //attach to document
             otherPlayerCards.append(otherPlayerCard)
         })
         handsSection.append(currentPlayerHand);
@@ -108,16 +126,22 @@ class GameView {
     }
 
     selectCards() {
-        const nonSelectedCards = document.querySelectorAll('.hand-card-spot')
+        const nonSelectedCards = document.querySelectorAll('.card-object')
         nonSelectedCards.forEach((card, idx) => {
             card.addEventListener("click", () => {
                 if (card.classList.contains("selected")) {
+                    const clue = document.getElementById(`clue-options-${card.id}`)
                     card.classList.remove("selected")
+                    clue.classList.remove("clicked")
                 } else {
                     nonSelectedCards.forEach(card => {
+                        const clue = document.getElementById(`clue-options-${card.id}`)
                         card.classList.remove("selected")
+                        clue.classList.remove("clicked")
                     })
+                    const clue = document.getElementById(`clue-options-${card.id}`)
                     card.classList.add("selected")
+                    clue.classList.add("clicked")
                 }
             })
         })
