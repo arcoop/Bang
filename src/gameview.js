@@ -22,6 +22,7 @@ class GameView {
         this.discardColors.sort((a, b) => 0.5 - Math.random());
         this.game.dealCards();
         this.setupBoard()
+        this.dragCards()
         // this.selectClues()
     }
 
@@ -51,9 +52,10 @@ class GameView {
         otherPlayerHand.append(otherPlayerCards)
         this.game.currentPlayer.hand.forEach(card => {
             const currentPlayerCard = document.createElement("div")
-            currentPlayerCard.setAttribute("class", card.revealedColor ? "card-spot-color" : "card-spot")
+            currentPlayerCard.setAttribute("class", card.revealedColor ? `card-spot a${card.color.slice(1)} ` : "card-spot current-hand")
             currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
             if (card.touched) currentPlayerCard.classList.add("touched")
+            currentPlayerCard.setAttribute("draggable", true)
             const text = document.createElement("p")
             text.setAttribute("class", card.revealedNum ? "card-num revealed" : "card-num not-revealed")
             text.innerHTML = card.num;
@@ -66,6 +68,7 @@ class GameView {
             const cardObject = document.createElement("div")
             cardObject.setAttribute("class", `card-object a${card.color.slice(1)}`)
             cardObject.setAttribute("id", `other-player-${card.id}`)
+            if (card.touched) cardObject.classList.add("touched")
             otherPlayerCard.append(cardObject)
             const numText = document.createElement("p")
             numText.setAttribute("class", "card-num revealed")
@@ -103,23 +106,52 @@ class GameView {
     }
 
     renderGiveClueText(handsSection) {
-        const giveClue = document.createElement("div")
-        giveClue.setAttribute("class", "give-clue not-clicked")
-        giveClue.setAttribute("id", "give-clue-button")
-        giveClue.innerHTML = "Give Clue"
-        handsSection.append(giveClue)
-        giveClue.addEventListener("click", () => {
+        const giveNumClue = document.createElement("div")
+        giveNumClue.setAttribute("class", "give-clue not-clicked")
+        giveNumClue.setAttribute("id", "give-num-clue-button")
+        giveNumClue.innerHTML = "Give Clue"
+        handsSection.append(giveNumClue)
+        giveNumClue.addEventListener("click", () => {
             const cards = document.querySelectorAll(".selected")
             cards.forEach(card => {
                 this.game.players[1].hand.forEach(playerCard => {
                     console.log(card.id.slice(13))
                     if (playerCard.id === parseInt(card.id.slice(13))) {
                         playerCard.touched = true;
+                        playerCard.revealedNum = true;
                     }
                 })
             })
             this.redrawBoard()
         })
+        const giveColorClue = document.createElement("div")
+        giveColorClue.setAttribute("class", "give-clue not-clicked")
+        giveColorClue.setAttribute("id", "give-color-clue-button")
+        giveColorClue.innerHTML = "Give Clue"
+        handsSection.append(giveColorClue)
+        giveColorClue.addEventListener("click", () => {
+            const cards = document.querySelectorAll(".selected")
+            cards.forEach(card => {
+                this.game.players[1].hand.forEach(playerCard => {
+                    console.log(card.id.slice(13))
+                    if (playerCard.id === parseInt(card.id.slice(13))) {
+                        playerCard.touched = true;
+                        playerCard.revealedColor = true;
+                    }
+                })
+            })
+            this.redrawBoard()
+        })
+    }
+
+    dragover_handler(e) {
+        e.preventDefault();
+        console.log("dragover handler", e)
+    }
+
+    drop_handler(e) {
+        e.preventDefault();
+        console.log("dragover handler", e)
     }
 
     renderDiscardAndPlayPiles() {
@@ -130,6 +162,8 @@ class GameView {
         const discardPile = document.createElement("div")
         discardPile.setAttribute("class", "play-discard-pile")
         discardPile.setAttribute("id", "discard-pile")
+        // discardPile.setAttribute("ondragover", "dragover_handler(event)")
+        discardPile.setAttribute("ondrop", "console.log('drop')")
         playPile.setAttribute("class", "play-discard-pile")
         playPile.setAttribute("id", "play-pile")
         this.playColors.forEach((color, i) => {
@@ -143,8 +177,8 @@ class GameView {
             discardPile.append(discardSpot)
 
         })
-        pilesSection.append(discardPile)
         pilesSection.append(playPile)
+        pilesSection.append(discardPile)
         this.ele.append(pilesSection)
     }
 
@@ -155,10 +189,11 @@ class GameView {
     }
 
     redrawBoard() {
-        this.game.gameSwitchTurns()
-        const board = document.getElementById("game-board")
-        board.innerHTML=""
-        this.setupBoard()
+        this.game.gameSwitchTurns();
+        const board = document.getElementById("game-board");
+        board.innerHTML="";
+        this.setupBoard();
+        this.dragCards();
     }
 
     selectCards() {
@@ -187,9 +222,11 @@ class GameView {
     selectClues(mainCard, clue) {
         const clueOptions = clue.childNodes;
         const cards = document.querySelectorAll('.card-object')
-        const giveClueButton = document.getElementById('give-clue-button')
+        const giveColorClueButton = document.getElementById('give-color-clue-button')
+        const giveNumClueButton = document.getElementById('give-num-clue-button')
         clueOptions.forEach(clueOption => {
             clueOption.addEventListener("mouseover", () => {
+                console.log(clueOption)
                     cards.forEach(card => {
                     if (clueOption.className.includes("color")) {
                         const color = clueOption.className.slice(16)
@@ -218,15 +255,54 @@ class GameView {
             clueOption.addEventListener("click", () => {
                 clueOption.removeEventListener("mouseout", clueMouseOut)
                 clueOption.removeEventListener("mouseout", cardMouseOut)
-                if (giveClueButton.classList.contains("not-clicked")) {
-                    giveClueButton.classList.remove("not-clicked")
-                    giveClueButton.classList.add("clue-clicked")
+                if (clueOption.className.includes("num")) {
+                    if (giveNumClueButton.classList.contains("not-clicked")) {
+                        giveNumClueButton.classList.remove("not-clicked")
+                        giveNumClueButton.classList.add("clue-clicked")
+                    } else {
+                        clueOption.addEventListener("mouseout", cardMouseOut)
+                        giveNumClueButton.classList.remove("clue-clicked")
+                        giveNumClueButton.classList.add("not-clicked")
+                    }
                 } else {
-                    clueOption.addEventListener("mouseout", cardMouseOut)
-                    giveClueButton.classList.remove("clue-clicked")
-                    giveClueButton.classList.add("not-clicked")
+                    if (giveColorClueButton.classList.contains("not-clicked")) {
+                        giveColorClueButton.classList.remove("not-clicked")
+                        giveColorClueButton.classList.add("clue-clicked")
+                    } else {
+                        clueOption.addEventListener("mouseout", cardMouseOut)
+                        giveColorClueButton.classList.remove("clue-clicked")
+                        giveColorClueButton.classList.add("not-clicked")
+                    }
+
                 }
             })
+        })
+    }
+
+    dragCards() {
+        const cards = document.querySelectorAll('.current-hand')
+        const play = document.getElementById("play-pile")
+        cards.forEach(card => {
+            card.addEventListener("dragstart", e => {
+                // e.dataTransfer.setData("text/html", e.target.outerHTML);
+                e.dataTransfer.dropEffect = "move"
+            })
+        })
+        play.addEventListener("dragover", e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move"
+        })
+
+        play.addEventListener("drop", e => {
+            e.preventDefault();
+            const data = e.dataTransfer.getData("text/html")
+            e.target.setAttribute("class", "played-card")
+            
+            board.innerHTML="";
+            this.setupBoard();
+            this.dragCards();
+
+            // e.target.appendChild(document.getElementById(data))
         })
     }
 }
