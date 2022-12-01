@@ -53,19 +53,19 @@ class GameView {
             const currentPlayerCard = document.createElement("div")
             currentPlayerCard.setAttribute("class", card.revealedColor ? "card-spot-color" : "card-spot")
             currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
-            if (currentPlayerCard.touched) currentPlayerCard.classList.add("touched")
+            if (card.touched) currentPlayerCard.classList.add("touched")
             const text = document.createElement("p")
             text.setAttribute("class", card.revealedNum ? "card-num revealed" : "card-num not-revealed")
             text.innerHTML = card.num;
             currentPlayerCard.append(text)
             currentPlayerCards.append(currentPlayerCard)
         })
-        this.game.players[1].hand.forEach((card, idx) => {
+        this.game.players[1].hand.forEach(card => {
             const otherPlayerCard = document.createElement("div")
             otherPlayerCard.setAttribute("class", `hand-card-spot`)
             const cardObject = document.createElement("div")
             cardObject.setAttribute("class", `card-object a${card.color.slice(1)}`)
-            cardObject.setAttribute("id", `other-player-${card.id}-${idx}`)
+            cardObject.setAttribute("id", `other-player-${card.id}`)
             otherPlayerCard.append(cardObject)
             const numText = document.createElement("p")
             numText.setAttribute("class", "card-num revealed")
@@ -111,7 +111,12 @@ class GameView {
         giveClue.addEventListener("click", () => {
             const cards = document.querySelectorAll(".selected")
             cards.forEach(card => {
-                card.touched = true;
+                this.game.players[1].hand.forEach(playerCard => {
+                    console.log(card.id.slice(13))
+                    if (playerCard.id === parseInt(card.id.slice(13))) {
+                        playerCard.touched = true;
+                    }
+                })
             })
             this.redrawBoard()
         })
