@@ -12,7 +12,7 @@ class GameView {
         this.ele = ele
         this.player1 = player1;
         this.player2 = player2;
-        this.game = new Game(this.player1, this.player2)
+        this.game = new Game(this.ele, this.player1, this.player2)
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
     }
@@ -24,6 +24,14 @@ class GameView {
         this.setupBoard()
         this.dragCards()
         // this.selectClues()
+    }
+
+    renderMisplayText() {
+        const misplayText = document.createElement("h3")
+        misplayText.innerHTML = this.game.numFuses === 1 ? 'Misfire! 1 fuse left' : `Misfire! ${this.game.numFuses} fuses left!`
+        misplayText.setAttribute("class", "misplay-text")
+        misplayText.classList.add("invisible")
+        this.ele.append(misplayText)
     }
 
     renderHands() {
@@ -115,7 +123,6 @@ class GameView {
             const cards = document.querySelectorAll(".selected")
             cards.forEach(card => {
                 this.game.players[1].hand.forEach(playerCard => {
-                    console.log(card.id.slice(13))
                     if (playerCard.id === parseInt(card.id.slice(13))) {
                         playerCard.touched = true;
                         playerCard.revealedNum = true;
@@ -133,7 +140,6 @@ class GameView {
             const cards = document.querySelectorAll(".selected")
             cards.forEach(card => {
                 this.game.players[1].hand.forEach(playerCard => {
-                    console.log(card.id.slice(13))
                     if (playerCard.id === parseInt(card.id.slice(13))) {
                         playerCard.touched = true;
                         playerCard.revealedColor = true;
@@ -144,16 +150,6 @@ class GameView {
         })
     }
 
-    dragover_handler(e) {
-        e.preventDefault();
-        console.log("dragover handler", e)
-    }
-
-    drop_handler(e) {
-        e.preventDefault();
-        console.log("dragover handler", e)
-    }
-
     renderDiscardAndPlayPiles() {
         const pilesSection = document.createElement("div")
         pilesSection.setAttribute("class", "game-play-piles")
@@ -162,20 +158,43 @@ class GameView {
         const discardPile = document.createElement("div")
         discardPile.setAttribute("class", "play-discard-pile")
         discardPile.setAttribute("id", "discard-pile")
-        // discardPile.setAttribute("ondragover", "dragover_handler(event)")
-        discardPile.setAttribute("ondrop", "console.log('drop')")
         playPile.setAttribute("class", "play-discard-pile")
         playPile.setAttribute("id", "play-pile")
+        
+        
         this.playColors.forEach((color, i) => {
-            const discardSpot = document.createElement("div")
-            const playSpot = document.createElement("div")
-            playSpot.setAttribute("class", `card-spot` )
-            playSpot.setAttribute("id", `play${i}`)
-            playPile.append(playSpot)
-            discardSpot.setAttribute("class", `card-spot`)
-            discardSpot.setAttribute("id", `discard${i}`)
-            discardPile.append(discardSpot)
-
+            if (this.game.playPiles[i].length > 0) {
+                this.game.playPiles[i].forEach(card => {
+                    card.revealedColor = true;
+                    card.revealedNum = true;
+                    const cardEl = document.createElement("div")
+                    cardEl.setAttribute("class", `discarded-played-card a${card.color.slice(1)}`)
+                    cardEl.setAttribute("id", `played-card-${card.id}`)
+                    playPile.append(cardEl)
+                })
+            } else {
+                const playSpot = document.createElement("div")
+                playSpot.setAttribute("class", `card-spot` )
+                playSpot.setAttribute("id", `play${i}`)
+                playPile.append(playSpot)
+            }
+        })
+        this.discardColors.forEach((color, i) => {
+            if (this.game.discardPiles[i].length > 0) {
+                this.game.discardPiles[i].forEach(card => {
+                    card.revealedColor = true;
+                    card.revealedNum = true;
+                    const cardEl = document.createElement("div") 
+                    cardEl.setAttribute("class", `discarded-played-card a${card.color.slice(1)}`)
+                    cardEl.setAttribute("id", `discarded-card-${card.id}`)
+                    discardPile.append(cardEl)
+                })
+            } else {
+                const discardSpot = document.createElement("div")
+                discardSpot.setAttribute("class", `card-spot`)
+                discardSpot.setAttribute("id", `discard${i}`)
+                discardPile.append(discardSpot)
+            }
         })
         pilesSection.append(playPile)
         pilesSection.append(discardPile)
@@ -186,6 +205,7 @@ class GameView {
         this.renderHands()
         this.renderDiscardAndPlayPiles()
         this.selectCards()
+        this.renderMisplayText()
     }
 
     redrawBoard() {
@@ -226,7 +246,6 @@ class GameView {
         const giveNumClueButton = document.getElementById('give-num-clue-button')
         clueOptions.forEach(clueOption => {
             clueOption.addEventListener("mouseover", () => {
-                console.log(clueOption)
                     cards.forEach(card => {
                     if (clueOption.className.includes("color")) {
                         const color = clueOption.className.slice(16)
@@ -282,12 +301,16 @@ class GameView {
     dragCards() {
         const cards = document.querySelectorAll('.current-hand')
         const play = document.getElementById("play-pile")
+        let pivotCard;
         cards.forEach(card => {
             card.addEventListener("dragstart", e => {
-                // e.dataTransfer.setData("text/html", e.target.outerHTML);
+                pivotCard = e.target;
+                e.dataTransfer.setData("text/html", e.target.outerHTML);
+                e.dataTransfer.setData("text/html", e.target.innerHTML);
                 e.dataTransfer.dropEffect = "move"
             })
         })
+
         play.addEventListener("dragover", e => {
             e.preventDefault();
             e.dataTransfer.dropEffect = "move"
@@ -295,14 +318,17 @@ class GameView {
 
         play.addEventListener("drop", e => {
             e.preventDefault();
-            const data = e.dataTransfer.getData("text/html")
-            e.target.setAttribute("class", "played-card")
-            
+            this.game.currentPlayer.hand.forEach(card => {
+                if (card.id === parseInt(pivotCard.id.slice(15))) {
+                    this.game.handlePlayClick(card, this.playColors, this.discardColors)
+                }
+            })
+            // const data = e.dataTransfer.getData("text/html")
+            // e.target.setAttribute("class", "played-card")
+            const board = document.getElementById("game-board");
             board.innerHTML="";
-            this.setupBoard();
-            this.dragCards();
-
-            // e.target.appendChild(document.getElementById(data))
+            // this.game.playOrDiscard()
+            this.redrawBoard()
         })
     }
 }

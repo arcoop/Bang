@@ -7,7 +7,7 @@ const { _ } = require('core-js');
 
 
 class Game {
-    constructor(name1, name2) {
+    constructor(ele, name1, name2) {
         this.score = 0;
         this.deck = new Deck()
         this.player1 = new Player(name1);
@@ -23,6 +23,7 @@ class Game {
         this.discardSelected = false;
         this.won = false
         this.over = false;
+        this.ele = ele;
     }
 
 
@@ -56,35 +57,28 @@ class Game {
     }
 
     //Play Click Logic
-    handlePlayClick(event, discardPositions, playPositions, playColors, discardColors) {
-        event.preventDefault();
-        const cards = this.players[0].hand
-        cards.forEach(card => {
-            if (card.selected) {
-                if (this.validMove(card, playColors)) {
-                    this.playOrDiscard(card, "play", playPositions, playColors, this.ctx)
-                } else {
-                    this.misplay(this.ctx)
-                    this.playOrDiscard(card, "discard", discardPositions, discardColors, this.ctx, true)
-                }
-            }
-        })    
+    handlePlayClick(card, playColors, discardColors) {
+        console.log("in handle play click")
+        if (this.validMove(card, playColors)) {
+            this.playOrDiscard(card, "play", playColors)
+        } else {
+            this.misplay()
+            this.playOrDiscard(card, "discard", discardColors, true)
+        }       
     }
 
     delay(time) {
         return new Promise(resolve => setTimeout(resolve, time));
     }
 
-    misplay(ctx) {
+    misplay() {
         this.numFuses -= 1
+        const misplayText = document.querySelector('.misplay-text')
         this.delay(300).then(() => {
-            ctx.font = "30px Futura"
-            ctx.fillStyle = "red"
-            if (this.numFuses === 1 ) {
-                ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 700, 40)
-            } else if (this.numFuses > 0) {
-                ctx.fillText(`Misfire! ${this.numFuses} fuses left!`, 700, 40)   
-            }
+            misplayText.classList.remove("invisible")
+        })
+        this.delay(1000).then(() => {
+            misplayText.classList.add("invisible")
         })
     }
 
@@ -123,10 +117,10 @@ class Game {
     }
 
     //Play or Dicard moves use similar logic so they are in one method.
-    playOrDiscard(pivotCard, moveType, positions, allColors, ctx, misplay=false) {
+    playOrDiscard(pivotCard, moveType, allColors, misplay=false) {
         const cards = this.currentPlayer.hand
-        let pivotIdx = cards.indexOf(pivotCard)
         let pile;
+        let pivotIdx = this.currentPlayer.hand.indexOf(pivotCard);
         if (misplay) {
             pile = this.discardPiles
         } else if (moveType === "discard") {
@@ -134,9 +128,7 @@ class Game {
                 this.numClues +=1 ;
                 pile = this.discardPiles
             } else {
-                ctx.font = "30px Albert Sans"
-                ctx.fillStyle = "red"
-                ctx.fillText(`Must have fewer than 8 clues to discard`, 800, 1000)
+               // `Must have fewer than 8 clues to discard`)
             }
         } else {
             pile = this.playPiles;
@@ -150,17 +142,14 @@ class Game {
         pivotCard.revealedColor = true;
         pivotCard.revealedNum = true;
         pivotCard.selected = false;
-        pivotCard.pos = positions[colorIdx]
         if (pivotCard.num === 5) this.numClues += 1
         if (this.deck.deckArray.length > 0) this.addCard(this.currentPlayer.hand)
-        this.switchTurns();
         this.updateScore();
     }
 
     //check if the current card is playable (is equal to one more than the last card played of its color)
     validMove(currentCard, allColors) {
         let colorIdx = allColors.indexOf(currentCard.color)
-
         let pile = this.playPiles[colorIdx]
 
         if (pile.length > 0) {

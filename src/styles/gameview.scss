@@ -121,3 +121,11 @@
 .touched {
     border: 4px solid lightblue;
 }
+
+.misplay-text {
+    color: red;
+}
+
+.misplay-text.invisible {
+    display: none;
+}
