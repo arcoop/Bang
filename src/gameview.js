@@ -60,19 +60,22 @@ class GameView {
         otherPlayerHand.append(otherPlayerCards)
         this.game.currentPlayer.hand.forEach(card => {
             const currentPlayerCard = document.createElement("div")
-            currentPlayerCard.setAttribute("class", card.revealedColor ? `card-spot a${card.color.slice(1)} ` : "card-spot current-hand")
-            currentPlayerCard.setAttribute("id", `current-player-${card.id}`)
+            currentPlayerCard.setAttribute("class", "card-spot")
+            const cardObject = document.createElement("div")
+            cardObject.setAttribute("class", card.revealedColor ? `card-object a${card.color.slice(1)}` : "card-object current-hand" )
+            cardObject.setAttribute("id", `current-player-${card.id}`)
             if (card.touched) currentPlayerCard.classList.add("touched")
-            currentPlayerCard.setAttribute("draggable", true)
+            cardObject.setAttribute("draggable", true)
             const text = document.createElement("p")
             text.setAttribute("class", card.revealedNum ? "card-num revealed" : "card-num not-revealed")
             text.innerHTML = card.num;
-            currentPlayerCard.append(text)
+            cardObject.append(text)
+            currentPlayerCard.append(cardObject)
             currentPlayerCards.append(currentPlayerCard)
         })
         this.game.players[1].hand.forEach(card => {
             const otherPlayerCard = document.createElement("div")
-            otherPlayerCard.setAttribute("class", `hand-card-spot`)
+            otherPlayerCard.setAttribute("class", `card-spot other-player`)
             const cardObject = document.createElement("div")
             cardObject.setAttribute("class", `card-object a${card.color.slice(1)}`)
             cardObject.setAttribute("id", `other-player-${card.id}`)
@@ -91,6 +94,7 @@ class GameView {
             const clueOptions = document.createElement("div")
             clueOptions.setAttribute("class", "clue-options")
             clueOptions.setAttribute("id", `clue-options-${cardObject.id}`)
+            console.log(clueOptions)
             const numClue = document.createElement("div")
             numClue.setAttribute("class", "clue num-clue")
             var numclueHTML = numClue.innerHTML;
@@ -161,40 +165,37 @@ class GameView {
         playPile.setAttribute("class", "play-discard-pile")
         playPile.setAttribute("id", "play-pile")
         
-        
         this.playColors.forEach((color, i) => {
+            const playSpot = document.createElement("div")
+            playSpot.setAttribute("class", "card-spot")
+            playSpot.setAttribute("id", `play${i}`)
             if (this.game.playPiles[i].length > 0) {
                 this.game.playPiles[i].forEach(card => {
                     card.revealedColor = true;
                     card.revealedNum = true;
                     const cardEl = document.createElement("div")
-                    cardEl.setAttribute("class", `discarded-played-card a${card.color.slice(1)}`)
+                    cardEl.setAttribute("class", `card-object a${card.color.slice(1)} discarded-played`)
                     cardEl.setAttribute("id", `played-card-${card.id}`)
-                    playPile.append(cardEl)
+                    playSpot.append(cardEl)
                 })
-            } else {
-                const playSpot = document.createElement("div")
-                playSpot.setAttribute("class", `card-spot` )
-                playSpot.setAttribute("id", `play${i}`)
-                playPile.append(playSpot)
             }
+            playPile.append(playSpot)
         })
         this.discardColors.forEach((color, i) => {
+            const discardSpot = document.createElement("div")
+            discardSpot.setAttribute("class", `card-spot`)
+            discardSpot.setAttribute("id", `discard${i}`)
             if (this.game.discardPiles[i].length > 0) {
                 this.game.discardPiles[i].forEach(card => {
                     card.revealedColor = true;
                     card.revealedNum = true;
                     const cardEl = document.createElement("div") 
-                    cardEl.setAttribute("class", `discarded-played-card a${card.color.slice(1)}`)
+                    cardEl.setAttribute("class", `card-object a${card.color.slice(1)} discarded-played`)
                     cardEl.setAttribute("id", `discarded-card-${card.id}`)
-                    discardPile.append(cardEl)
+                    discardSpot.append(cardEl)
                 })
-            } else {
-                const discardSpot = document.createElement("div")
-                discardSpot.setAttribute("class", `card-spot`)
-                discardSpot.setAttribute("id", `discard${i}`)
-                discardPile.append(discardSpot)
             }
+            discardPile.append(discardSpot)
         })
         pilesSection.append(playPile)
         pilesSection.append(discardPile)
@@ -217,20 +218,22 @@ class GameView {
     }
 
     selectCards() {
-        const cards = document.querySelectorAll('.card-object')
+        const cards = document.querySelectorAll('.other-player')
         cards.forEach((card, idx) => {
             card.addEventListener("click", () => {
+                console.log(card.childNodes[0].id)
                 if (card.classList.contains("selected")) {
-                    const clue = document.getElementById(`clue-options-${card.id}`)
+                    const clue = document.getElementById(`clue-options-${card.childNodes[0].id}`)
+                    console.log(clue)
                     card.classList.remove("selected")
-                    clue.classList.remove("clicked")
+                    // clue.classList.remove("clicked")
                 } else {
                     cards.forEach(card => {
-                        const clue = document.getElementById(`clue-options-${card.id}`)
+                        const clue = document.getElementById(`clue-options-${card.childNodes[0].id}`)
                         card.classList.remove("selected")
                         clue.classList.remove("clicked")
                     })
-                    const clue = document.getElementById(`clue-options-${card.id}`)
+                    const clue = document.getElementById(`clue-options-${card.childNodes[0].id}`)
                     card.classList.add("selected")
                     clue.classList.add("clicked")
                     this.selectClues(card, clue)
@@ -327,6 +330,8 @@ class GameView {
             // e.target.setAttribute("class", "played-card")
             const board = document.getElementById("game-board");
             board.innerHTML="";
+            console.log("dropped")
+            console.log("redrawing")
             // this.game.playOrDiscard()
             this.redrawBoard()
         })
