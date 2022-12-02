@@ -35,12 +35,15 @@ class GameView {
     }
 
     renderClueImages() {
+        const allClues = document.createElement("div")
+        allClues.setAttribute("class", "all-clues")
         for (let i = 0; i < 8; i++) {
             const clue = document.createElement("div")
-            clue.setAttribute("class", "clue")
+            clue.setAttribute("class", "clue-div")
             clue.setAttribute("id", `clue-${i}`)
-            const image = document.getElementById("clue")
+            allClues.append(clue)
         }
+        this.ele.append(allClues)
     }
 
     renderHands() {
@@ -56,7 +59,6 @@ class GameView {
         otherPlayerHand.setAttribute("id", "other-player-pile")
         const myHandHeading = document.createElement("h2")
         const otherHandHeading = document.createElement("h2")
-        var myHandhtml = myHandHeading.innerHTML;
         myHandHeading.innerHTML = `${this.game.players[0].name}'s Hand`
         otherHandHeading.innerHTML = `${this.game.players[1].name}'s Hand`
         currentPlayerHand.append(myHandHeading)
@@ -237,6 +239,7 @@ class GameView {
         this.renderDiscardAndPlayPiles()
         this.selectCards()
         this.renderMisplayText()
+        this.renderClueImages()
     }
 
     redrawBoard() {
