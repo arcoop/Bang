@@ -42,12 +42,10 @@ class Game {
 
     //Discard Click Logic
     handleDiscardClick(card, allColors) {
-        if (card.selected) {
-            card.selected = false;
-            card.revealedColor = true;
-            card.revealedNum = true;
-            this.playOrDiscard(card, "discard", allColors)
-        } 
+        card.selected = false;
+        card.revealedColor = true;
+        card.revealedNum = true;
+        this.playOrDiscard(card, "discard", allColors)
     }
 
     //Play Click Logic
@@ -111,7 +109,6 @@ class Game {
 
     //Play or Dicard moves use similar logic so they are in one method.
     playOrDiscard(pivotCard, moveType, allColors, misplay=false) {
-        const cards = this.currentPlayer.hand
         let pile;
         let pivotIdx = this.currentPlayer.hand.indexOf(pivotCard);
         if (misplay) {
@@ -158,7 +155,6 @@ class Game {
     //reveal the color or number of card and set it to touched
     handleGiveClue(cards, info) {   
         if (this.numClues > 0) {
-            console.log("enough clues")
             cards.forEach(card => {
                 card.touched = true;
                 if (info === "color") {

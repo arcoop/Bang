@@ -16,13 +16,20 @@
 .game-play-piles {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 30px;
     align-items: center;
 }
 
+
+
 .play-discard-pile {
     display: flex;
+    flex-direction: column;
+}
+
+.dp-pile-cards {
     gap: 10px;
+    display: flex;
 }
 
 .card-spot {
@@ -135,6 +142,8 @@
 .dragging {
     border: 3px solid rgb(220, 210, 210);
 }
+
+
 /*!****************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/styles/game.scss ***!
   \****************************************************************************************************/

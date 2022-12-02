@@ -135,6 +135,7 @@ class GameView {
                     }
                 })
             })
+            this.game.numClues -= 1;
             this.redrawBoard()
         })
         const giveColorClue = document.createElement("div")
@@ -152,6 +153,7 @@ class GameView {
                     }
                 })
             })
+            this.game.numClues -= 1;
             this.redrawBoard()
         })
     }
@@ -166,7 +168,12 @@ class GameView {
         discardPile.setAttribute("id", "discard-pile")
         playPile.setAttribute("class", "play-discard-pile")
         playPile.setAttribute("id", "play-pile")
-        
+        const playHeading = document.createElement("h2")
+        playHeading.innerHTML = "Play"
+        playPile.append(playHeading)
+        const playPileCards = document.createElement("div")
+        playPileCards.setAttribute("class", "dp-pile-cards")
+        playPile.append(playPileCards)
         this.playColors.forEach((color, i) => {
             const playSpot = document.createElement("div")
             playSpot.setAttribute("class", "card-spot")
@@ -184,8 +191,14 @@ class GameView {
                     playSpot.append(cardEl)
                 })
             }
-            playPile.append(playSpot)
+            playPileCards.append(playSpot)
         })
+        const discardPileCards = document.createElement("div")
+        discardPileCards.setAttribute("class", "dp-pile-cards")
+        const discardHeading = document.createElement("h2")
+        discardHeading.innerHTML = "Discard"
+        discardPile.append(discardHeading)
+        discardPile.append(discardPileCards)
         this.discardColors.forEach((color, i) => {
             const discardSpot = document.createElement("div")
             discardSpot.setAttribute("class", `card-spot`)
@@ -203,7 +216,7 @@ class GameView {
                     discardSpot.append(cardEl)
                 })
             }
-            discardPile.append(discardSpot)
+            discardPileCards.append(discardSpot)
         })
         pilesSection.append(playPile)
         pilesSection.append(discardPile)
@@ -231,7 +244,6 @@ class GameView {
             card.addEventListener("click", () => {
                 if (card.classList.contains("selected")) {
                     const clue = document.getElementById(`clue-options-${card.childNodes[0].id}`)
-                    console.log(clue)
                     card.classList.remove("selected")
                     // clue.classList.remove("clicked")
                 } else {
@@ -257,8 +269,6 @@ class GameView {
         clueOptions.forEach(clueOption => {
             clueOption.addEventListener("mouseover", () => {
                     cards.forEach(card => {
-                        console.log(card.childNodes[0].childNodes[0].innerHTML)
-                        console.log(clueOption.innerHTML)
                     if (clueOption.className.includes("color")) {
                         const color = clueOption.className.slice(16)
                         if (card.childNodes[0].className.includes(color)) {
@@ -318,7 +328,6 @@ class GameView {
         cards.forEach(card => {
             card.addEventListener("dragstart", e => {
                 pivotCard = e.target;
-                console.log(pivotCard)
                 e.dataTransfer.setData("text/html", e.target.outerHTML);
                 e.dataTransfer.setData("text/html", e.target.innerHTML);
                 e.dataTransfer.dropEffect = "move"
