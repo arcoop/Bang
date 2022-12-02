@@ -41,24 +41,17 @@ class Game {
     }
 
     //Discard Click Logic
-    handleDiscardClick(event, discardPositions, allColors) {
-        event.preventDefault();
-        const cards = this.players[0].hand
-        cards.forEach(card => {
-            if (card.selected) {
-                let cardColorIdx = allColors.indexOf(card.color)
-                card.pos = discardPositions[cardColorIdx]
-                card.selected = false;
-                card.revealedColor = true;
-                card.revealedNum = true;
-                this.playOrDiscard(card, "discard", discardPositions, allColors)
-            }
-        })    
+    handleDiscardClick(card, allColors) {
+        if (card.selected) {
+            card.selected = false;
+            card.revealedColor = true;
+            card.revealedNum = true;
+            this.playOrDiscard(card, "discard", allColors)
+        } 
     }
 
     //Play Click Logic
     handlePlayClick(card, playColors, discardColors) {
-        console.log("in handle play click")
         if (this.validMove(card, playColors)) {
             this.playOrDiscard(card, "play", playColors)
         } else {

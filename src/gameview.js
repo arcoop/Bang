@@ -318,14 +318,15 @@ class GameView {
         cards.forEach(card => {
             card.addEventListener("dragstart", e => {
                 pivotCard = e.target;
-                pivotCard.classList.add("dragging")
+                console.log(pivotCard)
                 e.dataTransfer.setData("text/html", e.target.outerHTML);
                 e.dataTransfer.setData("text/html", e.target.innerHTML);
                 e.dataTransfer.dropEffect = "move"
             })
         })
-
+        
         playZone.addEventListener("dragover", e => {
+            pivotCard.classList.add("dragging")
             e.preventDefault();
             e.dataTransfer.dropEffect = "move"
         })
@@ -354,7 +355,7 @@ class GameView {
             e.preventDefault();
             this.game.currentPlayer.hand.forEach(card => {
                 if (card.id === parseInt(pivotCard.id.slice(15))) {
-                    this.game.handleDiscardClick(card, this.playColors, this.discardColors)
+                    this.game.handleDiscardClick(card, this.discardColors)
                 }
             })
             // const data = e.dataTransfer.getData("text/html")
