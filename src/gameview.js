@@ -34,6 +34,15 @@ class GameView {
         this.ele.append(misplayText)
     }
 
+    renderClueImages() {
+        for (let i = 0; i < 8; i++) {
+            const clue = document.createElement("div")
+            clue.setAttribute("class", "clue")
+            clue.setAttribute("id", `clue-${i}`)
+            const image = document.getElementById("clue")
+        }
+    }
+
     renderHands() {
         const handsSection = document.createElement("div")
         handsSection.setAttribute("class", "game-play-piles")
@@ -62,7 +71,7 @@ class GameView {
             const currentPlayerCard = document.createElement("div")
             currentPlayerCard.setAttribute("class", "card-spot")
             const cardObject = document.createElement("div")
-            cardObject.setAttribute("class", card.revealedColor ? `card-object a${card.color.slice(1)}` : "card-object current-hand" )
+            cardObject.setAttribute("class", card.revealedColor ? `card-object a${card.color.slice(1)} current-hand` : "card-object current-hand" )
             cardObject.setAttribute("id", `current-player-${card.id}`)
             if (card.touched) currentPlayerCard.classList.add("touched")
             cardObject.setAttribute("draggable", true)
@@ -327,6 +336,8 @@ class GameView {
         let pivotCard;
         cards.forEach(card => {
             card.addEventListener("dragstart", e => {
+                console.log("dragstart")
+                console.log(e.target)
                 pivotCard = e.target;
                 e.dataTransfer.setData("text/html", e.target.outerHTML);
                 e.dataTransfer.setData("text/html", e.target.innerHTML);
@@ -335,7 +346,6 @@ class GameView {
         })
         
         playZone.addEventListener("dragover", e => {
-            pivotCard.classList.add("dragging")
             e.preventDefault();
             e.dataTransfer.dropEffect = "move"
         })
