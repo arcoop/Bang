@@ -37,20 +37,28 @@ class GameView {
     renderClueImages() {
         const allClues = document.createElement("div")
         allClues.setAttribute("class", "all-clues")
-        for (let i = 0; i < 8; i++) {
+        const numClues = document.createElement("h3")
+        numClues.setAttribute("class", "num-clues-text")
+        numClues.innerText = this.game.numClues === 1 ? (this.game.numClues + " clue") : (this.game.numClues + " clues")
+        allClues.append(numClues)
+        for (let i = 0; i < this.game.numClues; i++) {
             const clue = document.createElement("div")
             clue.setAttribute("class", "clue-div")
             clue.setAttribute("id", `clue-${i}`)
+            const clueText = document.createElement("i")
+            clueText.setAttribute("class", "fa-solid fa-magnifying-glass")
+            clue.append(clueText)
             allClues.append(clue)
         }
         this.ele.append(allClues)
     }
 
     renderHands() {
+        const boardArea = document.getElementById("board-area")
         const handsSection = document.createElement("div")
         handsSection.setAttribute("class", "game-play-piles")
         handsSection.setAttribute("id", "hands-section")
-        this.ele.append(handsSection)
+        boardArea.append(handsSection)
         const currentPlayerHand = document.createElement("div")
         const otherPlayerHand = document.createElement("div")
         currentPlayerHand.setAttribute("class", "hands-pile")
@@ -170,9 +178,11 @@ class GameView {
     }
 
     renderDiscardAndPlayPiles() {
+        const boardArea = document.getElementById("board-area")
         const pilesSection = document.createElement("div")
         pilesSection.setAttribute("class", "game-play-piles")
         pilesSection.setAttribute("id", "piles-section")
+        boardArea.append(pilesSection)
         const playPile = document.createElement("div")
         const discardPile = document.createElement("div")
         discardPile.setAttribute("class", "play-discard-pile")
@@ -231,14 +241,17 @@ class GameView {
         })
         pilesSection.append(playPile)
         pilesSection.append(discardPile)
-        this.ele.append(pilesSection)
     }
 
     setupBoard() {
+        const boardArea = document.createElement("div")
+        boardArea.setAttribute("class", "board-area")
+        boardArea.setAttribute("id", "board-area")
+        this.ele.append(boardArea)
         this.renderHands()
         this.renderDiscardAndPlayPiles()
         this.selectCards()
-        this.renderMisplayText()
+        // this.renderMisplayText()
         this.renderClueImages()
     }
 

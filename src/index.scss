@@ -155,10 +155,12 @@ img {
 }
 
 .game-board {
-    margin-top: 40px;
     display: flex;
-    gap: 50px;
-    justify-content: space-around;
+    flex-direction: column;
+    box-sizing: border-box;
+    // justify-content: center;
+    // align-items: center;
+
     // justify-content: space-between;
     // flex-direction: column;
     // justify-content: flex-end;
