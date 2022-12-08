@@ -44,6 +44,16 @@
     box-sizing: border-box;
 }
 
+.card-spot.discard {
+    position: relative;
+}
+
+.discarded-card {
+    position: absolute;
+    border: 3px solid rgb(220, 210, 210);
+    border-radius: 5px;
+}
+
 .clue-div {
     width: 80px;
     height: 80px;
@@ -58,8 +68,8 @@
     justify-content: center;
 }
 
-.discarded-played {
-    border: 3px solid transparent;
+.cardNum0 {
+    border: 3px solid transparent !important;
 }
 
 .card-object:hover {
@@ -140,10 +150,11 @@
 
 .misplay-text {
     color: red;
+    text-align: center;
 }
 
 .misplay-text.invisible {
-    display: none;
+    color: green;
 }
 
 .dragging {

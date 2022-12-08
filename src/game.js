@@ -65,12 +65,13 @@ class Game {
     misplay() {
         this.numFuses -= 1
         const misplayText = document.querySelector('.misplay-text')
-        this.delay(300).then(() => {
+        misplayText.classList.remove("invisible")
+        this.delay(2000).then(() => {
             misplayText.classList.remove("invisible")
         })
-        this.delay(1000).then(() => {
-            misplayText.classList.add("invisible")
-        })
+        // this.delay(2000).then(() => {
+        //     misplayText.classList.add("invisible")
+        // })
     }
 
     handleClueHover(e, type, attribute) {

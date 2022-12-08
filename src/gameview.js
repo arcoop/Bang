@@ -222,19 +222,22 @@ class GameView {
         discardPile.append(discardPileCards)
         this.discardColors.forEach((color, i) => {
             const discardSpot = document.createElement("div")
-            discardSpot.setAttribute("class", `card-spot`)
+            discardSpot.setAttribute("class", `card-spot discard`)
             discardSpot.setAttribute("id", `discard${i}`)
             if (this.game.discardPiles[i].length > 0) {
-                this.game.discardPiles[i].forEach(card => {
+                let top = 0;
+                this.game.discardPiles[i].forEach((card, idx) => {
                     card.revealedColor = true;
                     card.revealedNum = true;
                     const cardEl = document.createElement("div") 
-                    cardEl.setAttribute("class", `card-object a${card.color.slice(1)} discarded-played`)
+                    cardEl.setAttribute("class", `card-object a${card.color.slice(1)} discarded-played discarded-card cardNum${idx}`)
                     cardEl.setAttribute("id", `discarded-card-${card.id}`)
+                    cardEl.setAttribute("style", `z-index: ${idx}; top: ${top}px`)
                     const numText = document.createElement("p")
                     numText.innerHTML = card.num
                     cardEl.append(numText)
                     discardSpot.append(cardEl)
+                    top += 50;
                 })
             }
             discardPileCards.append(discardSpot)
@@ -244,6 +247,8 @@ class GameView {
     }
 
     setupBoard() {
+        this.renderMisplayText()
+        this.renderClueImages()
         const boardArea = document.createElement("div")
         boardArea.setAttribute("class", "board-area")
         boardArea.setAttribute("id", "board-area")
@@ -251,8 +256,6 @@ class GameView {
         this.renderHands()
         this.renderDiscardAndPlayPiles()
         this.selectCards()
-        // this.renderMisplayText()
-        this.renderClueImages()
     }
 
     redrawBoard() {
@@ -339,7 +342,6 @@ class GameView {
                         giveColorClueButton.classList.remove("clue-clicked")
                         giveColorClueButton.classList.add("not-clicked")
                     }
-
                 }
             })
         })
@@ -352,8 +354,6 @@ class GameView {
         let pivotCard;
         cards.forEach(card => {
             card.addEventListener("dragstart", e => {
-                console.log("dragstart")
-                console.log(e.target)
                 pivotCard = e.target;
                 e.dataTransfer.setData("text/html", e.target.outerHTML);
                 e.dataTransfer.setData("text/html", e.target.innerHTML);
@@ -373,11 +373,6 @@ class GameView {
                     this.game.handlePlayClick(card, this.playColors, this.discardColors)
                 }
             })
-            // const data = e.dataTransfer.getData("text/html")
-            // e.target.setAttribute("class", "played-card")
-            const board = document.getElementById("game-board");
-            board.innerHTML="";
-            // this.game.playOrDiscard()
             this.redrawBoard()
         })
 
