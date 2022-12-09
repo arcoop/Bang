@@ -326,10 +326,10 @@ class GameView {
                 })
             })
 
-            const clueMouseOut = () => {
-                giveClueButton.classList.remove("clue-clicked")
-                giveClueButton.classList.add("not-clicked")
-            }
+            // const clueMouseOut = () => {
+            //     giveClueButton.classList.remove("clue-clicked")
+            //     giveClueButton.classList.add("not-clicked")
+            // }
 
             const cardMouseOut = () => {
                 cards.forEach(card => {
@@ -405,10 +405,8 @@ class GameView {
                             misplayText.classList.remove("invisible")
                         }).then(() => this.game.playOrDiscard(card, "discard", this.discardColors, true)).then(() => this.redrawBoard())
                     }
-                    // this.game.handlePlayClick(card, this.playColors, this.discardColors)
                 }
             })
-            // this.redrawBoard()
         })
 
         discardZone.addEventListener("dragover", e => {
@@ -423,11 +421,8 @@ class GameView {
                     this.game.handleDiscardClick(card, this.discardColors)
                 }
             })
-            // const data = e.dataTransfer.getData("text/html")
-            // e.target.setAttribute("class", "played-card")
             const board = document.getElementById("game-board");
             board.innerHTML="";
-            // this.game.playOrDiscard()
             this.redrawBoard()
         })
 
