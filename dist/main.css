@@ -12,10 +12,16 @@
     gap: 10px;
 }
 
+#hands-section {
+    flex-direction: column;
+}
+
+#piles-section {
+
+}
 
 .game-play-piles {
     display: flex;
-    flex-direction: column;
     gap: 30px;
     align-items: center;
 }
@@ -44,7 +50,7 @@
     box-sizing: border-box;
 }
 
-.card-spot.discard {
+.card-spot.dp {
     position: relative;
 }
 
@@ -52,6 +58,10 @@
     position: absolute;
     border: 3px solid rgb(220, 210, 210);
     border-radius: 5px;
+}
+
+.played-card {
+    position: absolute;
 }
 
 .clue-div {

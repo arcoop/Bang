@@ -152,7 +152,7 @@ class GameView {
         this.renderGiveClueText(handsSection)
     }
 
-    renderGiveClueText(handsSection) {
+    renderGiveClueText(handsSection, clueType) {
         const giveNumClue = document.createElement("div")
         giveNumClue.setAttribute("class", "give-clue not-clicked")
         giveNumClue.setAttribute("id", "give-num-clue-button")
@@ -196,7 +196,7 @@ class GameView {
         const pilesSection = document.createElement("div")
         pilesSection.setAttribute("class", "game-play-piles")
         pilesSection.setAttribute("id", "piles-section")
-        boardArea.append(pilesSection)
+        // boardArea.append(pilesSection)
         const playPile = document.createElement("div")
         const discardPile = document.createElement("div")
         discardPile.setAttribute("class", "play-discard-pile")
@@ -211,14 +211,14 @@ class GameView {
         playPile.append(playPileCards)
         this.playColors.forEach((color, i) => {
             const playSpot = document.createElement("div")
-            playSpot.setAttribute("class", "card-spot")
+            playSpot.setAttribute("class", "card-spot dp")
             playSpot.setAttribute("id", `play${i}`)
             if (this.game.playPiles[i].length > 0) {
                 this.game.playPiles[i].forEach(card => {
                     card.revealedColor = true;
                     card.revealedNum = true;
                     const cardEl = document.createElement("div")
-                    cardEl.setAttribute("class", `card-object a${card.color.slice(1)} discarded-played`)
+                    cardEl.setAttribute("class", `card-object a${card.color.slice(1)} discarded-played played-card`)
                     cardEl.setAttribute("id", `played-card-${card.id}`)
                     const numText = document.createElement("p")
                     numText.innerHTML = card.num
@@ -236,7 +236,7 @@ class GameView {
         discardPile.append(discardPileCards)
         this.discardColors.forEach((color, i) => {
             const discardSpot = document.createElement("div")
-            discardSpot.setAttribute("class", `card-spot discard`)
+            discardSpot.setAttribute("class", `card-spot dp`)
             discardSpot.setAttribute("id", `discard${i}`)
             if (this.game.discardPiles[i].length > 0) {
                 let top = 0;
@@ -256,8 +256,8 @@ class GameView {
             }
             discardPileCards.append(discardSpot)
         })
-        pilesSection.append(playPile)
-        pilesSection.append(discardPile)
+        boardArea.append(playPile)
+        boardArea.append(discardPile)
     }
 
     setupBoard() {
@@ -326,10 +326,10 @@ class GameView {
                 })
             })
 
-            // const clueMouseOut = () => {
-            //     giveClueButton.classList.remove("clue-clicked")
-            //     giveClueButton.classList.add("not-clicked")
-            // }
+            const clueMouseOut = () => {
+                giveClueButton.classList.remove("clue-clicked")
+                giveClueButton.classList.add("not-clicked")
+            }
 
             const cardMouseOut = () => {
                 cards.forEach(card => {
