@@ -49,14 +49,14 @@ class Game {
     }
 
     //Play Click Logic
-    handlePlayClick(card, playColors, discardColors) {
-        if (this.validMove(card, playColors)) {
-            this.playOrDiscard(card, "play", playColors)
-        } else {
-            this.misplay()
-            this.playOrDiscard(card, "discard", discardColors, true)
-        }       
-    }
+    // handlePlayClick(card, playColors, discardColors) {
+    //     if (this.validMove(card, playColors)) {
+    //         this.playOrDiscard(card, "play", playColors)
+    //     } else {
+    //         this.misplay()
+    //         this.playOrDiscard(card, "discard", discardColors, true)
+    //     }       
+    // }
 
     delay(time) {
         return new Promise(resolve => setTimeout(resolve, time));

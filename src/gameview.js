@@ -27,14 +27,28 @@ class GameView {
     }
 
     renderMisplayText() {
+        const cluesAndFuses = document.getElementById("clues-and-fuses")
         const misplayText = document.createElement("h3")
         misplayText.innerHTML = this.game.numFuses === 1 ? 'Misfire! 1 fuse left' : `Misfire! ${this.game.numFuses} fuses left!`
         misplayText.setAttribute("class", "misplay-text")
         misplayText.classList.add("invisible")
+        const allFuses = document.createElement("div")
+        allFuses.setAttribute("class", "all-fuses")
         this.ele.append(misplayText)
+        for (let i = 0; i < this.game.numFuses; i++) {
+            const fuse = document.createElement("div")
+            fuse.setAttribute("class", "fuse-div")
+            fuse.setAttribute("id", `fuse-${i}`)
+            const fuseText = document.createElement("i")
+            fuseText.setAttribute("class", "fa-solid fa-bomb")
+            fuse.append(fuseText)
+            allFuses.append(fuse)
+        }
+        cluesAndFuses.append(allFuses)
     }
 
     renderClueImages() {
+        const cluesAndFuses = document.getElementById("clues-and-fuses")
         const allClues = document.createElement("div")
         allClues.setAttribute("class", "all-clues")
         const numClues = document.createElement("h3")
@@ -50,7 +64,7 @@ class GameView {
             clue.append(clueText)
             allClues.append(clue)
         }
-        this.ele.append(allClues)
+        cluesAndFuses.append(allClues)
     }
 
     renderHands() {
@@ -247,6 +261,10 @@ class GameView {
     }
 
     setupBoard() {
+        const cluesAndFuses = document.createElement("div")
+        cluesAndFuses.setAttribute("class", "clues-and-fuses")
+        cluesAndFuses.setAttribute("id", "clues-and-fuses")
+        this.ele.append(cluesAndFuses)
         this.renderMisplayText()
         this.renderClueImages()
         const boardArea = document.createElement("div")
@@ -347,6 +365,10 @@ class GameView {
         })
     }
 
+    delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
     dragCards() {
         const cards = document.querySelectorAll('.current-hand')
         const playZone = document.getElementById("play-pile")
@@ -370,10 +392,23 @@ class GameView {
             e.preventDefault();
             this.game.currentPlayer.hand.forEach(card => {
                 if (card.id === parseInt(pivotCard.id.slice(15))) {
-                    this.game.handlePlayClick(card, this.playColors, this.discardColors)
+                    if (this.game.validMove(card, this.playColors)) {
+                        console.log("play")
+                        this.game.playOrDiscard(card, "play", this.playColors);
+                        this.redrawBoard()
+                    } else {
+                        this.game.numFuses -= 1;
+                        const misplayText = document.querySelector('.misplay-text')
+                        misplayText.innerHTML = this.game.numFuses === 1 ? 'Misfire! 1 fuse left' : `Misfire! ${this.game.numFuses} fuses left!`
+                        misplayText.classList.remove("invisible")
+                        this.delay(1000).then(() => {
+                            misplayText.classList.remove("invisible")
+                        }).then(() => this.game.playOrDiscard(card, "discard", this.discardColors, true)).then(() => this.redrawBoard())
+                    }
+                    // this.game.handlePlayClick(card, this.playColors, this.discardColors)
                 }
             })
-            this.redrawBoard()
+            // this.redrawBoard()
         })
 
         discardZone.addEventListener("dragover", e => {

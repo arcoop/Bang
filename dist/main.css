@@ -154,7 +154,7 @@
 }
 
 .misplay-text.invisible {
-    color: green;
+    display: none;
 }
 
 .dragging {
@@ -164,8 +164,22 @@
 .all-clues {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     box-sizing: border-box;
+}
+
+.all-fuses {
+    display: flex;
+    justify-content: flex-start;
+    gap: 50px;
+}
+
+.fa-bomb {
+    font-size: 30px;
+}
+
+.fa-magnifying-glass {
+    font-size: 30px;
 }
 
 .num-clues-text {
