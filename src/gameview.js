@@ -15,6 +15,7 @@ class GameView {
         this.game = new Game(this.ele, this.player1, this.player2)
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
+        this.possibleNums = [1,2,3,]
     }
 
     start() {
@@ -67,6 +68,53 @@ class GameView {
         cluesAndFuses.append(allClues)
     }
 
+    renderOtherPlayerPerspective() {
+        const otherPlayerHand = document.getElementById("other-player-cards")
+        otherPlayerHand.innerHTML = ""
+        this.game.players[1].hand.forEach(card => {
+            const otherPlayerCard = document.createElement("div")
+            otherPlayerCard.setAttribute("class", "card-spot")
+            const cardObject = document.createElement("div")
+            cardObject.setAttribute("class", card.revealedColor ? `card-object a${card.color.slice(1)} current-hand` : "card-object current-hand" )
+            cardObject.setAttribute("id", `current-player-${card.id}`)
+            if (card.touched) otherPlayerCard.classList.add("touched")
+            cardObject.setAttribute("draggable", true)
+            const text = document.createElement("p")
+            text.setAttribute("class", card.revealedNum ? "card-num revealed" : "card-num not-revealed")
+            text.innerHTML = card.num;
+            cardObject.append(text)
+            otherPlayerCard.append(cardObject)
+            otherPlayerHand.append(otherPlayerCard)
+        })
+    }
+
+    createCardNums(card, revealedColor) {
+        const cardNums = document.createElement("div")
+        cardNums.setAttribute("class", "card-nums")
+        for (let i = 1; i < 6; i++) {
+            const cardNum = document.createElement("p")
+            cardNum.setAttribute("class", `card-num a${i}`)
+            cardNum.setAttribute("id", `card-num-${i}`)
+            cardNum.innerText = i
+            cardNums.append(cardNum)
+        }
+        card.append(cardNums)
+        if (!revealedColor) this.createCardColors(card)
+
+    }
+
+    createCardColors(card) {
+        const cardColors = document.createElement("div")
+        cardColors.setAttribute("class", "card-colors")
+        this.playColors.forEach((color, idx) => {
+            const cardColor = document.createElement("div")
+            cardColor.setAttribute("class", `card-color a${color.slice(1)}`)
+            cardColor.setAttribute("id", `card-color-${idx}`)
+            cardColors.append(cardColor)
+        })
+        card.append(cardColors)
+    }
+
     renderHands() {
         const boardArea = document.getElementById("board-area")
         const handsSection = document.createElement("div")
@@ -90,6 +138,7 @@ class GameView {
         currentPlayerHand.append(currentPlayerCards)
         const otherPlayerCards = document.createElement("div")
         otherPlayerCards.setAttribute("class", "player-cards")
+        otherPlayerCards.setAttribute("id", "other-player-cards")
         otherPlayerHand.append(otherPlayerCards)
         this.game.currentPlayer.hand.forEach(card => {
             const currentPlayerCard = document.createElement("div")
@@ -105,7 +154,9 @@ class GameView {
             cardObject.append(text)
             currentPlayerCard.append(cardObject)
             currentPlayerCards.append(currentPlayerCard)
+            if (!card.revealedNum) this.createCardNums(cardObject, card.revealedColor)
         })
+
         this.game.players[1].hand.forEach(card => {
             const cardAndClue = document.createElement("div")
             cardAndClue.setAttribute("class", "card-and-clue")
@@ -132,7 +183,6 @@ class GameView {
             clueOptions.setAttribute("id", `clue-options-${cardObject.id}`)
             const numClue = document.createElement("div")
             numClue.setAttribute("class", "clue num-clue")
-            var numclueHTML = numClue.innerHTML;
             numClue.innerHTML = card.num
             const colorClue = document.createElement("div")
             colorClue.setAttribute("class", `clue color-clue a${card.color.slice(1)}`)
@@ -149,15 +199,34 @@ class GameView {
         })
         handsSection.append(currentPlayerHand);
         handsSection.append(otherPlayerHand);
+        const textArea = document.createElement("div")
+        textArea.setAttribute("id", "hands-text-area")
+        const viewHandText = document.createElement("div")
+        viewHandText.setAttribute("id", "view-hand")
+        viewHandText.innerHTML = `What does ${this.game.players[1].name} know?`
+        textArea.append(viewHandText)
+        handsSection.append(textArea)
         this.renderGiveClueText(handsSection)
+        viewHandText.addEventListener("mousedown", () => {
+            this.renderOtherPlayerPerspective()
+        })
+        viewHandText.addEventListener("mouseup", () => {
+            const board = document.getElementById("game-board");
+            board.innerHTML="";
+            this.setupBoard();
+            this.dragCards();
+        })
     }
 
+  
+
     renderGiveClueText(handsSection, clueType) {
+        const textArea = document.getElementById("hands-text-area")
         const giveNumClue = document.createElement("div")
         giveNumClue.setAttribute("class", "give-clue not-clicked")
         giveNumClue.setAttribute("id", "give-num-clue-button")
         giveNumClue.innerHTML = "Give Clue"
-        handsSection.append(giveNumClue)
+        textArea.append(giveNumClue)
         giveNumClue.addEventListener("click", () => {
             const cards = document.querySelectorAll(".selected")
             cards.forEach(card => {
@@ -165,6 +234,8 @@ class GameView {
                     if (playerCard.id === parseInt(card.childNodes[0].id.slice(13))) {
                         playerCard.touched = true;
                         playerCard.revealedNum = true;
+                    } else {
+
                     }
                 })
             })
@@ -175,7 +246,7 @@ class GameView {
         giveColorClue.setAttribute("class", "give-clue not-clicked")
         giveColorClue.setAttribute("id", "give-color-clue-button")
         giveColorClue.innerHTML = "Give Clue"
-        handsSection.append(giveColorClue)
+        textArea.append(giveColorClue)
         giveColorClue.addEventListener("click", () => {
             const cards = document.querySelectorAll(".selected")
             cards.forEach(card => {
@@ -256,8 +327,12 @@ class GameView {
             }
             discardPileCards.append(discardSpot)
         })
-        boardArea.append(playPile)
-        boardArea.append(discardPile)
+        const playDiscardSection = document.createElement("div")
+        playDiscardSection.setAttribute("class", "play-discard-section")
+        playDiscardSection.setAttribute("id", "piles-section")
+        playDiscardSection.append(playPile)
+        playDiscardSection.append(discardPile)
+        boardArea.append(playDiscardSection)
     }
 
     setupBoard() {
@@ -274,6 +349,8 @@ class GameView {
         this.renderHands()
         this.renderDiscardAndPlayPiles()
         this.selectCards()
+        // this.renderOtherPlayerPerspective()
+        // this.renderViewHand()
     }
 
     redrawBoard() {
@@ -393,7 +470,6 @@ class GameView {
             this.game.currentPlayer.hand.forEach(card => {
                 if (card.id === parseInt(pivotCard.id.slice(15))) {
                     if (this.game.validMove(card, this.playColors)) {
-                        console.log("play")
                         this.game.playOrDiscard(card, "play", this.playColors);
                         this.redrawBoard()
                     } else {
@@ -401,7 +477,7 @@ class GameView {
                         const misplayText = document.querySelector('.misplay-text')
                         misplayText.innerHTML = this.game.numFuses === 1 ? 'Misfire! 1 fuse left' : `Misfire! ${this.game.numFuses} fuses left!`
                         misplayText.classList.remove("invisible")
-                        this.delay(1000).then(() => {
+                        this.delay(500).then(() => {
                             misplayText.classList.remove("invisible")
                         }).then(() => this.game.playOrDiscard(card, "discard", this.discardColors, true)).then(() => this.redrawBoard())
                     }

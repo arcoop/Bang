@@ -15,6 +15,7 @@ class Card extends GameObject {
         this.revealedColor = false;
         // this.discarded = false;
         this.revealed = this.revealedNum && this.revealedColor;
+        this.allCardNums = [1,2,3,4,5]
     }
     
     handleCardClick(event) {

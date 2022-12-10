@@ -17,16 +17,30 @@
 }
 
 #piles-section {
-
+    display: flex;
+    flex-direction: column;
 }
 
 .game-play-piles {
     display: flex;
     gap: 30px;
-    align-items: center;
 }
 
+.card-color {
+    width: 15px;
+    height: 15px;
+    margin: 5px;
+}
 
+.card-colors {
+    display: flex;
+}
+
+.current-hand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 .play-discard-pile {
     display: flex;
@@ -39,8 +53,8 @@
 }
 
 .card-spot {
-    width: 80px;
-    height: 150px;
+    width: 140px;
+    height: 210px;
     border-radius: 5px;
     border: 3px solid rgb(220, 210, 210);
     display: flex;
@@ -139,6 +153,11 @@
     display: none;
 }
 
+.give-clue {
+    position: absolute;
+    left: 200px;
+}
+
 .give-clue.not-clicked{
     display: none;
 }
@@ -199,10 +218,20 @@
 
 .board-area {
     display: flex;
-    gap: 50px;
-    justify-content: space-between;
+    gap: 300px;
+    justify-content: flex-start;
     margin-top: 40px;
     box-sizing: border-box;
+}
+
+#view-hand:hover {
+    cursor: pointer;
+}
+
+#hands-text-area {
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
 }
 /*!****************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./src/styles/game.scss ***!
