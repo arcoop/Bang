@@ -15,7 +15,6 @@ class GameView {
         this.game = new Game(this.ele, this.player1, this.player2)
         this.playColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
         this.discardColors = ['#F5F5F5', '#BA55D3', '#9ACD32', '#87CEEB', '#FFA500']
-        this.possibleNums = [1,2,3,]
     }
 
     start() {
@@ -88,31 +87,36 @@ class GameView {
         })
     }
 
-    createCardNums(card, revealedColor) {
+    createCardNums(card, cardObject, revealedColor) {
         const cardNums = document.createElement("div")
         cardNums.setAttribute("class", "card-nums")
-        for (let i = 1; i < 6; i++) {
-            const cardNum = document.createElement("p")
-            cardNum.setAttribute("class", `card-num a${i}`)
-            cardNum.setAttribute("id", `card-num-${i}`)
-            cardNum.innerText = i
-            cardNums.append(cardNum)
+        for (let i = 0; i < 5; i++) {
+            if (card.possibleNums[i]) {
+                const cardNum = document.createElement("p")
+                cardNum.setAttribute("class", `card-num a${card.possibleNums[i]}`)
+                cardNum.setAttribute("id", `card-num-${card.possibleNums[i]}`)
+                cardNum.innerText = card.possibleNums[i]
+                cardNums.append(cardNum)
+            }
         }
-        card.append(cardNums)
-        if (!revealedColor) this.createCardColors(card)
+        cardObject.append(cardNums)
+        if (!revealedColor) this.createCardColors(card, cardObject)
 
     }
 
-    createCardColors(card) {
+    createCardColors(card, cardObject) {
         const cardColors = document.createElement("div")
         cardColors.setAttribute("class", "card-colors")
-        this.playColors.forEach((color, idx) => {
-            const cardColor = document.createElement("div")
-            cardColor.setAttribute("class", `card-color a${color.slice(1)}`)
-            cardColor.setAttribute("id", `card-color-${idx}`)
-            cardColors.append(cardColor)
-        })
-        card.append(cardColors)
+        for (let color of Object.keys(card.possibleColors)) {
+            if (card.possibleColors[color]) {
+                const cardColor = document.createElement("div")
+                cardColor.setAttribute("class", `card-color a${color}`)
+                cardColor.setAttribute("id", `card-color-${card.possibleColors[color]}`)
+                cardColors.append(cardColor)
+            }
+        
+        }
+        cardObject.append(cardColors)
     }
 
     renderHands() {
@@ -154,7 +158,9 @@ class GameView {
             cardObject.append(text)
             currentPlayerCard.append(cardObject)
             currentPlayerCards.append(currentPlayerCard)
-            if (!card.revealedNum) this.createCardNums(cardObject, card.revealedColor)
+            if (!card.revealedNum) {
+                this.createCardNums(card, cardObject, card.revealedColor)
+            }
         })
 
         this.game.players[1].hand.forEach(card => {
@@ -217,7 +223,6 @@ class GameView {
             this.dragCards();
         })
     }
-
   
 
     renderGiveClueText(handsSection, clueType) {
@@ -228,14 +233,17 @@ class GameView {
         giveNumClue.innerHTML = "Give Clue"
         textArea.append(giveNumClue)
         giveNumClue.addEventListener("click", () => {
-            const cards = document.querySelectorAll(".selected")
+            const cards = document.querySelectorAll(".other-player")
+            const num = document.querySelectorAll(".selected")[0].childNodes[0].childNodes[0].innerHTML
             cards.forEach(card => {
                 this.game.players[1].hand.forEach(playerCard => {
-                    if (playerCard.id === parseInt(card.childNodes[0].id.slice(13))) {
-                        playerCard.touched = true;
-                        playerCard.revealedNum = true;
+                    if (card.classList.contains("selected")) {
+                        if (playerCard.id === parseInt(card.childNodes[0].id.slice(13))) {
+                            playerCard.touched = true;
+                            playerCard.revealedNum = true;
+                        }
                     } else {
-
+                        playerCard.possibleNums[num - 1] = 0
                     }
                 })
             })
@@ -248,12 +256,17 @@ class GameView {
         giveColorClue.innerHTML = "Give Clue"
         textArea.append(giveColorClue)
         giveColorClue.addEventListener("click", () => {
-            const cards = document.querySelectorAll(".selected")
+            const cards = document.querySelectorAll(".other-player")
+            const color = document.querySelectorAll(".selected")[0].childNodes[0].className.slice(13)
             cards.forEach(card => {
                 this.game.players[1].hand.forEach(playerCard => {
-                    if (playerCard.id === parseInt(card.childNodes[0].id.slice(13))) {
-                        playerCard.touched = true;
-                        playerCard.revealedColor = true;
+                    if (card.classList.contains("selected")) {
+                        if (playerCard.id === parseInt(card.childNodes[0].id.slice(13))) {
+                            playerCard.touched = true;
+                            playerCard.revealedColor = true;
+                        }
+                    } else {
+                        playerCard.possibleColors[color] = 0
                     }
                 })
             })
